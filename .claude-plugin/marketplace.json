@@ -9,8 +9,8 @@
       "name": "hane",
       "description": "Reusable Claude Code skills for branch/worktree-based PR workflow, design docs, acceptance tests, and doc maintenance.",
       "source": {
-        "source": "github",
-        "repo": "kompiro/hane"
+        "source": "url",
+        "url": "https://github.com/kompiro/hane.git"
       }
     }
   ]
