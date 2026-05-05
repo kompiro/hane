@@ -1,5 +1,9 @@
 {
-  "version": "1",
+  "name": "kompiro-hane",
+  "owner": {
+    "name": "Hiroki Kondo",
+    "email": "kompiro@gmail.com"
+  },
   "plugins": [
     { "name": "hane", "source": "." }
   ]
