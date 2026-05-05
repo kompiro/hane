@@ -5,6 +5,13 @@
     "email": "kompiro@gmail.com"
   },
   "plugins": [
-    { "name": "hane", "source": "." }
+    {
+      "name": "hane",
+      "description": "Reusable Claude Code skills for branch/worktree-based PR workflow, design docs, acceptance tests, and doc maintenance.",
+      "source": {
+        "source": "github",
+        "repo": "kompiro/hane"
+      }
+    }
   ]
 }
