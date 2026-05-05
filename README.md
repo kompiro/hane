@@ -1,6 +1,8 @@
-# claude-skills
+# hane
 
 Reusable [Claude Code](https://claude.com/claude-code) skills for a branch/worktree-based PR workflow, design docs, acceptance tests, and documentation maintenance.
+
+The name comes from 羽 (*hane*, "feather") — these skills were originally extracted from [kompiro/karasu](https://github.com/kompiro/karasu) (鴉, *karasu*, "crow"), so the bundle is named after the bird's feathers.
 
 > **Status**: bootstrap / pre-release. Initial extraction from `kompiro/karasu` (see [karasu#1075](https://github.com/kompiro/karasu/issues/1075)). Documentation and v0.1.0 release are tracked separately.
 
@@ -20,11 +22,11 @@ Reusable [Claude Code](https://claude.com/claude-code) skills for a branch/workt
 ## Install
 
 ```
-/plugin marketplace add kompiro/claude-skills
-/plugin install claude-skills@kompiro-claude-skills
+/plugin marketplace add kompiro/hane
+/plugin install hane@kompiro-hane
 ```
 
-Skills are then invoked as `/claude-skills:commit`, `/claude-skills:ship`, etc.
+Skills are then invoked as `/hane:commit`, `/hane:ship`, etc.
 
 ## Host repo prerequisites
 

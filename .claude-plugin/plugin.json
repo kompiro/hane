@@ -1,7 +1,7 @@
 {
-  "name": "claude-skills",
-  "description": "Reusable Claude Code skills for branch/worktree-based PR workflow, design docs, acceptance tests, and doc maintenance.",
+  "name": "hane",
+  "description": "Reusable Claude Code skills for branch/worktree-based PR workflow, design docs, acceptance tests, and doc maintenance. Originally extracted from kompiro/karasu (鴉 — crow). 'hane' (羽) means feather.",
   "author": { "name": "Hiroki Kondo" },
-  "repository": "https://github.com/kompiro/claude-skills",
+  "repository": "https://github.com/kompiro/hane",
   "license": "MIT"
 }
