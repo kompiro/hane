@@ -1,0 +1,7 @@
+{
+  "name": "claude-skills",
+  "description": "Reusable Claude Code skills for branch/worktree-based PR workflow, design docs, acceptance tests, and doc maintenance.",
+  "author": { "name": "Hiroki Kondo" },
+  "repository": "https://github.com/kompiro/claude-skills",
+  "license": "MIT"
+}
