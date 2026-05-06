@@ -41,6 +41,8 @@ description: >
 
 `CLAUDE.md` のドキュメント表をパースし、対象ファイル一覧を生成する。`CLAUDE.md` が存在しない / ドキュメント表が無い場合は、ユーザーに対象を確認する。
 
+加えて、**リポジトリルート直下の `README*.md` 全件**（`README.md`, `README.ja.md`, `README.zh-CN.md` 等）も自動的に対象に含める（`CLAUDE.md` 表で言及が無くても）。サブディレクトリの `README*.md` は再帰しない。`README.md` を **canonical（source of truth）** として扱い、それ以外は localized variant とみなす。
+
 ### 1. サブエージェントを並列起動する
 
 以下の2つの Explore エージェントを **同時に（1メッセージで）** 起動する。
@@ -79,12 +81,16 @@ description: >
 >
 > 対象ファイル: <ステップ 0 で収集した一覧をここに展開>
 >
+> ローカライズされた README（`README.<locale>.md` 形式）は canonical の `README.md` と並べて読み、両者の **セクション構成の差**（片方にしか無い見出し）も検出して報告せよ。
+>
 > 結果は以下の形式で返せ:
 > ```
 > DOC_ITEM|ファイルパス|行番号|内容の要約|状態（current/stale_candidate/unknown）
+> README_LOCALE_GAP|ファイルパス|該当セクション|状態（missing_in_locale/missing_in_canonical/diverged）
 > ```
 > `stale_candidate` は「コードと食い違っている可能性がある」と判断した記述。
 > 確実に古いとは言い切れないものは `unknown` とする。
+> `README_LOCALE_GAP` は localized README と canonical の構造差分（`README.ja.md` には無いが `README.md` にあるセクション、または逆）を表す。
 
 ---
 
@@ -95,8 +101,14 @@ description: >
 - **実装済みだがドキュメント未記載**: コードに存在するが仕様書に載っていない機能・構文
 - **ドキュメントにあるが未実装**: 仕様書に記載があるが実装されていない機能（「将来実装」等）
 - **記述が古い**: 現在の実装と食い違っている記述
+- **README localized 追従漏れ**: `README.md`（canonical）にあるが `README.<locale>.md` で対応する記述が古い・欠落・存在しない
 
-更新すべき箇所を特定したら、各ファイルへの具体的な変更案を作成する。
+更新すべき箇所を特定したら、各ファイルへの具体的な変更案を作成する。Localized README については以下に従う:
+
+- `README.md` を真として、対応する箇所を `README.<locale>.md` 側でも更新する案を作成する
+- 翻訳トーンは既存の localized README の語彙・文体に揃える（直訳ではなく追従）
+- localized README に欠けているセクションは **draft 翻訳付きの追記案**として提示し、ユーザー確認を得てから適用する
+- 逆方向（localized → canonical）の自動上書きは行わない
 
 ### 3. ユーザーへの確認
 
@@ -108,12 +120,18 @@ description: >
 ### README.md
 - Line N: 「...（古い記述）...」→ 「...（新しい記述）...」
 
+### README.ja.md（localized — 上記 README.md 変更への追従）
+- Line N: 「...（古い記述）...」→ 「...（新しい記述、ja トーン）...」
+- 欠落セクション「<heading>」: draft 翻訳付きで追記提案
+
 ### docs/spec/<...>.md
 - 未記載の構文要素: <要素名>
   → セクション XX に追記提案
 
 （更新不要と判断したドキュメントは「変更なし」と明記）
 ```
+
+ファイル別に独立して提示し、ユーザーがファイル単位で承認・却下できるようにする（例: 「README.md は OK、README.ja.md は次回」）。
 
 ユーザーが承認した変更のみを次のステップで適用する。
 
@@ -130,3 +148,4 @@ description: >
 - **削除より追記を優先**: 「将来実装」等の記述は削除せず、実装済みであれば「実装済み」に変更する
 - **一度に全更新しない**: 変更範囲が大きい場合は、ファイルごとに分けて PR を作成することを提案する
 - **コードが正の源泉**: ドキュメントとコードが食い違う場合、コードの実装を正とする
+- **`README.md` が localized 版の正の源泉**: `README.md` と `README.<locale>.md` が食い違う場合、`README.md` を正として localized 版を追従させる。逆方向の自動上書きはしない（言語の表現差は意図的な可能性があるため）
