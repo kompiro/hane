@@ -12,12 +12,13 @@ description: >
 
 ## 手順
 
-1. AT 番号を決定する（詳細は「命名規則」参照）:
-   - 紐付く GitHub Issue 番号があればそれを使う（`<issue>-kebab-title.md`）
-   - 無い場合は `docs/acceptance/` 内の既存ファイルの最大番号 + 1 でローカル採番する
+1. AT 番号を決定する（詳細は「命名規則」参照）。優先順位:
+   1. 紐付く GitHub **Issue 番号**があればそれを使う（`<issue>-kebab-title.md`）
+   2. Issue が無く **PR 番号**が確定している場合は PR 番号を使う（draft PR を先に開く運用も可）
+   3. どちらも無い場合のみ `docs/acceptance/` 内の既存ファイルの最大番号 + 1 でローカル採番
 2. ユーザーに以下を確認する（明示されていない場合）：
    - 対象となる機能・変更の概要
-   - 紐付く Issue 番号（あれば）
+   - 紐付く Issue 番号（あれば）／ Issue が無ければ PR 番号
    - 関連するADR（あれば）
    - 対象コード・モジュール
 3. 対象の既存コード、仕様ドキュメント、ADRを読み、実装の詳細を把握する
@@ -38,7 +39,8 @@ type: product  # または tool
 # AT-<番号>: タイトル
 
 - **日付**: YYYY-MM-DD
-- **Issue**: #<番号> または なし（ローカル採番の場合）
+- **Issue**: #<番号> または なし
+- **PR**: #<番号> または なし（Issue が無く PR 番号で採番した場合に明記）
 - **関連ADR**: ADR-<番号> または なし
 - **対象**: 対象モジュール・ファイルの説明
 
@@ -70,13 +72,13 @@ type: product  # または tool
 ## 命名規則
 
 - ファイル名: `docs/acceptance/<番号>-kebab-case-title.md`
-- **番号は GitHub Issue 番号を優先**:
-  - 紐付く Issue がある場合はその番号を使う（例: Issue #42 → `docs/acceptance/42-add-login.md`、見出しは `AT-42`）
-  - ゼロ埋めはしない（Issue 番号は可変桁のため）
-  - 1 Issue に対して複数の AT を切る場合は `<issue>-<slug>.md` の slug 部分で区別する（例: `42-login-form.md`, `42-login-error.md`）
-- **Issue が無い場合のみローカル採番**:
-  - 既存ファイルの最大番号 + 1（ゼロ埋めなし）
-  - Issue 番号と衝突しないよう、ローカル採番後に Issue が作られても **AT 番号はリネームしない**（外部参照が切れるため）。代わりに AT 内の `Issue` 欄で対応関係を示す
+- **番号は GitHub の番号を優先**（優先順位順）:
+  1. 紐付く Issue 番号（例: Issue #42 → `docs/acceptance/42-add-login.md`、見出しは `AT-42`）
+  2. Issue が無ければ PR 番号（例: PR #8 → `docs/acceptance/8-foo.md`、見出しは `AT-8`）。PR 番号は branch を push して draft PR を開けば確定する
+  3. どちらも無いときのみローカル採番（既存最大 + 1）
+- ゼロ埋めはしない（Issue / PR 番号は可変桁のため）
+- 1 Issue / 1 PR に対して複数の AT を切る場合は `<番号>-<slug>.md` の slug 部分で区別する（例: `42-login-form.md`, `42-login-error.md`）
+- **採番後はリネームしない**: 外部参照（Issue・PR 本文・コミットメッセージ・他 AT からのクロスリンク）が AT 番号を指しているため、ローカル採番→Issue 採番のような巻き直しは不可。代わりに AT 内の `Issue` / `PR` 欄で後付けの対応関係を示す
 - タイトルは機能・変更を端的に表す英語のkebab-case
 - 既存の `NNNN-` 形式（ゼロ埋め4桁）の AT はリネームしない（外部参照を保つため）。新規作成分から本規則を適用する
 
