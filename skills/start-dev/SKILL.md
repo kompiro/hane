@@ -192,7 +192,7 @@ CI 通過後、以下のチェックを順に実行する。
 5. 関連する Design Doc を ADR に昇格させる（`docs/design/` と `docs/adr/` を採用する repo のみ）:
    - 今回の実装に対応する `docs/design/` のファイルを確認する
    - ステータスが「検討中」または「承認済み」のままになっている Design Doc があれば、`/design-doc` スキルまたは手動で ADR として `docs/adr/` に移動・昇格させる
-   - ADR のファイル名は **GitHub Issue 番号ベース**を推奨（`docs/adr/<issue>-kebab-title.md`、見出しは `ADR-<issue>`、ゼロ埋めなし）。host repo が独自規約（例: `YYYYMMDD-NN-description.md`）を持つ場合はそちらを優先する
+   - ADR のファイル名は **GitHub の番号ベース**を推奨（`docs/adr/<番号>-kebab-title.md`、見出しは `ADR-<番号>`、ゼロ埋めなし）。優先順位は Issue 番号 → PR 番号 → ローカル採番（既存最大+1）。host repo が独自規約（例: `YYYYMMDD-NN-description.md`）を持つ場合はそちらを優先する
    - Design Doc のステータスを「決定済み」に更新し、対応する ADR へのリンクを追記する
    - ADR PR の auto-merge を運用する repo では、`gh pr merge <pr-number> --auto --squash` を実行する（`gh` の auto-merge が許可されている repo のみ）
 
