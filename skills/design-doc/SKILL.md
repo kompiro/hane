@@ -28,25 +28,28 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
    - どんな選択肢を考えているか
 2. `docs/design/` および `docs/adr/` 内の既存ドキュメントを確認し、重複や関連するものがないか確認する
    - 過去に同様のテーマが検討・決定されていないかを `docs/adr/` まで遡って探査すること
-3. 壁打ちの内容を整理してドキュメント化する
-4. ブランチ・worktree を作成してからファイルを作成する
+3. テスト観点ライブラリ（TPL）を確認する（ホスト repo が `docs/test-perspectives/` を採用している場合のみ。ディレクトリが無ければ本ステップをスキップする）。2 段階で観点を取り込む:
+   1. **既存 TPL の一覧**: ホスト repo が `tpl:related <topic>` 等のスクリプトを提供していればそれを使い、無ければ `docs/test-perspectives/` 配下の TPL ファイルの frontmatter（`topic` / `scope.packages` / `applicable_to`）を grep して、今回の設計テーマにマッチする TPL を拾う。見つかったものはドキュメントの `## Related TPLs` 節に列挙する（`docs/test-perspectives/` へのリンク付き）
+   2. **未 TPL 化の原則のスキャン**: 同じ topic の `docs/concepts*` 等の原則ファイルと関連 ADR を読み、まだ TPL になっていない原則で今回の設計が違反しうるものがないか確認する。あれば 3-Yes ルール（横展開しうる / 構造的に再発しうる / 既存 TPL 未掲載）に照らし、満たすなら **同じ PR で** proactive TPL を起こす（`test-perspective` スキルを呼び、`discovered_from.root_cause_file` または `root_cause_adr` を設定する）。同じ PR で起こすのが最も摩擦が少ない。起こした proactive TPL は `## Related TPLs` 節にも記載し、相互リンクする
+4. 壁打ちの内容を整理してドキュメント化する
+5. ブランチ・worktree を作成してからファイルを作成する
    - ブランチ名の例: `docs/design-<kebab-case-title>`
    - `git worktree add .claude/worktrees/<branch> <branch>`
    - worktree 内でファイルを作成し、コミット・push・PR 作成まで行う
-5. 「未解決の問い」セクションに項目がある場合は、ユーザーにレビューを依頼する前に一緒に解消する
+6. 「未解決の問い」セクションに項目がある場合は、ユーザーにレビューを依頼する前に一緒に解消する
    - 未解決の問いを1つずつユーザーに提示し、意見や考えを引き出す
    - 回答が得られた問いはドキュメントの該当箇所（「現時点の方針」など）に反映してコミットする
    - 全ての問いが解消されたら「未解決の問い」セクションを削除（または空にする）してコミットする
    - 解消できない問いが残る場合はその旨をドキュメントに明記した上で次のステップへ進む
-6. ユーザーにレビューを依頼する
-7. PR がマージされたら、紐付いている Issue がある場合はラベルを更新する（`status: *` ラベル運用を採用している repo のみ）:
+7. ユーザーにレビューを依頼する
+8. PR がマージされたら、紐付いている Issue がある場合はラベルを更新する（`status: *` ラベル運用を採用している repo のみ）:
    ```
    gh issue edit <N> --remove-label "status: designing" --add-label "status: designed"
    ```
    > `status: designed` は「設計完了・実装着手可能」を意味する。
    > 実装を開始する際（`/start-dev` など）に `status: implementing` に更新すること。
    > ラベル運用がない repo では本ステップをスキップする。
-8. 設計が固まった場合は、ADR化を提案する（`docs/adr/` を採用する repo のみ）
+9. 設計が固まった場合は、ADR化を提案する（`docs/adr/` を採用する repo のみ）
 
 ## ファイル形式
 
@@ -81,6 +84,13 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
 
 選択肢を比較する表や議論の要約。
 
+## Related TPLs
+
+（`docs/test-perspectives/` を採用する repo のみ。該当が無ければ節ごと省略）
+今回の設計テーマにマッチする既存 TPL と、本検討で新たに起こした proactive TPL を列挙する。
+
+- [TPL-XXXXXXXX-XX](../test-perspectives/TPL-XXXXXXXX-XX-slug.md) — 観点のタイトル
+
 ## 現時点の方針
 
 （固まっていれば）現時点での方向性。
@@ -98,6 +108,7 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
 - **具体例で検証**: 抽象的な議論に留まらず、具体的なコード例やユースケースで検証する
 - **制約を明確に**: 「なぜその案がダメか」の理由となる制約を明示する
 - **段階的に深掘り**: 一度に全てを決めず、大きな方針から詳細へと進める
+- **TPL を取り込む**（`docs/test-perspectives/` 採用 repo のみ）: 既存 TPL を引用したら ID を `## Related TPLs` 節に書く。原則違反を予見して proactive TPL を起こした場合は、その TPL と本 DesignDoc を相互リンクする
 
 ## 命名規則
 
