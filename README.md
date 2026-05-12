@@ -14,6 +14,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 | `design-doc` | Create `docs/design/` brainstorm/exploration documents. |
 | `acceptance-test` | Create `docs/acceptance/NNNN-*.md` records. |
 | `qa` | Generate a QA checklist from acceptance test records. |
+| `test-perspective` | Create / update / deprecate Test Perspective Library (TPL) records under `docs/test-perspectives/`. |
 | `review-docs` | Find broken links and cross-document inconsistencies in `docs/`. |
 | `sync-docs` | Sync reference docs with the current code (CLAUDE.md doc-table driven). |
 
@@ -31,6 +32,7 @@ Skills are then invoked as `/hane:commit`, `/hane:ship`, etc.
 - **Add `.claude/worktrees/` to `.gitignore`.** `start-dev`, `ship`, and `design-doc` create persistent worktrees there. Without the ignore entry, hooks that detect untracked files may misfire.
 - **Optional**: `status: ready / blocked / implementing / designing / designed / in-review` label set if you want the skills to update Issue status as work progresses. Skipped silently if labels are absent.
 - **Optional**: `docs/design/` and `docs/adr/` directories if you want Design Doc and ADR-promotion workflows. Each skill checks for the relevant directory at runtime.
+- **Optional**: `docs/test-perspectives/` directory if you want the Test Perspective Library workflow. The `test-perspective` skill creates/updates records there; `acceptance-test` and `design-doc` cite matching records when the directory exists. Skipped silently if absent.
 
 ## Conventions adopted by these skills
 
@@ -51,6 +53,7 @@ Each skill reads from host-repo conventions when present and skips related steps
 | `start-dev`, `ship` | Test/lint/format commands picked up from host `package.json` `scripts`; missing scripts are skipped |
 | `start-dev`, `ship` | PR body template read from `.github/PULL_REQUEST_TEMPLATE.md` if present, otherwise a built-in minimal template is used |
 | `acceptance-test`, `qa` | `type: product / tool` frontmatter is honored if existing AT files use it; otherwise all AT files are treated as in-scope |
+| `test-perspective`, `acceptance-test`, `design-doc` | TPL workflow runs only when `docs/test-perspectives/` exists; the `topic` controlled vocabulary, TPL filename convention, `tpl:validate` / `tpl:related` tooling, and deprecation-review cadence are all host-defined |
 | `review-docs` | Each consistency check runs only when its target directory exists (`docs/adr/`, `docs/design/`, `docs/acceptance/`) |
 | `sync-docs` | Subagent A inspects the source roots reported by host `package.json`; subagent B reads the document table in host `CLAUDE.md` to learn what to keep in sync |
 
