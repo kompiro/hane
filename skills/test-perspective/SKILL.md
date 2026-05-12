@@ -22,7 +22,7 @@ description: >
 ## ホスト repo に依存する慣習
 
 - **`topic` の controlled vocabulary**: ホスト repo が ADR の語彙を持つ場合（例: `docs/adr/README.md` のセクション見出し、`adr.config.json` の `topics` 等）はそれを使い、TPL と ADR で語彙を共有する。持たない場合は free-form の小文字 kebab トピックでよい
-- **ファイル名規約**: 既定は `docs/test-perspectives/TPL-YYYYMMDD-NN-<slug>.md`（ゼロ埋めなし）。ホスト repo が独自の規約を持つ場合はそちらを優先する（ADR/AT の命名と同じ「host 独自規約優先」のエスケープ）
+- **ファイル名規約**: 既定は `docs/test-perspectives/TPL-<番号>-<slug>.md`（見出し `TPL-<番号>`、ゼロ埋めなし、GitHub 番号ベース。詳細は下記「ファイルを作成する」）。ホスト repo が独自の規約（例: karasu の `TPL-YYYYMMDD-NN-<slug>.md`）を持つ場合はそちらを優先する（ADR/AT の命名と同じ「host 独自規約優先」のエスケープ）
 - **検証ツール**: ホスト repo が `tpl:validate`（frontmatter と一覧表の machine check）等を提供していれば、作成・更新後にそれを実行する。無ければ手動で frontmatter を確認する
 - **関連 TPL クエリ**: ホスト repo が `tpl:related <topic>` 等を提供していればそれで関連 TPL を一覧する。無ければ `docs/test-perspectives/` 配下の frontmatter（`topic` / `scope.packages` / `applicable_to` / `known_consumers`）を grep する
 - **定期 deprecation レビュー**: cadence（週次 / 月次 / 半期）と自動化（CI で review Issue を自動生成する等）はホスト repo に委ねる。このスキルは「`active` な TPL を放置しないため定期レビューを推奨」とだけ示す
@@ -58,26 +58,31 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
 
 #### 2-3. ファイルを作成する
 
-- ファイル名: `docs/test-perspectives/TPL-YYYYMMDD-NN-<slug>.md`（`YYYYMMDD` は作成日、`NN` はその日の連番、ゼロ埋めなし、`<slug>` は観点を端的に表す小文字 kebab）。ホスト repo が独自規約を持つ場合はそちらに従う
+- ファイル名: `docs/test-perspectives/TPL-<番号>-<slug>.md`（見出し `TPL-<番号>`、ゼロ埋めなし、`<slug>` は観点を端的に表す小文字 kebab）。**番号は GitHub の番号ベース**、優先順位は ADR-8 / ADR-10 と同じ:
+  1. 紐付く Issue 番号 — retrospective TPL は起点の `bug` / `test-infra` Issue 番号（`discovered_from.issue` と揃う）
+  2. Issue が無ければ PR 番号 — proactive TPL は原則 / ADR 起源で Issue が無いことが多いので、それを起こした DesignDoc PR の番号を使う（draft PR を先に開く運用と整合）
+  3. どちらも無いときだけローカル採番（`docs/test-perspectives/` 内の既存最大 + 1）
+
+  1 つの Issue / PR に複数 TPL を切る場合は `<slug>` 部分で区別する。採番後はリネームしない（外部参照が番号を指すため）。ホスト repo が独自規約（例: karasu の `TPL-YYYYMMDD-NN-<slug>.md`）を持つ場合はそちらに従う。
 - frontmatter:
 
   ```yaml
   ---
-  id: TPL-YYYYMMDD-NN
+  id: TPL-<番号>          # ファイル名の番号と一致
   title: "観点を1行で表現"
   status: active            # active | deprecated
-  date: YYYY-MM-DD
+  date: YYYY-MM-DD          # 作成日
   applicable_to:
     - "再利用可能な抽象パターン（例: 設定値を消費する機能）。1 行 = 1 パターン。複数パターンに当てはまるなら複数行"
   known_consumers:          # optional — この観点が適用されると判明している具体的 consumer。grep 可能な kebab-case
     - feature-name
   discovered_from:
-    - issue: "#N"                              # retrospective の場合
-    # - root_cause_adr: "ADR-XXXXXXXX-XX"      # proactive（ADR 起源）の場合
+    - issue: "#N"                              # retrospective の場合（この番号がファイル名の番号になる）
+    # - root_cause_adr: "ADR-<番号>"            # proactive（ADR 起源）の場合
     # - root_cause_file: "docs/concepts.*"     # proactive（原則ファイル起源）の場合
     # - root_cause_file: "path/to/file.ts:LINE"
   related_to:
-    - TPL-XXXXXXXX-XX        # optional — 同ディレクトリの実在 TPL のみ
+    - TPL-<番号>            # optional — 同ディレクトリの実在 TPL のみ
   topic: <controlled-vocabulary>   # ホスト repo の ADR 語彙があればそれ、無ければ free-form kebab
   scope:
     packages:
@@ -90,7 +95,7 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
 - 本文（5 節構成）:
 
   ```markdown
-  # TPL-YYYYMMDD-NN: 観点を1行で表現
+  # TPL-<番号>: 観点を1行で表現
 
   ## 観点
 
@@ -135,7 +140,7 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
 
 - `status` を `deprecated` に変更する
 - エントリ自体は **削除しない**。本文の末尾に「なぜ deprecated にしたか」の rationale を追記する（後から「この観点はなぜ消えたのか」を辿れるようにするため）。rationale には `deprecated` の語を含める（ホスト repo の validator がこれを要求することがある）
-- より新しい TPL がこの観点を包含する場合は、その TPL を `superseded by TPL-XXXXXXXX-XX` として rationale に明記する（ADR の `superseded_by` 運用と同じ）
+- より新しい TPL がこの観点を包含する場合は、その TPL を `superseded by TPL-<番号>` として rationale に明記する（ADR の `superseded_by` 運用と同じ）
 - deprecate の **トリガー** は定期 deprecation レビュー（前述、cadence はホスト repo 次第）で起こすのが基本。レビューでは各 `active` TPL について「引用された `root_cause_file` / `root_cause_adr` は今も存在するか」「アーキテクチャの前提が変わっていないか」「これを包含するより新しい TPL があるか」を確認し、`keep` / `update` / `deprecate` を判断する
 
 ### 5. レビュー依頼

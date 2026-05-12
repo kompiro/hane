@@ -1,101 +1,60 @@
-# ADR-8: Use GitHub Issue or PR numbers for AT/ADR file naming
+# ADR-8: AT / ADR のファイル名に GitHub の Issue / PR 番号を使う
 
-- **Date**: 2026-05-06
-- **Status**: Accepted
-- **Issue**: none — numbered after PR [#8](https://github.com/kompiro/hane/pull/8) per the fallback rule this ADR establishes
-- **Related**: PR [#8](https://github.com/kompiro/hane/pull/8) (skill changes), PR [#9](https://github.com/kompiro/hane/pull/9) (this record)
+- **日付**: 2026-05-06
+- **ステータス**: 決定済み
+- **Issue**: なし — このADRが定めるフォールバックルールに従い、PR [#8](https://github.com/kompiro/hane/pull/8) の番号で採番した
+- **関連**: PR [#8](https://github.com/kompiro/hane/pull/8)（skill の変更）, PR [#9](https://github.com/kompiro/hane/pull/9)（このADRの記録）
 
-## Context
+## 背景
 
-Acceptance tests under `docs/acceptance/` were named with a zero-padded
-`NNNN-kebab.md` prefix and the next number was chosen as `max(existing) + 1`.
-ADR file naming was deferred entirely to the host repository. Design Docs use
-topic-only filenames.
+`docs/acceptance/` 配下の受け入れテストは、ゼロ埋めの `NNNN-kebab.md` プレフィックスで命名され、次の番号は `max(既存) + 1` で選ばれていた。ADR のファイル名はホスト repo に完全に委ねられていた。Design Doc はトピック名のみのファイル名を使う。
 
-This produced two friction points:
+これには 2 つの摩擦があった:
 
-1. AT numbers had no relationship to GitHub Issue numbers, so tracing an AT
-   back to the Issue that motivated it required reading the document body.
-2. With parallel branches each picking `max + 1`, AT number collisions on
-   merge were a known hazard — `review-docs` already documented that
-   re-numbering is unsafe because external references (Issues, PR comments,
-   commit messages) point at AT numbers.
+1. AT 番号が GitHub の Issue 番号と何の関係も持たないため、ある AT を起点の Issue まで辿るにはドキュメント本文を読む必要があった。
+2. 並行ブランチがそれぞれ `max + 1` を選ぶと、マージ時の AT 番号衝突が既知のハザードだった — `review-docs` は既に「外部参照（Issue・PR コメント・コミットメッセージ）が AT 番号を指しているため、付け直しは安全でない」と記している。
 
-We wanted a single numbering source that is unique across parallel work and
-trivially traceable back to GitHub.
+並行作業を跨いで一意で、かつ GitHub まで簡単に辿れる単一の採番ソースが欲しかった。
 
-## Decision
+## 決定
 
-Number AT and ADR files from GitHub identifiers, with this priority order:
+AT と ADR のファイルは GitHub の識別子から採番する。優先順位は以下:
 
-1. **Linked GitHub Issue number** (preferred).
-2. **PR number** when no Issue exists but a PR does (e.g. retroactive
-   records, drive-by docs that were merged via PR without an Issue).
-3. **Local sequential** (`max(existing) + 1`, no zero-padding) only when
-   neither exists yet (e.g. AT drafted before any branch is pushed).
+1. **紐付く GitHub Issue 番号**（最優先）。
+2. Issue が無く PR がある場合は **PR 番号**（例: 遡及的な記録、Issue 無しで PR マージされた drive-by docs）。
+3. どちらもまだ無い場合のみ **ローカル連番**（`max(既存) + 1`、ゼロ埋めなし）（例: ブランチを push する前にドラフトした AT）。
 
-Common rules:
+共通ルール:
 
-- No zero-padding — Issue and PR numbers are variable width.
-- Multiple docs per number are allowed and disambiguated by the kebab slug
-  (e.g. `42-login-form.md`, `42-login-error.md`).
-- Once a number is assigned, **never rename** the file. External references
-  (Issues, PR descriptions, commit messages, AT cross-links) point at the
-  number, and renaming silently breaks them. If a later Issue gets filed
-  for an AT that was already given a PR-fallback or local number, record
-  the new linkage in the body's `Issue:` field instead.
+- ゼロ埋めはしない — Issue / PR 番号は可変桁。
+- 1 つの番号に複数ドキュメントを許し、kebab slug で区別する（例: `42-login-form.md`, `42-login-error.md`）。
+- 一度割り当てた番号のファイルは **リネームしない**。外部参照（Issue・PR description・コミットメッセージ・AT 間のクロスリンク）が番号を指しており、リネームは黙ってそれらを壊す。後から AT に対して Issue が立てられた場合は、本文の `Issue:` 欄に後付けの対応関係を記録する。
 
-Per-doc-type specifics:
+ドキュメント種別ごとの詳細:
 
-- **Acceptance Test**: `docs/acceptance/<number>-kebab-title.md`, heading
-  `AT-<number>`. ATs are typically created on a feature branch before the
-  PR is opened — pushing the branch (or opening a draft PR) early to claim
-  a PR number is the recommended path when no Issue exists.
-- **ADR**: `docs/adr/<number>-kebab-title.md`, heading `ADR-<number>`. Host
-  repo conventions (e.g. `YYYYMMDD-NN-description.md`) take precedence
-  when the host repo has already adopted them.
-- **Design Doc**: filenames stay topic-only — 1 Issue ≠ 1 Design Doc,
-  since the exploratory phase often spawns several docs per Issue or
-  none at all. An `Issue:` meta field records the linkage when one exists.
-- **review-docs**: same-Issue/PR multi-AT is allowed; only collisions
-  between distinct numbering sources (e.g. Issue #5 and a local-fallback
-  `5-`) are warned. Existing `NNNN-`-prefixed files are left as-is to
-  preserve external references.
+- **受け入れテスト**: `docs/acceptance/<番号>-kebab-title.md`、見出し `AT-<番号>`。AT は通常 PR を開く前に feature ブランチで作られる — Issue が無い場合は、ブランチを push（または draft PR を開く）して PR 番号を確保するのが推奨経路。
+- **ADR**: `docs/adr/<番号>-kebab-title.md`、見出し `ADR-<番号>`。ホスト repo が独自規約（例: `YYYYMMDD-NN-description.md`）を既に採用している場合はそちらを優先する。
+- **Design Doc**: ファイル名はトピック名のみのまま — 1 Issue ≠ 1 Design Doc であり、探索フェーズでは 1 Issue から複数の Design Doc が生まれたり 1 つも生まれなかったりする。Issue があれば `Issue:` メタ欄で対応関係を記録する。
+- **review-docs**: 同一 Issue / PR からの複数 AT は許す。異なる採番ソース間の衝突（例: Issue #5 とローカルフォールバックの `5-`）のみ警告する。既存の `NNNN-` プレフィックスのファイルは外部参照を保つためそのまま残す。
 
-## Consequences
+## 帰結
 
-**Positive**
+**ポジティブ**
 
-- AT and ADR numbers are globally unique without coordination — GitHub
-  assigns them.
-- One-hop traceability from a doc filename to its Issue or PR and back.
-- The `start-dev` flow is already Issue-driven, so the new convention
-  composes cleanly with the existing skill chain.
-- Retroactive records (like this ADR itself) get a stable, externally
-  meaningful number via the PR fallback instead of an opaque local seq.
+- AT と ADR の番号が調整なしでグローバルに一意になる — GitHub が割り当てる。
+- ドキュメントのファイル名から Issue / PR への一跳びの追跡性。
+- `start-dev` フローは既に Issue 駆動なので、新しい規約は既存の skill チェーンと素直に合成できる。
+- 遡及的な記録（このADR自身など）も、不透明なローカル連番ではなく PR フォールバックで安定した外部的に意味のある番号を得る。
 
-**Negative**
+**ネガティブ**
 
-- Writing an AT before any branch is pushed forces a choice between
-  using local fallback (and accepting it will not be renamed later) or
-  pushing/opening a draft PR earlier than usual to claim a number.
-- The new and legacy naming styles coexist in repos that already have
-  `NNNN-`-prefixed ATs. `review-docs` accepts both rather than forcing
-  a migration.
-- Three numbering sources (Issue / PR / local) means the rule is more
-  to remember than a single-source scheme; mitigated by having a clear
-  priority order.
+- ブランチを push する前に AT を書く場合、ローカルフォールバックを使う（後でリネームされないことを受け入れる）か、番号を確保するために通常より早く push / draft PR を開くかの選択を迫られる。
+- 既に `NNNN-` プレフィックスの AT を持つ repo では新旧の命名スタイルが共存する。`review-docs` は移行を強制せず両方を受け入れる。
+- 3 つの採番ソース（Issue / PR / ローカル）があるため、単一ソース方式より覚えることが多い — 明確な優先順位で緩和。
 
-## Alternatives considered
+## 却下した案
 
-- **Keep `NNNN-` zero-padded local numbering** — rejected because parallel
-  branches keep producing collisions and the numbers carry no semantic
-  link to the work they describe.
-- **Issue number only, no PR fallback** — rejected; retroactive records
-  and Issue-less drive-by changes (this ADR's own situation) would be
-  stuck on opaque local numbers.
-- **PR number as the primary source** — rejected; Issues exist before
-  branches and are the natural unit of work, and PR numbers don't exist
-  at the moment most ATs are first drafted.
-- **Force-rename existing `NNNN-` ATs in host repos** — rejected; external
-  references would silently break.
+- **ゼロ埋めのローカル連番（`NNNN-`）を維持する** — 並行ブランチが衝突を生み続け、番号が記述対象との意味的なリンクを持たないため却下。
+- **Issue 番号のみ、PR フォールバックなし** — 遡及的な記録や Issue 無しの drive-by 変更（このADR自身の状況）が不透明なローカル番号で詰まるため却下。
+- **PR 番号を最優先ソースにする** — Issue はブランチより先に存在し作業の自然な単位であり、PR 番号は多くの AT が最初にドラフトされる時点では存在しないため却下。
+- **既存の `NNNN-` AT を強制リネームする** — 外部参照が黙って壊れるため却下。
