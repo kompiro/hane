@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Notes
 
-- Design rationale for the TPL integration: `docs/design/tpl-acceptance-test-integration.md` (umbrella [#10](https://github.com/kompiro/hane/issues/10)).
+- Design rationale and decision for the TPL integration: [ADR-10](docs/adr/10-tpl-integration-into-skills.md) (umbrella [#10](https://github.com/kompiro/hane/issues/10); the originating design doc was condensed into the ADR on promotion).
 
 ## [0.2.0] — 2026-05-06
 
