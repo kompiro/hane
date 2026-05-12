@@ -26,8 +26,12 @@ description: >
    - プロダクトコード（host repo が定めるソースルート、例: `src/` や `packages/` 配下）のみ変更 → `type: product`
    - それ以外（`.claude/`, `docs/` 等のツール・ドキュメント）のみ変更 → `type: tool`
    - 両方含む場合 → ユーザーに確認する
-5. 受け入れ条件（AC）を具体的かつ検証可能な形で記述する
-6. ファイルを作成し、ユーザーにレビューを依頼する
+5. テスト観点ライブラリ（TPL）を確認する（ホスト repo が `docs/test-perspectives/` を採用している場合のみ。ディレクトリが無ければ本ステップをスキップする）:
+   - 関連 TPL を探す: ホスト repo が `tpl:related <topic>` 等のスクリプトを提供していればそれを使う。無ければ `docs/test-perspectives/` 配下の TPL ファイルの frontmatter（`topic` / `scope.packages` / `applicable_to` / `known_consumers`）を grep し、今回の変更対象モジュール・トピックにマッチするものを拾う
+   - マッチした TPL の ID を AT 本文の `**Related TPLs**:` メタ欄に列挙する（`docs/test-perspectives/` へのリンク付き）
+   - うち **proactive** な TPL — `discovered_from` が原則ファイル（`concepts*` 等）や ADR を指すもの。`issue: #N` を指すものは retrospective — については、関連するチェックリスト項目を AC として転記する。自動化予定でも手動確認でも構わないが、AC として明示する（"forward 運用": proactive TPL を引用した DesignDoc は、その実装 PR で該当チェックリスト項目の contract test と AT AC を着地させる）。転記した AC には出所の TPL ID を併記する
+6. 受け入れ条件（AC）を具体的かつ検証可能な形で記述する
+7. ファイルを作成し、ユーザーにレビューを依頼する
 
 ## ファイル形式
 
@@ -42,6 +46,7 @@ type: product  # または tool
 - **Issue**: #<番号> または なし
 - **PR**: #<番号> または なし（Issue が無く PR 番号で採番した場合に明記）
 - **関連ADR**: ADR-<番号> または なし
+- **Related TPLs**: TPL-XXXXXXXX-XX, … または なし（`docs/test-perspectives/` を採用する repo のみ。該当無し / 不採用 repo では `なし` か欄ごと省略）
 - **対象**: 対象モジュール・ファイルの説明
 
 ## 概要
@@ -68,6 +73,7 @@ type: product  # または tool
 - **グループ化**: 関連する条件を AC-N 単位でまとめ、各グループに説明的な名前を付ける
 - **網羅的**: 正常系・異常系・エッジケース・公開APIを漏れなくカバーする
 - **独立的**: 各ACは他のACに依存せず、単独で検証できることが望ましい
+- **TPL 由来の AC は出所を併記**: proactive TPL のチェックリスト項目から転記した AC には、どの TPL ID から来たかを併記する（例: `- [ ] ...（TPL-20260509-18）`）。後から「この AC はなぜあるのか」を辿れるようにする
 
 ## 命名規則
 
