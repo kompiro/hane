@@ -4,6 +4,17 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `test-perspective` — new skill to create / update / deprecate Test Perspective Library (TPL) records under `docs/test-perspectives/`: frontmatter schema, `TPL-YYYYMMDD-NN-<slug>.md` naming (host convention takes precedence), 3-Yes rule, retrospective vs proactive origin, deprecation rules (never delete; rationale required), lifecycle, and reference timing. No tooling ported — `tpl:validate` / `tpl:related` and the `topic` vocabulary stay host-local. ([#13](https://github.com/kompiro/hane/issues/13))
+- `acceptance-test`: TPL-aware step — when the host repo has `docs/test-perspectives/`, scan matching TPLs before writing ACs, cite their IDs in a `**Related TPLs**:` meta field, and transcribe the checklist items of cited proactive TPLs as ACs ("forward operation"). Skipped silently when the directory is absent. ([#12](https://github.com/kompiro/hane/issues/12))
+
+### Notes
+
+- Design rationale for the TPL integration: `docs/design/tpl-acceptance-test-integration.md` (umbrella [#10](https://github.com/kompiro/hane/issues/10)).
+
 ## [0.2.0] — 2026-05-06
 
 ### Added
