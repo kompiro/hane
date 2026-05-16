@@ -32,6 +32,10 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
    1. **既存 TPL の一覧**: ホスト repo が `tpl:related <topic>` 等のスクリプトを提供していればそれを使い、無ければ `docs/test-perspectives/` 配下の TPL ファイルの frontmatter（`topic` / `scope.packages` / `applicable_to`）を grep して、今回の設計テーマにマッチする TPL を拾う。見つかったものはドキュメントの `## Related TPLs` 節に列挙する（`docs/test-perspectives/` へのリンク付き）
    2. **未 TPL 化の原則のスキャン**: 同じ topic の `docs/concepts*` 等の原則ファイルと関連 ADR を読み、まだ TPL になっていない原則で今回の設計が違反しうるものがないか確認する。あれば 3-Yes ルール（横展開しうる / 構造的に再発しうる / 既存 TPL 未掲載）に照らし、満たすなら **同じ PR で** proactive TPL を起こす（`test-perspective` スキルを呼び、`discovered_from.root_cause_file` または `root_cause_adr` を設定する）。同じ PR で起こすのが最も摩擦が少ない。起こした proactive TPL は `## Related TPLs` 節にも記載し、相互リンクする
 4. 壁打ちの内容を整理してドキュメント化する
+   - host repo の `docs/design/` に `TEMPLATE.md` が無ければ、この skill の
+     [`TEMPLATE.md`](TEMPLATE.md) を `docs/design/TEMPLATE.md` としてコピーする
+     ことをユーザーに提案し、同じ PR に含める。すでに `docs/design/TEMPLATE.md`
+     がある repo はそちらの雛形に従う
 5. ブランチ・worktree を作成してからファイルを作成する
    - ブランチ名の例: `docs/design-<kebab-case-title>`
    - `git worktree add .claude/worktrees/<branch> <branch>`
@@ -53,53 +57,12 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
 
 ## ファイル形式
 
-```markdown
-# タイトル
+Design Doc の雛形はこの skill ディレクトリの [`TEMPLATE.md`](TEMPLATE.md) を使う。
+`TEMPLATE.md` をコピーして冒頭の HTML コメントを削除し、各節を埋める。
 
-- **日付**: YYYY-MM-DD
-- **Issue**: #<番号> または なし
-- **ステータス**: ドラフト | 検討中 | 完了（※ ADR化したらこのファイルは削除する）
-- **関連**: 関連するドキュメントやADRへのリンク
-
-## 背景・課題
-
-解決したい問題や現状の課題を記述。
-なぜこの設計検討が必要になったのかの文脈。
-
-## 制約・前提
-
-設計上の制約や前提条件を列挙。
-
-## 検討した選択肢
-
-### 案1: タイトル
-
-概要、メリット・デメリット、トレードオフ。
-
-### 案2: タイトル
-
-概要、メリット・デメリット、トレードオフ。
-
-## 比較
-
-選択肢を比較する表や議論の要約。
-
-## Related TPLs
-
-（`docs/test-perspectives/` を採用する repo のみ。該当が無ければ節ごと省略）
-今回の設計テーマにマッチする既存 TPL と、本検討で新たに起こした proactive TPL を列挙する。
-
-- [TPL-XXXXXXXX-XX](../test-perspectives/TPL-XXXXXXXX-XX-slug.md) — 観点のタイトル
-
-## 現時点の方針
-
-（固まっていれば）現時点での方向性。
-（未定であれば）次に検討すべきこと。
-
-## 未解決の問い
-
-まだ答えが出ていない論点をリストアップ。
-```
+節構成は 背景・課題 / 制約・前提 / 検討した選択肢 / 比較 / Related TPLs（任意）/
+現時点の方針 / 未解決の問い（任意）。`## Related TPLs` 節は host repo が
+`docs/test-perspectives/` を採用している場合のみ残す。
 
 ## 壁打ちの進め方ガイドライン
 
