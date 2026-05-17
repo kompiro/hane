@@ -8,6 +8,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 
 | Skill | What it does |
 |---|---|
+| `init` | Scaffold the host-repo conventions the other skills expect (doc directories, templates, `process.md`, optional status labels). |
 | `commit` | Generate Conventional Commits messages from staged changes and commit. |
 | `ship` | Push, open a PR, watch CI, then clean up. |
 | `start-dev` | Issue → worktree → plan → implement → commit → PR workflow. |
@@ -28,6 +29,8 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 Skills are then invoked as `/hane:commit`, `/hane:ship`, etc.
 
 ## Host repo prerequisites
+
+Run `/hane:init` to scaffold the items below interactively — it asks which doc directories to adopt, the ADR filename scheme, and whether to use status labels, then creates the directories, copies the document templates, and writes a `process.md` skeleton. It is idempotent, so it is also safe to run later to fill gaps.
 
 - **Add `.claude/worktrees/` to `.gitignore`.** `start-dev`, `ship`, and `design-doc` create persistent worktrees there. Without the ignore entry, hooks that detect untracked files may misfire.
 - **Optional**: `status: ready / blocked / implementing / designing / designed / in-review` label set if you want the skills to update Issue status as work progresses. Skipped silently if labels are absent.
