@@ -35,36 +35,12 @@ description: >
 
 ## ファイル形式
 
-```markdown
----
-type: product  # または tool
----
+AT 記録の雛形はこの skill ディレクトリの [`TEMPLATE.md`](TEMPLATE.md) を使う。
+`TEMPLATE.md` をコピーして冒頭の HTML コメントを削除し、各節を埋める。
 
-# AT-<番号>: タイトル
-
-- **日付**: YYYY-MM-DD
-- **Issue**: #<番号> または なし
-- **PR**: #<番号> または なし（Issue が無く PR 番号で採番した場合に明記）
-- **関連ADR**: ADR-<番号> または なし
-- **Related TPLs**: TPL-XXXXXXXX-XX, … または なし（`docs/test-perspectives/` を採用する repo のみ。該当無し / 不採用 repo では `なし` か欄ごと省略）
-- **対象**: 対象モジュール・ファイルの説明
-
-## 概要
-
-変更の目的と背景を1〜2文で記述。
-
-## 受け入れ条件
-
-### AC-N: 条件グループ名
-
-- [ ] 具体的かつ検証可能な条件
-- [ ] 入力と期待出力が明確な条件
-- [ ] エッジケースやエラーケースも含む
-
-## 検証方法
-
-（自動テストコマンド、手動確認手順など）
-```
+節構成は メタ欄（日付 / Issue / PR / 関連ADR / Related TPLs / 対象）/ 概要 /
+受け入れ条件（AC-N グループ）/ 検証方法。`type:` frontmatter は host repo が
+product / tool 区分を採用している場合のみ残す。
 
 ## 受け入れ条件の書き方ガイドライン
 

@@ -53,7 +53,7 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
    > `status: designed` は「設計完了・実装着手可能」を意味する。
    > 実装を開始する際（`/start-dev` など）に `status: implementing` に更新すること。
    > ラベル運用がない repo では本ステップをスキップする。
-9. 設計が固まった場合は、ADR化を提案する（`docs/adr/` を採用する repo のみ）。ADR化するときは、Design Doc の内容を ADR に集約したうえで **同じ PR で `docs/design/` の元ファイルを削除する**（ステータスを「決定済み」に更新してリンクだけ残す運用はしない）。ADR は日本語で書く（host repo の `.claude/rules/` 等にルールがあればそれに従う）。実装を伴う場合の昇格は通常 `/start-dev` のクリーンアップ手順で行う
+9. 設計が固まった場合は、ADR化を提案する（`docs/adr/` を採用する repo のみ）。ADR化するときは、Design Doc の内容を ADR に集約したうえで **同じ PR で `docs/design/` の元ファイルを削除する**（ステータスを「決定済み」に更新してリンクだけ残す運用はしない）。ADR の雛形はこの skill ディレクトリの [`ADR-TEMPLATE.md`](ADR-TEMPLATE.md) を使う。ADR は日本語で書く（host repo の `.claude/rules/` 等にルールがあればそれに従う）。実装を伴う場合の昇格は通常 `/start-dev` のクリーンアップ手順で行う
 
 ## ファイル形式
 

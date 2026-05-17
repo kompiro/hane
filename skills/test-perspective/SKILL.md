@@ -16,7 +16,7 @@ description: >
 
 このスキルはホスト repo が **`docs/test-perspectives/`（TPL）を採用している場合のみ** 意味を持つ。
 
-- ディレクトリが存在しない場合は、まず「`docs/test-perspectives/` を新設して運用を始めるか」をユーザーに確認する。始める場合は最初の 1 件をこのスキルで作成し、必要なら `docs/test-perspectives/README.md`（運用方針の入り口）と `TEMPLATE.md` も用意する
+- ディレクトリが存在しない場合は、まず「`docs/test-perspectives/` を新設して運用を始めるか」をユーザーに確認する。始める場合は最初の 1 件をこのスキルで作成し、必要なら `docs/test-perspectives/README.md`（運用方針の入り口）と `TEMPLATE.md`（この skill ディレクトリの [`TEMPLATE.md`](TEMPLATE.md) をコピーする）も用意する
 - ディレクトリはあるが空 / `README.md` も `TEMPLATE.md` も無い、という状態でも動作する（既存ファイルが無ければスキャンは no-op）
 
 ## ホスト repo に依存する慣習
@@ -64,64 +64,9 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
   3. どちらも無いときだけローカル採番（`docs/test-perspectives/` 内の既存最大 + 1）
 
   1 つの Issue / PR に複数 TPL を切る場合は `<slug>` 部分で区別する。採番後はリネームしない（外部参照が番号を指すため）。ホスト repo が独自規約（例: karasu の `TPL-YYYYMMDD-NN-<slug>.md`）を持つ場合はそちらに従う。
-- frontmatter:
-
-  ```yaml
-  ---
-  id: TPL-<番号>          # ファイル名の番号と一致
-  title: "観点を1行で表現"
-  status: active            # active | deprecated
-  date: YYYY-MM-DD          # 作成日
-  applicable_to:
-    - "再利用可能な抽象パターン（例: 設定値を消費する機能）。1 行 = 1 パターン。複数パターンに当てはまるなら複数行"
-  known_consumers:          # optional — この観点が適用されると判明している具体的 consumer。grep 可能な kebab-case
-    - feature-name
-  discovered_from:
-    - issue: "#N"                              # retrospective の場合（この番号がファイル名の番号になる）
-    # - root_cause_adr: "ADR-<番号>"            # proactive（ADR 起源）の場合
-    # - root_cause_file: "docs/concepts.*"     # proactive（原則ファイル起源）の場合
-    # - root_cause_file: "path/to/file.ts:LINE"
-  related_to:
-    - TPL-<番号>            # optional — 同ディレクトリの実在 TPL のみ
-  topic: <controlled-vocabulary>   # ホスト repo の ADR 語彙があればそれ、無ければ free-form kebab
-  scope:
-    packages:
-      - <existing-package-or-source-root>
-  ---
-  ```
-
+- frontmatter と本文（5 節構成）の雛形は、この skill ディレクトリの [`TEMPLATE.md`](TEMPLATE.md) を使う。`TEMPLATE.md` をコピーして冒頭の HTML コメントを削除し、frontmatter と各節を埋める。本文は 観点 / 想定される失敗モード / チェックリスト（3〜5 項目）/ 既知の対処パターン / 関連テスト の 5 節。
   - `applicable_to` — 適用される **抽象パターン**。consumer の具体名は書かない（そちらは `known_consumers`）。consumer 空間が広すぎて列挙が無意味なら `known_consumers` ごと省略してよい
   - `known_consumers` — 新たに該当 consumer が見つかったら追記する
-- 本文（5 節構成）:
-
-  ```markdown
-  # TPL-<番号>: 観点を1行で表現
-
-  ## 観点
-
-  何を検証すべきかを、再利用可能な抽象度で記述する。具体実装に閉じた書き方ではなく、別の機能でも適用できる原則として書く。
-
-  ## 想定される失敗モード
-
-  この観点が見落とされた場合に、どのような形で失敗が現れるか。具体例があればそれも記述する。
-
-  ## チェックリスト
-
-  新機能の実装/修正時に確認する項目。**3〜5 項目に絞る**（多すぎると使われない）:
-
-  - [ ] チェック項目1
-  - [ ] チェック項目2
-  - [ ] チェック項目3
-
-  ## 既知の対処パターン
-
-  過去にこの問題を解決した方法。なければ「（未確立）」と記す。
-
-  ## 関連テスト
-
-  この観点を検証する既存テストのパス。なければ「（なし）」と記す。
-  ```
-
 - ホスト repo が TPL の一覧表（`docs/test-perspectives/README.md` 等）を持つ場合はそこに行を追加する。`tpl:validate` 等があれば実行して frontmatter と一覧表の整合を確認する
 
 > proactive を引用した DesignDoc は、その実装 PR で該当チェックリスト項目の contract test と AT AC を着地させる（"forward 運用"）。`acceptance-test` スキルがこの転記を行う。

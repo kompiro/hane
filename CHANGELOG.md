@@ -4,6 +4,17 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `acceptance-test`, `test-perspective`: each skill now ships a standalone `TEMPLATE.md` asset (the AT record skeleton / the TPL frontmatter + 5-section body), extracted from the inline definition in `SKILL.md` — following the `design-doc` `TEMPLATE.md` precedent (#26 / #27). The `SKILL.md` `## ファイル形式` / record-creation sections shrink to a pointer. ([#29](https://github.com/kompiro/hane/issues/29))
+- `design-doc`: new `ADR-TEMPLATE.md` asset — an ADR skeleton in hane's existing ADR format (no frontmatter, GitHub-number-based id, `背景` / `決定` / `理由` / `却下した案` body). `design-doc` (ADR promotion) and `start-dev` (cleanup) reference it. ([#29](https://github.com/kompiro/hane/issues/29))
+
+### Changed
+
+- Faithful extraction only — no behavior change to the AT / TPL / ADR authoring workflows; the templates are now reusable assets that the planned `init` skill (#28) can seed into host repos without duplication.
+
 ## [0.3.0] — 2026-05-12
 
 ### Added

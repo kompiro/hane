@@ -41,6 +41,7 @@ Skills are then invoked as `/hane:commit`, `/hane:ship`, etc.
 - Commits: Conventional Commits with English subjects.
 - PR template: falls back to a built-in minimal template if `.github/PULL_REQUEST_TEMPLATE.md` is absent.
 - Doc files (`docs/{acceptance,adr,test-perspectives}/`) are numbered from the linked GitHub Issue, then PR, then a local sequence — no zero-padding (see [ADR-8](docs/adr/8-issue-based-doc-numbering.md), [ADR-10](docs/adr/10-tpl-integration-into-skills.md)); a host repo's own naming convention takes precedence. ADRs are written in the language of the repo's existing ADRs / project rules — in this repo, Japanese (like the design docs and skill bodies). Promoting a design doc to an ADR condenses it into the ADR and removes the original `docs/design/` file in the same PR.
+- Document skeletons are shipped as standalone `TEMPLATE.md` assets next to the skill that owns them — `design-doc/TEMPLATE.md` (design doc), `acceptance-test/TEMPLATE.md` (AT record), `test-perspective/TEMPLATE.md` (TPL record), and `design-doc/ADR-TEMPLATE.md` (ADR). Each skill copies its template rather than re-deriving the shape.
 
 ## Per-skill customization points
 
