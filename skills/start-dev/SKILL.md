@@ -200,7 +200,7 @@ CI 通過後、以下のチェックを順に実行する。
    - 依存関係の判断: Issue 本文や会話の文脈から判断する
 5. 関連する Design Doc を ADR に昇格させる（`docs/design/` と `docs/adr/` を採用する repo のみ）:
    - 今回の実装に対応する `docs/design/` のファイルを確認する
-   - ステータスが「検討中」または「承認済み」のままになっている Design Doc があれば、`/design-doc` スキルまたは手動で ADR として `docs/adr/` に新規作成し、Design Doc の内容を ADR に集約する
+   - ステータスが「検討中」または「承認済み」のままになっている Design Doc があれば、`/design-doc` スキルまたは手動で ADR として `docs/adr/` に新規作成し、Design Doc の内容を ADR に集約する。ADR の雛形は `design-doc` skill ディレクトリの `ADR-TEMPLATE.md` を使う
    - ADR のファイル名は **GitHub の番号ベース**を推奨（`docs/adr/<番号>-kebab-title.md`、見出しは `ADR-<番号>`、ゼロ埋めなし）。優先順位は Issue 番号 → PR 番号 → ローカル採番（既存最大+1）。host repo が独自規約（例: `YYYYMMDD-NN-description.md`）を持つ場合はそちらを優先する
    - ADR は **日本語**で書く（`docs/design/` の Design Doc・skill body と揃える。`docs/adr/` 配下に既存 ADR の言語が定まっている repo ではそれに合わせる）。`.claude/rules/` 等にプロジェクトルールがある repo はそれに従う
    - **同じ PR で `docs/design/` の元 Design Doc ファイルを削除する**（記録を ADR に一本化し、圧縮するため。ステータスを「決定済み」に更新してリンクだけ残す運用はしない）。元 Design Doc を参照していた他ドキュメント（README・他 ADR 等）のリンクを ADR に張り替える
