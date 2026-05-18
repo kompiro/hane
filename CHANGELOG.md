@@ -4,17 +4,19 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
-## [Unreleased]
+## [0.4.0] — 2026-05-18
 
 ### Added
 
 - `init` — new skill that scaffolds the host-repo conventions the other skills expect. It interactively asks which doc directories to adopt, the ADR filename scheme, whether to use `status: *` labels, and whether to create `.claude/rules/`, then creates the directories, copies each document template from the owning skill's asset (`design-doc` / `acceptance-test` / `test-perspective`), writes a `docs/process.md` skeleton, and optionally creates the status labels. Idempotent — existing files/labels are skipped and a created/skipped report is printed. ([#28](https://github.com/kompiro/hane/issues/28))
-- `acceptance-test`, `test-perspective`: each skill now ships a standalone `TEMPLATE.md` asset (the AT record skeleton / the TPL frontmatter + 5-section body), extracted from the inline definition in `SKILL.md` — following the `design-doc` `TEMPLATE.md` precedent (#26 / #27). The `SKILL.md` `## ファイル形式` / record-creation sections shrink to a pointer. ([#29](https://github.com/kompiro/hane/issues/29))
+- `design-doc`: standalone `TEMPLATE.md` asset — the design-doc skeleton was extracted from the inline `## ファイル形式` block so it can be copied verbatim into a host repo. `SKILL.md` points to it, and procedure step 4 now seeds `docs/design/TEMPLATE.md` into host repos that lack one. ([#26](https://github.com/kompiro/hane/issues/26))
+- `acceptance-test`, `test-perspective`: each skill now ships a standalone `TEMPLATE.md` asset (the AT record skeleton / the TPL frontmatter + 5-section body), extracted from the inline definition in `SKILL.md` — following the `design-doc` `TEMPLATE.md` precedent. The `SKILL.md` `## ファイル形式` / record-creation sections shrink to a pointer. ([#29](https://github.com/kompiro/hane/issues/29))
 - `design-doc`: new `ADR-TEMPLATE.md` asset — an ADR skeleton in hane's existing ADR format (no frontmatter, GitHub-number-based id, `背景` / `決定` / `理由` / `却下した案` body). `design-doc` (ADR promotion) and `start-dev` (cleanup) reference it. ([#29](https://github.com/kompiro/hane/issues/29))
 
 ### Changed
 
-- Faithful extraction only — no behavior change to the AT / TPL / ADR authoring workflows; the templates are now reusable assets that the planned `init` skill (#28) can seed into host repos without duplication.
+- `start-dev`: reinforce that the Issue (with its acceptance criteria and scope) is read before the worktree is created, and add a step to run `/rename` right after worktree creation so parallel sessions stay identifiable. ([#24](https://github.com/kompiro/hane/issues/24))
+- The AT / TPL / ADR template extractions are faithful — no behavior change to the authoring workflows; the templates are now reusable assets that the `init` skill seeds into host repos without duplication.
 
 ## [0.3.0] — 2026-05-12
 
