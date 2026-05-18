@@ -4,6 +4,16 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `dependabot` — new skill that batch-triages open Dependabot update PRs. Every PR (`patch` / `minor` / `major` alike) gets a mandatory upstream risk analysis — release notes, version diff, maintainer/ownership changes, install scripts, dependency-tree changes, advisories — because supply-chain attacks make semver bump type an insufficient trust signal. The findings and a per-PR merge recommendation are written as a Design Doc under `docs/design/`; after the user decides, approved PRs are merged, rejected ones closed, and the outcome is recorded as an ADR (promoting the Design Doc). No auto-merge; gated on `docs/design/` and `docs/adr/` like the other skills. ([#33](https://github.com/kompiro/hane/issues/33))
+
+### Notes
+
+- Adoption rationale and design decisions for the `dependabot` skill: [ADR-33](docs/adr/33-dependabot-update-skill.md).
+
 ## [0.4.0] — 2026-05-18
 
 ### Added

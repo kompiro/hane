@@ -16,6 +16,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 | `acceptance-test` | Create `docs/acceptance/NNNN-*.md` records. |
 | `qa` | Generate a QA checklist from acceptance test records. |
 | `test-perspective` | Create / update / deprecate Test Perspective Library (TPL) records under `docs/test-perspectives/`. |
+| `dependabot` | Batch-triage open Dependabot update PRs with a mandatory upstream risk analysis, route the go/no-go decision through a Design Doc, and record the outcome in an ADR. |
 | `review-docs` | Find broken links and cross-document inconsistencies in `docs/`. |
 | `sync-docs` | Sync reference docs with the current code (CLAUDE.md doc-table driven). |
 
@@ -61,6 +62,7 @@ Each skill reads from host-repo conventions when present and skips related steps
 | `test-perspective`, `acceptance-test`, `design-doc` | TPL workflow runs only when `docs/test-perspectives/` exists; the `topic` controlled vocabulary, TPL filename convention, `tpl:validate` / `tpl:related` tooling, and deprecation-review cadence are all host-defined |
 | `review-docs` | Each consistency check runs only when its target directory exists (`docs/adr/`, `docs/design/`, `docs/acceptance/`) |
 | `sync-docs` | Subagent A inspects the source roots reported by host `package.json`; subagent B reads the document table in host `CLAUDE.md` to learn what to keep in sync |
+| `dependabot` | Triage report is written as a Design Doc only when `docs/design/` exists, and the outcome is recorded as an ADR only when `docs/adr/` exists; without either, results are returned in-conversation and as PR comments. ADR/Design Doc filename and language follow host conventions |
 
 ## Versioning policy
 
