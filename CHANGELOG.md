@@ -4,6 +4,16 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `security-alert` — new skill that triages open Dependabot security alerts. Alerts are collected from `gh api .../dependabot/alerts` (not the open-PR list), risk-analyzed, and routed by `dependency.relationship`: a direct dependency is bumped (or its Dependabot security PR is deferred to the `dependabot` skill), while a transitive dependency — which often has no Dependabot PR at all — is pinned through the package manager's override mechanism (pnpm `overrides` / npm `overrides` / yarn `resolutions`). When multiple majors of the package coexist, the override key is scoped to the affected major so unaffected majors are not force-upgraded across a breaking boundary. The skill creates a tracking Issue, opens the fix PR, and records the decision in an ADR. No auto-merge; gated on `docs/adr/` like the other skills. ([#36](https://github.com/kompiro/hane/issues/36))
+
+### Notes
+
+- Adoption rationale and design decisions for the `security-alert` skill: [ADR-36](docs/adr/36-security-alert-skill.md).
+
 ## [0.5.0] — 2026-05-18
 
 ### Added
