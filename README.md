@@ -17,6 +17,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 | `qa` | Generate a QA checklist from acceptance test records. |
 | `test-perspective` | Create / update / deprecate Test Perspective Library (TPL) records under `docs/test-perspectives/`. |
 | `dependabot` | Batch-triage open Dependabot update PRs with a mandatory upstream risk analysis, route the go/no-go decision through a Design Doc, and record the outcome in an ADR. |
+| `security-alert` | Triage open Dependabot security alerts: collect them from the alerts API, route by direct/transitive, fix (merge PR / bump / package-manager override), and record the decision in an ADR. |
 | `review-docs` | Find broken links and cross-document inconsistencies in `docs/`. |
 | `sync-docs` | Sync reference docs with the current code (CLAUDE.md doc-table driven). |
 
@@ -63,6 +64,7 @@ Each skill reads from host-repo conventions when present and skips related steps
 | `review-docs` | Each consistency check runs only when its target directory exists (`docs/adr/`, `docs/design/`, `docs/acceptance/`) |
 | `sync-docs` | Subagent A inspects the source roots reported by host `package.json`; subagent B reads the document table in host `CLAUDE.md` to learn what to keep in sync |
 | `dependabot` | Triage report is written as a Design Doc only when `docs/design/` exists, and the outcome is recorded as an ADR only when `docs/adr/` exists; without either, results are returned in-conversation and as PR comments. ADR/Design Doc filename and language follow host conventions |
+| `security-alert` | Package manager auto-detected (pnpm `overrides` / npm `overrides` / yarn `resolutions`); the decision is recorded as an ADR only when `docs/adr/` exists; ADR filename, language, and ADR-only PR auto-merge follow host conventions |
 
 ## Versioning policy
 
