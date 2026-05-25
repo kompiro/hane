@@ -72,12 +72,14 @@ description: >
    - `docs/<ドキュメント名>` — ドキュメントのみ
    - `chore/<タスク名>` — ビルド、CI、ツール設定
    - `refactor/<対象名>` — リファクタリング
-3. worktree に移動し、依存関係をインストールする:
+3. worktree に移動し、**他のどのステップよりも先に**依存関係をインストールする:
    ```
    cd .claude/worktrees/<機能名>
    <package-manager> install
    ```
-   - パッケージマネージャは host の `package.json` `packageManager` フィールドまたは lock file（`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`）から検出する。`package.json` 自体が無ければ install ステップをスキップしてよい。
+   - パッケージマネージャは host の `package.json` `packageManager` フィールドまたは lock file（`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`）から検出する。`package.json` 自体が無ければ install ステップをスキップしてよい
+   - install を後回しにしない。host が lefthook / husky / pre-commit など hook ランナーを採用している場合、`prepare` スクリプトで pre-push hook が設置されるのは install 完了時。これより前にコミットや push を試みると hook が走らない
+   - typecheck / test / lint も deps が無いと失敗するため、計画・実装より前にここで確実に install を済ませる
 
 > 以降のすべての作業は worktree ディレクトリ内で行う。
 
