@@ -49,10 +49,14 @@ description: >
    - 新しい worktree や main から切り替えた直後は `node_modules` が古くなっており、pre-push hook の typecheck が依存不足で失敗するため
    - ロックファイルが最新なら即座に完了する
    - パッケージマネージャは `package.json` の `packageManager` フィールドまたは lock file（`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`）から検出する
+   - host が lefthook / husky / pre-commit など hook ランナーを採用している場合、`install` 直後の prepare スクリプトで pre-push hook が設置される。以降の `git push` で hook が自動実行される前提で進める
 2. リモートにプッシュする:
    ```
    git push -u origin <branch-name>
    ```
+   - host が pre-push hook を採用していれば push 時に自動実行される。**`--no-verify` / `LEFTHOOK=0` 等で hook を回避しない**
+   - hook が失敗した場合は原因を直してから再 push する。failing hook を skip して `gh pr create` まで進めると、CI で初めて気づき手戻りが発生する
+   - hook を採用していない host で push 前に手元確認したい場合は、host が提供する preflight 系コマンド（例: `pnpm preflight` / `make check`）があればそれを実行する。コマンド名は host の `package.json` scripts や `Makefile` から検出する
 3. `git log --oneline origin/main..HEAD` と `git diff origin/main...HEAD --stat` で変更内容を分析する
 4. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
 

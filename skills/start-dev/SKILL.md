@@ -139,6 +139,9 @@ worktree 作成直後に `/rename` スキルを実行し、Claude Code のセッ
 ### 7. PR 作成
 
 1. `git push -u origin <branch-name>` でリモートにプッシュする
+   - host が lefthook / husky / pre-commit など pre-push hook を採用していれば push 時に自動実行される。**`--no-verify` / `LEFTHOOK=0` 等で hook を回避しない**
+   - hook が失敗した場合は原因を直してから再 push する。failing hook を skip して `gh pr create` まで進めると、CI で初めて気づき手戻りが発生する
+   - hook を採用していない host で事前確認したい場合は、host が提供する preflight 系コマンド（例: `pnpm preflight` / `make check`）があれば実行する
 2. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
    - **Purpose**: `Closes #N` で Issue と紐付け。Issue がない場合は変更の目的を1行で記述
    - **Summary**: コミット履歴と差分から1-3行で要約
