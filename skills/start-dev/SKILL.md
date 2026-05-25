@@ -72,12 +72,14 @@ description: >
    - `docs/<ドキュメント名>` — ドキュメントのみ
    - `chore/<タスク名>` — ビルド、CI、ツール設定
    - `refactor/<対象名>` — リファクタリング
-3. worktree に移動し、依存関係をインストールする:
+3. worktree に移動し、**他のどのステップよりも先に**依存関係をインストールする:
    ```
    cd .claude/worktrees/<機能名>
    <package-manager> install
    ```
-   - パッケージマネージャは host の `package.json` `packageManager` フィールドまたは lock file（`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`）から検出する。`package.json` 自体が無ければ install ステップをスキップしてよい。
+   - パッケージマネージャは host の `package.json` `packageManager` フィールドまたは lock file（`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`）から検出する。`package.json` 自体が無ければ install ステップをスキップしてよい
+   - install を後回しにしない。host が lefthook / husky / pre-commit など hook ランナーを採用している場合、`prepare` スクリプトで pre-push hook が設置されるのは install 完了時。これより前にコミットや push を試みると hook が走らない
+   - typecheck / test / lint も deps が無いと失敗するため、計画・実装より前にここで確実に install を済ませる
 
 > 以降のすべての作業は worktree ディレクトリ内で行う。
 
@@ -139,6 +141,9 @@ worktree 作成直後に `/rename` スキルを実行し、Claude Code のセッ
 ### 7. PR 作成
 
 1. `git push -u origin <branch-name>` でリモートにプッシュする
+   - host が lefthook / husky / pre-commit など pre-push hook を採用していれば push 時に自動実行される。**`--no-verify` / `LEFTHOOK=0` 等で hook を回避しない**
+   - hook が失敗した場合は原因を直してから再 push する。failing hook を skip して `gh pr create` まで進めると、CI で初めて気づき手戻りが発生する
+   - hook を採用していない host で事前確認したい場合は、host が提供する preflight 系コマンド（例: `pnpm preflight` / `make check`）があれば実行する
 2. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
    - **Purpose**: `Closes #N` で Issue と紐付け。Issue がない場合は変更の目的を1行で記述
    - **Summary**: コミット履歴と差分から1-3行で要約
