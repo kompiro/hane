@@ -4,6 +4,16 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- Plugin hook `sync-tab-title` (`hooks/hooks.json` + `hooks/sync-tab-title.sh`): keeps the terminal tab title in sync with the current git branch. Registered on `SessionStart` and `CwdChanged`, so the title follows you the moment a worktree is entered. Uses the `terminalSequence` hook field (Claude Code >= 2.1.141); degrades silently when `jq` is absent or input is malformed. Auto-discovered when the plugin is enabled — no `settings.json` change needed.
+
+### Changed
+
+- `start-dev`: dropped the manual `/rename` step for labeling the session. `/rename` is a UI command the model cannot invoke, so the step was always silently skipped; session identification is now automatic via the `sync-tab-title` hook above. The step is gone (not just rewritten) to keep the skill body — which is loaded into context on every run — free of dead instructions.
+
 ## [0.6.0] — 2026-05-20
 
 ### Added

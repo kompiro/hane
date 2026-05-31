@@ -35,7 +35,7 @@ description: >
 **A. Issue 番号が指定された場合（例: `#61`）**
 - `gh issue view <N>` でタイトル・本文・コメント・受け入れ条件を確認する
 - Issue 本文に Design Doc へのリンクがあれば読む
-- Issue 番号とタイトルを控える（PR との紐付けおよびステップ 3.5 のセッション名改訂で使用）
+- Issue 番号とタイトルを控える（PR との紐付けで使用）
 - Issue のラベルを `status: implementing` に更新する（`status: *` ラベル運用がある場合のみ）:
   ```
   gh issue edit <N> --remove-label "status: ready" --remove-label "status: blocked" --add-label "status: implementing"
@@ -82,14 +82,6 @@ description: >
    - typecheck / test / lint も deps が無いと失敗するため、計画・実装より前にここで確実に install を済ませる
 
 > 以降のすべての作業は worktree ディレクトリ内で行う。
-
-### 3.5. セッション名の改訂
-
-worktree 作成直後に `/rename` スキルを実行し、Claude Code のセッション名をブランチや Issue から分かるものに改訂する。
-
-- 推奨形式: `<branch-name>` または `#<issue-number> <issue-title 抜粋>`
-- 複数の worktree / セッションを並行運用する際に、後から見返してどの作業か識別できるようにする目的
-- `/rename` スキルが利用できない環境ではこのステップをスキップしてよい
 
 ### 4. 計画（Plan モード）
 
