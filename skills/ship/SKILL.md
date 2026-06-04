@@ -21,7 +21,7 @@ description: >
 
 ## ホスト repo に依存する慣習について
 
-`/start-dev` skill と同じ optional 仕様に従う。`status: *` ラベル運用、preview deploy URL 表示などはホスト repo が当該慣習を採用している場合のみ実行する。
+`/start-dev` skill と同じ optional 仕様に従う。`status: *` ラベル運用、preview deploy URL 表示、CHANGELOG 維持などはホスト repo が当該慣習を採用している場合のみ実行する。
 
 ## 手順
 
@@ -47,6 +47,11 @@ description: >
    - ブランチ名からパターンマッチ（例: `feat/issue-42-xxx` → #42）
    - コミットメッセージ内の `#N` パターン
    - 見つからない場合はユーザーに Issue 番号を確認する（なしも可）
+8. **CHANGELOG の追記を確認する**（ホスト repo が CHANGELOG を維持している場合のみ。リポジトリ直下に `CHANGELOG.md` が無い、または Keep a Changelog 形式の `## [Unreleased]` 見出しを持たない repo では本ステップをスキップする）
+   - ブランチの差分が CHANGELOG に触れているか確認する: `git diff origin/main...HEAD --name-only | grep -i changelog`
+   - 触れていない場合、変更がユーザーから見える挙動・ドキュメントを変えるものなら、`## [Unreleased]` 節への追記をユーザーに提案する（節が無ければ先頭に作る）。CI・内部ツールのみの変更など利用者影響が無いものは追記不要
+   - 追記する場合は push より前に `/commit` でコミットに含める（push 後に気づくと PR に追従コミットが増える）
+   - リリース手順自体（Unreleased の版上げ → tag 等）はこのスキルの責務外。host の手順（例: README の「Releasing」節）に従う
 
 ### 1. PR 作成
 

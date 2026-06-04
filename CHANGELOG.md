@@ -4,6 +4,16 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Changed
+
+- `ship`: added an optional CHANGELOG step — when the host repo maintains a Keep a Changelog–style `CHANGELOG.md` with an `## [Unreleased]` section, the skill now checks before pushing whether the branch records its change there and offers to add an entry. Generic and opt-in (skipped when no such CHANGELOG exists), following the skill's existing host-convention pattern; the release procedure itself stays out of scope.
+
+### Added
+
+- Documented the release process so it is no longer tribal knowledge: a new "Releasing" section in `README.md` (two-stage flow — record changes under `## [Unreleased]` per PR, then `chore(release)` version bump → tag → `gh release`), a `CHANGELOG`/release rule in `CLAUDE.md`, and a `.github/pull_request_template.md` whose checklist reminds contributors to update `[Unreleased]` in the same PR. Reinforced by the new `ship` CHANGELOG check above. Addresses changelog entries being forgotten on change PRs and picked up late at release time.
+
 ## [0.7.1] — 2026-06-04
 
 ### Changed

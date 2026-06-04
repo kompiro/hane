@@ -76,6 +76,24 @@ Each skill reads from host-repo conventions when present and skips related steps
 
 Breaking changes are called out at the top of each release entry in [CHANGELOG.md](CHANGELOG.md). Skill bodies use comments or "Note:" blocks to flag deprecations one minor version before removal where feasible.
 
+## Releasing
+
+Releases are cut manually through PRs — there is no release automation. The flow has two stages:
+
+1. **Per change PR (every PR that alters skill behavior or docs):** add your change to the `## [Unreleased]` section of [CHANGELOG.md](CHANGELOG.md) **in the same PR**. If no `[Unreleased]` section exists (the previous release consumed it), create one at the top. This is the step most often forgotten, so it is reinforced in two places: the `/hane:ship` skill checks for it before pushing, and the PR checklist in [`.github/pull_request_template.md`](.github/pull_request_template.md).
+2. **Release PR (`chore(release): X.Y.Z`):**
+   - Rename `## [Unreleased]` → `## [X.Y.Z] — YYYY-MM-DD` (JST). Pick `X.Y.Z` per the Versioning policy above.
+   - Open the PR, get it merged into `main`.
+   - Tag the merge commit and publish the GitHub release:
+     ```sh
+     gh release create vX.Y.Z --target main \
+       --title "vX.Y.Z — <short summary>" \
+       --notes "<paste the CHANGELOG section + Full Changelog compare link>"
+     ```
+   - Release title convention: `vX.Y.Z — <short summary>`. Notes = the CHANGELOG section followed by `**Full Changelog**: https://github.com/kompiro/hane/compare/v<prev>...vX.Y.Z`.
+
+The plugin has no version field in `.claude-plugin/plugin.json`; the git tag + CHANGELOG entry + GitHub release together are the version of record.
+
 ## License
 
 MIT
