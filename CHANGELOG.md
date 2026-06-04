@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [0.7.1] — 2026-06-04
+
+### Changed
+
+- `design-doc`: PR creation is now an explicit, dedicated step instead of a sub-bullet buried in the worktree-setup step. The skill stops at "create file + commit", then a separate step opens the PR (delegating to `ship`, or `gh pr create` for repos that don't adopt it) and writes the PR number back into the doc's `**PR**` meta field. Review is now requested on the created PR. Trailing label-update / ADR-promotion steps were renumbered. No behavior was removed — PR creation was always intended; this makes it reliable and ordered correctly (#43).
+
 ## [0.7.0] — 2026-05-31
 
 ### Added
