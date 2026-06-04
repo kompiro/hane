@@ -36,24 +36,29 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
      [`TEMPLATE.md`](TEMPLATE.md) を `docs/design/TEMPLATE.md` としてコピーする
      ことをユーザーに提案し、同じ PR に含める。すでに `docs/design/TEMPLATE.md`
      がある repo はそちらの雛形に従う
-5. ブランチ・worktree を作成してからファイルを作成する
+5. ブランチ・worktree を作成してからファイルを作成し、コミットする
    - ブランチ名の例: `docs/design-<kebab-case-title>`
    - `git worktree add .claude/worktrees/<branch> <branch>`
-   - worktree 内でファイルを作成し、コミット・push・PR 作成まで行う
+   - worktree 内でファイルを作成し、コミットする（push・PR 作成は後続のステップ 7 で行う）
 6. 「未解決の問い」セクションに項目がある場合は、ユーザーにレビューを依頼する前に一緒に解消する
    - 未解決の問いを1つずつユーザーに提示し、意見や考えを引き出す
    - 回答が得られた問いはドキュメントの該当箇所（「現時点の方針」など）に反映してコミットする
    - 全ての問いが解消されたら「未解決の問い」セクションを削除（または空にする）してコミットする
    - 解消できない問いが残る場合はその旨をドキュメントに明記した上で次のステップへ進む
-7. ユーザーにレビューを依頼する
-8. PR がマージされたら、紐付いている Issue がある場合はラベルを更新する（`status: *` ラベル運用を採用している repo のみ）:
+7. Design Doc を作成・コミットしたら、続けて **PR を作成する**
+   - `ship` スキルを呼び出して push → PR 作成まで進める（CI 確認・クリーンアップも `ship` に従う）。`ship` を採用していない repo では `gh pr create` で直接作成する
+   - PR タイトル例: `docs(design): <title>`
+   - PR 本文には背景・課題、検討した選択肢の要約、関連 Issue（あれば `Closes #<N>` ではなく参照に留める。Design Doc は探索段階のため）を記載する
+   - PR を作成したら、ファイル冒頭の `**PR**: #<番号>` メタ欄に PR 番号を反映してコミットする
+8. ユーザーにレビューを依頼する（作成した PR 上で）
+9. PR がマージされたら、紐付いている Issue がある場合はラベルを更新する（`status: *` ラベル運用を採用している repo のみ）:
    ```
    gh issue edit <N> --remove-label "status: designing" --add-label "status: designed"
    ```
    > `status: designed` は「設計完了・実装着手可能」を意味する。
    > 実装を開始する際（`/start-dev` など）に `status: implementing` に更新すること。
    > ラベル運用がない repo では本ステップをスキップする。
-9. 設計が固まった場合は、ADR化を提案する（`docs/adr/` を採用する repo のみ）。ADR化するときは、Design Doc の内容を ADR に集約したうえで **同じ PR で `docs/design/` の元ファイルを削除する**（ステータスを「決定済み」に更新してリンクだけ残す運用はしない）。ADR の雛形はこの skill ディレクトリの [`ADR-TEMPLATE.md`](ADR-TEMPLATE.md) を使う。ADR は日本語で書く（host repo の `.claude/rules/` 等にルールがあればそれに従う）。実装を伴う場合の昇格は通常 `/start-dev` のクリーンアップ手順で行う
+10. 設計が固まった場合は、ADR化を提案する（`docs/adr/` を採用する repo のみ）。ADR化するときは、Design Doc の内容を ADR に集約したうえで **同じ PR で `docs/design/` の元ファイルを削除する**（ステータスを「決定済み」に更新してリンクだけ残す運用はしない）。ADR の雛形はこの skill ディレクトリの [`ADR-TEMPLATE.md`](ADR-TEMPLATE.md) を使う。ADR は日本語で書く（host repo の `.claude/rules/` 等にルールがあればそれに従う）。実装を伴う場合の昇格は通常 `/start-dev` のクリーンアップ手順で行う
 
 ## ファイル形式
 
