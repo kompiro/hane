@@ -80,7 +80,7 @@ Breaking changes are called out at the top of each release entry in [CHANGELOG.m
 
 Releases are cut manually through PRs — there is no release automation. The flow has two stages:
 
-1. **Per change PR (every PR that alters skill behavior or docs):** add your change to the `## [Unreleased]` section of [CHANGELOG.md](CHANGELOG.md) **in the same PR**. If no `[Unreleased]` section exists (the previous release consumed it), create one at the top. This is the step most often forgotten — see the PR checklist in [`.github/pull_request_template.md`](.github/pull_request_template.md).
+1. **Per change PR (every PR that alters skill behavior or docs):** add your change to the `## [Unreleased]` section of [CHANGELOG.md](CHANGELOG.md) **in the same PR**. If no `[Unreleased]` section exists (the previous release consumed it), create one at the top. This is the step most often forgotten, so it is reinforced in two places: the `/hane:ship` skill checks for it before pushing, and the PR checklist in [`.github/pull_request_template.md`](.github/pull_request_template.md).
 2. **Release PR (`chore(release): X.Y.Z`):**
    - Rename `## [Unreleased]` → `## [X.Y.Z] — YYYY-MM-DD` (JST). Pick `X.Y.Z` per the Versioning policy above.
    - Open the PR, get it merged into `main`.
