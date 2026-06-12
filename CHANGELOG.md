@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `open-pr` — new utility skill that opens the pull request for the branch you are working on in the browser via `gh pr view --web`. With no argument it resolves the target branch automatically: the current non-main branch, or — when invoked from main — the open PR among `.claude/worktrees/` worktrees (asking which one when several are open). A PR number or branch name argument is opened directly. Falls back to printing the PR URL when a browser cannot be launched.
+
 ## [0.8.0] — 2026-06-04
 
 ### Changed

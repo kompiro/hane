@@ -11,6 +11,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 | `init` | Scaffold the host-repo conventions the other skills expect (doc directories, templates, `process.md`, optional status labels). |
 | `commit` | Generate Conventional Commits messages from staged changes and commit. |
 | `ship` | Push, open a PR, watch CI, then clean up. |
+| `open-pr` | Open the PR for the branch you are working on in the browser (`gh pr view --web`). |
 | `start-dev` | Issue → worktree → plan → implement → commit → PR workflow. |
 | `design-doc` | Create `docs/design/` brainstorm/exploration documents. |
 | `acceptance-test` | Create `docs/acceptance/NNNN-*.md` records. |
