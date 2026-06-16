@@ -4,6 +4,16 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `pick-issue` — new skill that picks the next workable Issue and hands off to `start-dev`. Built for parallel Claude Code sessions: it **excludes in-progress Issues another session may already be on** — primarily `status: implementing` / `status: designing`, plus `status: in-review` (work essentially done) and `status: blocked` (cannot start). It treats `status: ready` / `status: designed` / **unlabeled** Issues as workable, ranks them (`ready` → `designed` → unlabeled, then priority labels / dependency hints / staleness), and surfaces a recommended shortlist while reporting how many in-progress Issues were filtered out. Because `status:*` labels are optional in hane, it also flags an Issue as in-progress when it has an assignee or an open linked PR/branch, so detection degrades gracefully in repos without the label set. The skill stays read-only — all state transitions (label updates, worktree creation) are left to `start-dev`. ([#49](https://github.com/kompiro/hane/issues/49))
+
+### Notes
+
+- Adoption rationale and design decisions for the `pick-issue` skill: [ADR-49](docs/adr/49-pick-issue-skill.md).
+
 ## [0.9.0] — 2026-06-12
 
 ### Added

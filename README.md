@@ -12,6 +12,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 | `commit` | Generate Conventional Commits messages from staged changes and commit. |
 | `ship` | Push, open a PR, watch CI, then clean up. |
 | `open-pr` | Open the PR for the branch you are working on in the browser (`gh pr view --web`). |
+| `pick-issue` | Pick the next workable Issue — excluding in-progress ones another session may be on — and hand off to `start-dev`. |
 | `start-dev` | Issue → worktree → plan → implement → commit → PR workflow. |
 | `design-doc` | Create `docs/design/` brainstorm/exploration documents. |
 | `acceptance-test` | Create `docs/acceptance/NNNN-*.md` records. |
@@ -55,6 +56,7 @@ Each skill reads from host-repo conventions when present and skips related steps
 
 | Skill | Customization point |
 |---|---|
+| `pick-issue` | `status: *` label set is used to detect in-progress Issues (`implementing` / `designing` / `in-review` / `blocked`) when present; without labels it falls back to assignee + open-linked-PR signals. Hands off the chosen Issue to `start-dev` |
 | `start-dev`, `ship` | `status: *` label set (used for Issue progress tracking) — opt-in by defining the labels |
 | `start-dev` cleanup | ADR promotion runs only when `docs/adr/` exists; ADR filename convention is host-defined |
 | `start-dev`, `ship` | Package manager auto-detected from `packageManager` field or lockfile (`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`); install step skipped when `package.json` absent |
