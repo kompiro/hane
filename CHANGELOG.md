@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `sync-worktrees` — new skill that brings the merged default branch into in-flight worktrees. After one PR lands on `main`, the remaining `.claude/worktrees/` branches fall behind; this skill `git fetch`es the default branch (auto-detected from `origin/HEAD`, fallback `main` → `master`), enumerates the live `git worktree list`, and `git merge`s the default branch (merge, not rebase) into each feature-branch worktree. It skips the main worktree, detached-HEAD worktrees, worktrees that are already up to date, and — importantly — worktrees with uncommitted changes or a merge/rebase in progress, which doubles as the safety guard for worktrees another session is actively working in. Conflicts stop on that worktree and are reported (files listed; resolve-or-abort guidance given) without auto-resolving. Local merge only — no push. An optional argument restricts the run to a single branch/worktree. ([#52](https://github.com/kompiro/hane/issues/52))
+
 ## [0.10.0] — 2026-06-16
 
 ### Added
