@@ -14,6 +14,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 | `open-pr` | Open the PR for the branch you are working on in the browser (`gh pr view --web`). |
 | `pick-issue` | Pick the next workable Issue — excluding in-progress ones another session may be on — and hand off to `start-dev`. |
 | `start-dev` | Issue → worktree → plan → implement → commit → PR workflow. |
+| `sync-worktrees` | After PRs merge, merge the default branch into every in-flight worktree (local merge only; dirty/in-progress worktrees are skipped). |
 | `design-doc` | Create `docs/design/` brainstorm/exploration documents. |
 | `acceptance-test` | Create `docs/acceptance/NNNN-*.md` records. |
 | `qa` | Generate a QA checklist from acceptance test records. |
@@ -64,6 +65,7 @@ Each skill reads from host-repo conventions when present and skips related steps
 | `start-dev`, `ship` | PR body template read from `.github/PULL_REQUEST_TEMPLATE.md` if present, otherwise a built-in minimal template is used |
 | `acceptance-test`, `qa` | `type: product / tool` frontmatter is honored if existing AT files use it; otherwise all AT files are treated as in-scope |
 | `test-perspective`, `acceptance-test`, `design-doc` | TPL workflow runs only when `docs/test-perspectives/` exists; the `topic` controlled vocabulary, TPL filename convention, `tpl:validate` / `tpl:related` tooling, and deprecation-review cadence are all host-defined |
+| `sync-worktrees` | Operates on the live `git worktree list`, so it is independent of the `.claude/worktrees/` convention; the default branch is auto-detected from `origin/HEAD` (fallback `main` → `master`). Worktrees with uncommitted changes or a merge/rebase already in progress are skipped, which doubles as the guard for worktrees another session is actively working in |
 | `review-docs` | Each consistency check runs only when its target directory exists (`docs/adr/`, `docs/design/`, `docs/acceptance/`) |
 | `sync-docs` | Subagent A inspects the source roots reported by host `package.json`; subagent B reads the document table in host `CLAUDE.md` to learn what to keep in sync |
 | `dependabot` | Triage report is written as a Design Doc only when `docs/design/` exists, and the outcome is recorded as an ADR only when `docs/adr/` exists; without either, results are returned in-conversation and as PR comments. ADR/Design Doc filename and language follow host conventions |
