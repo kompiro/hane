@@ -1,13 +1,21 @@
 ---
 name: qa
 description: >
-  Generate a QA checklist from acceptance test records in docs/acceptance/.
-  Runs automated checks and collects manual verification items into a dated markdown file.
-  Trigger when the user says: "qa", "/qa", "QAチェック", "リリース前チェック", "qa checklist",
-  "チェックリストを生成", or similar phrases requesting QA verification before a release.
+  [Deprecated] Retired — superseded by the `qa` subagent (fills test gaps from a PR
+  diff) and the `acceptance-test` skill (owns AT records). No longer triggered; the body
+  is kept for provenance. See docs/adr/55-skill-deprecation-convention.md.
+deprecated: true
+deprecated_reason: Superseded by the qa subagent (proactive test-gap filling from a PR diff) and the acceptance-test skill (owns the AT records).
+superseded_by: qa subagent + acceptance-test skill
 ---
 
 # QA Checklist Skill
+
+> **⚠️ Deprecated (Retire level — see [ADR-55](../../docs/adr/55-skill-deprecation-convention.md)).**
+> Superseded by the **`qa` subagent** (fills test gaps from a PR diff) and the
+> **`acceptance-test`** skill (owns AT records). The trigger phrases were removed from
+> `description` so this no longer competes with the subagent; the body below is kept for
+> provenance only.
 
 `docs/acceptance/` 内の受け入れテスト記録を読み込み、自動検証を実行しつつ手動確認項目をまとめたチェックリストを生成する。
 
