@@ -17,7 +17,7 @@ The name comes from 羽 (*hane*, "feather") — these skills were originally ext
 | `sync-worktrees` | After PRs merge, merge the default branch into every in-flight worktree (local merge only; dirty/in-progress worktrees are skipped). |
 | `design-doc` | Create `docs/design/` brainstorm/exploration documents. |
 | `acceptance-test` | Create `docs/acceptance/NNNN-*.md` records. |
-| `qa` | Generate a QA checklist from acceptance test records. |
+| ~~`qa`~~ | _Deprecated (retired) — superseded by the `qa` subagent + `acceptance-test`. See [ADR-55](docs/adr/55-skill-deprecation-convention.md)._ |
 | `test-perspective` | Create / update / deprecate Test Perspective Library (TPL) records under `docs/test-perspectives/`. |
 | `dependabot` | Batch-triage open Dependabot update PRs with a mandatory upstream risk analysis, route the go/no-go decision through a Design Doc, and record the outcome in an ADR. |
 | `security-alert` | Triage open Dependabot security alerts: collect them from the alerts API, route by direct/transitive, fix (merge PR / bump / package-manager override), and record the decision in an ADR. |
@@ -50,6 +50,7 @@ Run `/hane:init` to scaffold the items below interactively — it asks which doc
 - PR template: falls back to a built-in minimal template if `.github/PULL_REQUEST_TEMPLATE.md` is absent.
 - Doc files (`docs/{acceptance,adr,test-perspectives}/`) are numbered from the linked GitHub Issue, then PR, then a local sequence — no zero-padding (see [ADR-8](docs/adr/8-issue-based-doc-numbering.md), [ADR-10](docs/adr/10-tpl-integration-into-skills.md)); a host repo's own naming convention takes precedence. ADRs are written in the language of the repo's existing ADRs / project rules — in this repo, Japanese (like the design docs and skill bodies). Promoting a design doc to an ADR condenses it into the ADR and removes the original `docs/design/` file in the same PR.
 - Document skeletons are shipped as standalone `TEMPLATE.md` assets next to the skill that owns them — `design-doc/TEMPLATE.md` (design doc), `acceptance-test/TEMPLATE.md` (AT record), `test-perspective/TEMPLATE.md` (TPL record), and `design-doc/ADR-TEMPLATE.md` (ADR). Each skill copies its template rather than re-deriving the shape.
+- Deprecating a skill: mark its `SKILL.md` frontmatter with `deprecated: true` + `deprecated_reason:` (and `superseded_by:` when there is a successor), and add a `> **⚠️ Deprecated.**` banner to the body. The marker alone does **not** stop the harness from triggering the skill — triggering is driven by `description`. So there are two levels: **Soft-deprecate** keeps the trigger phrases (skill still fires, but is recorded as deprecated); **Retire** also strips the "Trigger when the user says …" phrases from `description` (prefixed with `[Deprecated]`) so it is no longer suggested. The body is kept either way for provenance. Deprecated skills are struck through in the Skills table above. See [ADR-55](docs/adr/55-skill-deprecation-convention.md).
 
 ## Per-skill customization points
 

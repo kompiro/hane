@@ -4,6 +4,16 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- Skill **deprecation convention** — a `SKILL.md` frontmatter marker (`deprecated: true` + `deprecated_reason:` + optional `superseded_by:`) plus a body banner, with two retirement levels: **Soft-deprecate** (keeps trigger phrases) and **Retire** (also strips trigger phrases from `description` so the harness stops suggesting the skill). Deprecated skills are struck through in the README Skills table and recorded in the CHANGELOG. Rationale and the two-level model: [ADR-55](docs/adr/55-skill-deprecation-convention.md). ([#55](https://github.com/kompiro/hane/issues/55))
+
+### Deprecated
+
+- `qa` skill (generate a QA checklist from `docs/acceptance/` records) — **retired**. Superseded by the `qa` subagent (fills test gaps from a PR diff — more proactive) and the `acceptance-test` skill (owns the AT records). Trigger phrases were removed from its `description` so it no longer competes with the subagent; the `SKILL.md` body is kept for provenance. ([#55](https://github.com/kompiro/hane/issues/55))
+
 ## [0.11.0] — 2026-06-27
 
 ### Added
