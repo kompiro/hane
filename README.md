@@ -100,6 +100,11 @@ Releases are cut manually through PRs — there is no release automation. The fl
 
 The plugin has no version field in `.claude-plugin/plugin.json`; the git tag + CHANGELOG entry + GitHub release together are the version of record.
 
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the repo layout, the conventions each change follows, and how to propose or deprecate a skill. `hane` is developed with its own skills (dogfooding). All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
 MIT
+
