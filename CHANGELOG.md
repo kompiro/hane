@@ -4,7 +4,9 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
-## [Unreleased]
+## [0.12.0] — 2026-07-09
+
+> **Heads-up (behavior change):** the `qa` skill is **retired** in this release — its trigger phrases were removed, so "qa" / "QAチェック" no longer invoke it. Use the `qa` subagent + `acceptance-test` skill instead (see Deprecated below).
 
 ### Added
 
