@@ -26,8 +26,10 @@ ADR（決定記録）の前段階として、アイデアの探索・比較・�
    - 何を解決したいのか（問題・課題）
    - どういう制約があるか
    - どんな選択肢を考えているか
-2. `docs/design/` および `docs/adr/` 内の既存ドキュメントを確認し、重複や関連するものがないか確認する
-   - 過去に同様のテーマが検討・決定されていないかを `docs/adr/` まで遡って探査すること
+2. **過去決定の確認（必須）** — `docs/design/` および `docs/adr/` の既存ドキュメントを確認し、重複・関連・**衝突**がないか調べる。この確認を設計着手前に必ず行う（測定上、記録の存在そのものより、この「取り出す手続き」の方が数倍効く — [hane ADR-63](https://github.com/kompiro/hane/blob/main/docs/adr/63-consult-past-decisions-before-design.md)）
+   - 今回のテーマに関わる語彙で `docs/adr/` のファイル名と本文を grep し、過去に同様のテーマが検討・決定されていないかを遡って探査する
+   - とりわけ **却下された決定（`ステータス: 却下` の ADR、または採用 ADR の「## 却下した案」節）** を狙って探す。今回の案が過去に却下された案と同じなら、その却下理由を設計に反映する（同じ轍を踏まない／覆すなら根拠を新 ADR に残す）
+   - 衝突する過去決定が見つかったら、ドキュメントの「背景・課題」または「制約・前提」に明記し、関連 ADR を相互リンクする
 3. テスト観点ライブラリ（TPL）を確認する（ホスト repo が `docs/test-perspectives/` を採用している場合のみ。ディレクトリが無ければ本ステップをスキップする）。2 段階で観点を取り込む:
    1. **既存 TPL の一覧**: ホスト repo が `tpl:related <topic>` 等のスクリプトを提供していればそれを使い、無ければ `docs/test-perspectives/` 配下の TPL ファイルの frontmatter（`topic` / `scope.packages` / `applicable_to`）を grep して、今回の設計テーマにマッチする TPL を拾う。見つかったものはドキュメントの `## Related TPLs` 節に列挙する（`docs/test-perspectives/` へのリンク付き）
    2. **未 TPL 化の原則のスキャン**: 同じ topic の `docs/concepts*` 等の原則ファイルと関連 ADR を読み、まだ TPL になっていない原則で今回の設計が違反しうるものがないか確認する。あれば 3-Yes ルール（横展開しうる / 構造的に再発しうる / 既存 TPL 未掲載）に照らし、満たすなら **同じ PR で** proactive TPL を起こす（`test-perspective` スキルを呼び、`discovered_from.root_cause_file` または `root_cause_adr` を設定する）。同じ PR で起こすのが最も摩擦が少ない。起こした proactive TPL は `## Related TPLs` 節にも記載し、相互リンクする
