@@ -67,4 +67,4 @@ Releases are cut manually through PRs — see the [Releasing](README.md#releasin
 
 ## Questions
 
-Open an Issue (or a GitHub Discussion, if enabled). Please do **not** file security-sensitive reports as public Issues — email the maintainer at kompiro@gmail.com (a dedicated `SECURITY.md` policy is tracked in [#58](https://github.com/kompiro/hane/issues/58)).
+Open an Issue (or a GitHub Discussion, if enabled). Please do **not** file security-sensitive reports as public Issues — follow [SECURITY.md](SECURITY.md) instead.

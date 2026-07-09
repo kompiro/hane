@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `SECURITY.md` for the public OSS release — private reporting route (GitHub Security Advisories, with an email fallback), supported-versions policy, coordinated-disclosure stance, and an explicit **scope** covering hane's real attack surface: skill bodies execute shell procedures in the **host repository**, `hooks/` run on the user's machine, the marketplace manifest is the distribution path, and skills that read external content (Issue bodies, upstream diffs) have prompt-injection paths. Linked from `README.md` and `CONTRIBUTING.md`. Enabling GitHub private vulnerability reporting is **deferred to the public flip** ([#61](https://github.com/kompiro/hane/issues/61)) because the setting only exists on public repositories; rationale in [ADR-58](docs/adr/58-security-policy-and-private-reporting.md). ([#58](https://github.com/kompiro/hane/issues/58))
+
 ## [0.12.0] — 2026-07-09
 
 > **Heads-up (behavior change):** the `qa` skill is **retired** in this release — its trigger phrases were removed, so "qa" / "QAチェック" no longer invoke it. Use the `qa` subagent + `acceptance-test` skill instead (see Deprecated below).
