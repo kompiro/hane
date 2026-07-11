@@ -33,7 +33,8 @@ open PR の有無だけで「作業中かどうか」を判定する（後述の
 |---|---|---|
 | 作業中（別セッションが動いている可能性大） | `status: implementing` / `status: designing` | **除外** |
 | レビュー中（作業はほぼ完了） | `status: in-review` | **除外** |
-| 着手不可 | `status: blocked` | **除外** |
+| 着手不可（依存待ち） | `status: blocked` | **除外** |
+| 保留（塩漬け） | `status: on-hold` | **除外** |
 | 着手準備完了 | `status: ready` | **含める**（最優先） |
 | 設計完了・実装待ち | `status: designed` | **含める** |
 | ラベル無し | `status: *` ラベルがどれも付いていない open Issue | **含める**（label 運用が無い repo のフォールバックも兼ねる） |
@@ -62,9 +63,13 @@ gh issue list --state open --limit 100 \
 「着手可否の判定基準」表に従って候補を絞る。
 
 1. ラベルベースの除外: `status: implementing` / `status: designing` /
-   `status: in-review` / `status: blocked` のいずれかを持つ Issue を落とす。
+   `status: in-review` / `status: blocked` / `status: on-hold` のいずれかを持つ
+   Issue を落とす。
    - **`implementing` / `designing` は特に重要** — 別セッションが現在作業している
      可能性が高いため、必ず除外する。
+   - **`on-hold`（塩漬け）** — コンセプト再検討などで意図的に着手を止めている
+     Issue。`blocked` と違い解消トリガ（依存 Issue の close）が無く、人間が明示的に
+     外すまで候補にしない。
 2. assignee ベースの除外: `assignees` が空でない Issue を落とす。
 3. linked PR ベースの除外: open PR を一括取得し、本文の `Closes #N` / `Refs #N`
    / `Fixes #N`、または `headRefName` に Issue 番号を含むものを「作業中」として
