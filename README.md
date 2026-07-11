@@ -1,8 +1,22 @@
 # hane
 
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) · [Latest release](https://github.com/kompiro/hane/releases)
+
 Reusable [Claude Code](https://claude.com/claude-code) skills for a branch/worktree-based PR workflow, design docs, acceptance tests, and documentation maintenance.
 
-The name comes from 羽 (*hane*, "feather") — these skills were originally extracted from [kompiro/karasu](https://github.com/kompiro/karasu) (鴉, *karasu*, "crow"), so the bundle is named after the bird's feathers.
+**What it is.** A set of Claude Code slash-command skills that encode one opinionated workflow: every change goes through an isolated git *worktree* and a pull request, with design decisions, acceptance tests, and changelog entries recorded as you go. Install it into any repo where you drive development with Claude Code.
+
+**It adapts to your repo.** Each optional step activates only when the matching convention is present and is skipped silently otherwise — `status:` labels, `docs/adr/`, `docs/design/`, `docs/test-perspectives/`, a host `CLAUDE.md`, a lockfile for the package manager. Run `/hane:init` once to scaffold whichever of these you want; adopt none and the core PR workflow still works.
+
+**A typical loop:**
+
+```
+/hane:pick-issue    # choose the next workable Issue
+/hane:start-dev     # worktree → plan → implement → commit → PR
+/hane:ship          # push, open the PR, watch CI, then clean up
+```
+
+No prior knowledge of [karasu](https://github.com/kompiro/karasu) — the project these skills grew out of — is needed to use hane. (The name is 羽, *hane*, "feather": the skills were extracted from karasu, 鴉, "crow", so the bundle is named for the bird's feathers.)
 
 ## Skills
 

@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `SECURITY.md` for the public OSS release — private reporting route (GitHub Security Advisories, with an email fallback), supported-versions policy, coordinated-disclosure stance, and an explicit **scope** covering hane's real attack surface: skill bodies execute shell procedures in the **host repository**, `hooks/` run on the user's machine, the marketplace manifest is the distribution path, and skills that read external content (Issue bodies, upstream diffs) have prompt-injection paths. Linked from `README.md` and `CONTRIBUTING.md`. Enabling GitHub private vulnerability reporting is **deferred to the public flip** ([#61](https://github.com/kompiro/hane/issues/61)) because the setting only exists on public repositories; rationale in [ADR-58](docs/adr/58-security-policy-and-private-reporting.md). ([#58](https://github.com/kompiro/hane/issues/58))
 - GitHub **issue templates** (`.github/ISSUE_TEMPLATE/`) for the public OSS release — YAML issue forms for bug reports (asks which skill + host-repo context), feature requests, and new-skill proposals (workflow, trigger phrases, host conventions, overlap — mirroring what an ADR needs to accept a skill), plus a `config.yml` that disables blank issues and routes questions to the README and security reports to `SECURITY.md`. ([#59](https://github.com/kompiro/hane/issues/59))
 
+### Changed
+
+- README made readable for a newcomer with no prior `karasu` context — a "What it is" value proposition, an "adapts to your repo" note on optional gating, a typical-loop quickstart (`pick-issue` → `start-dev` → `ship`), and a license badge, all above the skills table. Repository **topics** set (`claude-code`, `claude-code-plugin`, `claude-skills`, `developer-tools`, `ai-agents`, `git-worktree`) for discoverability. ([#60](https://github.com/kompiro/hane/issues/60))
+
 ## [0.12.0] — 2026-07-09
 
 > **Heads-up (behavior change):** the `qa` skill is **retired** in this release — its trigger phrases were removed, so "qa" / "QAチェック" no longer invoke it. Use the `qa` subagent + `acceptance-test` skill instead (see Deprecated below).
