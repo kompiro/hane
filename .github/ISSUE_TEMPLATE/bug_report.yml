@@ -1,0 +1,68 @@
+name: Bug report
+description: A hane skill behaved incorrectly or unexpectedly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. hane skills read host-repo conventions, so the context below matters as much as the symptom.
+        For **security-sensitive** reports, do not file here — follow [SECURITY.md](https://github.com/kompiro/hane/blob/main/SECURITY.md).
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill?
+      description: The skill whose behavior was wrong.
+      options:
+        - start-dev
+        - ship
+        - commit
+        - open-pr
+        - pick-issue
+        - sync-worktrees
+        - design-doc
+        - acceptance-test
+        - test-perspective
+        - dependabot
+        - security-alert
+        - review-docs
+        - sync-docs
+        - init
+        - Other / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected vs. actual
+      description: What you expected the skill to do, and what it did instead.
+      placeholder: |
+        Expected: ...
+        Actual: ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: What you asked, and what the skill/agent did. Paste the relevant transcript if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: host-context
+    attributes:
+      label: Host-repo context
+      description: hane adapts to the host repo — this often explains the behavior.
+      value: |
+        - Package manager / lockfile: <!-- pnpm / npm / yarn / none -->
+        - Doc dirs present: <!-- docs/adr/ docs/design/ docs/acceptance/ docs/test-perspectives/ -->
+        - `status: *` labels in use: <!-- yes / no -->
+        - Host CLAUDE.md / .claude/rules present: <!-- yes / no -->
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: hane version / commit
+      description: Release tag (e.g. v0.12.0) or commit SHA.
+    validations:
+      required: true

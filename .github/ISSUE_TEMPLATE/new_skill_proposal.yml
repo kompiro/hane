@@ -1,0 +1,36 @@
+name: New skill proposal
+description: Propose a brand-new hane skill
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        See [CONTRIBUTING.md](https://github.com/kompiro/hane/blob/main/CONTRIBUTING.md) ("Proposing a new skill"). The fields below mirror what an ADR would need to accept the skill.
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow it automates
+      description: The repetitive workflow this skill would drive, end to end.
+    validations:
+      required: true
+  - type: textarea
+    id: triggers
+    attributes:
+      label: Trigger phrases
+      description: What a user would say to invoke it (the phrases the harness matches on), in English and/or Japanese.
+    validations:
+      required: true
+  - type: textarea
+    id: host-conventions
+    attributes:
+      label: Host-repo conventions it would read
+      description: Which host conventions it depends on, and how it should degrade when they are absent (hane skills gate on presence, e.g. docs/adr/, status labels).
+    validations:
+      required: true
+  - type: textarea
+    id: overlap
+    attributes:
+      label: Overlap with existing skills
+      description: Which existing skills come closest, and why this is a separate skill rather than an extension of one.
+    validations:
+      required: true
