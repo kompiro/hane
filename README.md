@@ -27,6 +27,7 @@ No prior knowledge of [karasu](https://github.com/kompiro/karasu) — the projec
 | `ship` | Push, open a PR, watch CI, then clean up. |
 | `open-pr` | Open the PR for the branch you are working on in the browser (`gh pr view --web`). |
 | `pick-issue` | Pick the next workable Issue — excluding in-progress ones another session may be on — and hand off to `start-dev`. |
+| `triage-status` | Triage step before `pick-issue`: assign an **initial** `status:` label (ready / blocked / designed) to open Issues that have none yet, inferred from the Issue body and confirmed before applying. Leaves existing statuses and active-work transitions (implementing / designing / in-review) to `start-dev` / `ship`. |
 | `start-dev` | Issue → worktree → plan → implement → commit → PR workflow. |
 | `sync-worktrees` | After PRs merge, merge the default branch into every in-flight worktree (local merge only; dirty/in-progress worktrees are skipped). |
 | `design-doc` | Create `docs/design/` brainstorm/exploration documents. |
@@ -73,6 +74,7 @@ Each skill reads from host-repo conventions when present and skips related steps
 | Skill | Customization point |
 |---|---|
 | `pick-issue` | `status: *` label set is used to detect in-progress Issues (`implementing` / `designing` / `in-review` / `blocked`) when present; without labels it falls back to assignee + open-linked-PR signals. Hands off the chosen Issue to `start-dev` |
+| `triage-status` | Gated on the presence of the `status: *` label set; assigns an initial status only to Issues that have none. Infers `blocked` (an open `depends on #X` / `blocked by #X`), `designed` (an approved design doc exists), else `ready`. Never assigns active-work states (`designing` / `implementing` / `in-review`) or overwrites an existing status — those are owned by `start-dev` / `ship`. A repo with no `status: *` labels yields a "define them (`/hane:init`) first" message rather than fabricated labels |
 | `start-dev`, `ship` | `status: *` label set (used for Issue progress tracking) — opt-in by defining the labels |
 | `start-dev` cleanup | ADR promotion runs only when `docs/adr/` exists; ADR filename convention is host-defined |
 | `start-dev`, `ship` | Package manager auto-detected from `packageManager` field or lockfile (`pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`); install step skipped when `package.json` absent |
