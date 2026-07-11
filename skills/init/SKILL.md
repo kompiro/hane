@@ -43,7 +43,7 @@ hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `test-persp
    ADR-8 参照）か、日付ベース（`YYYYMMDD-NN-slug.md`、karasu 方式）か。
    `docs/adr/` を採用する場合のみ訊く。
 3. **`status: *` ラベル運用** — `start-dev` / `ship` が Issue の進捗を
-   `status: ready / blocked / implementing / designing / designed / in-review`
+   `status: ready / blocked / on-hold / implementing / designing / designed / in-review`
    ラベルで追跡する運用を採用するか。
 4. **`.claude/rules/` ディレクトリ** — repo 固有の authoring ルール（ADR の言語など）
    を置くディレクトリを作るか。
@@ -85,13 +85,14 @@ hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `test-persp
 | ラベル | 用途 |
 |---|---|
 | `status: ready` | 着手可能 |
-| `status: blocked` | 依存待ちで着手不可 |
+| `status: blocked` | 依存待ちで着手不可（別 Issue の close で自動解消） |
+| `status: on-hold` | 保留（塩漬け）— コンセプト再検討など、意図的に着手を止めている（人間が明示的に外すまで継続） |
 | `status: designing` | Design Doc 作成中 |
 | `status: designed` | 設計承認済み・実装着手可能 |
 | `status: implementing` | 実装中 |
 | `status: in-review` | レビュー中 |
 
-色は任意（例: ready=緑、blocked=赤、それ以外=黄系）。
+色は任意（例: ready=緑、blocked=赤、on-hold=グレー、それ以外=黄系）。
 
 #### `docs/process.md` スケルトン
 

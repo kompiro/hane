@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Added
+
+- `status: on-hold` added to the status-label model — a **deliberately shelved** state distinct from `blocked`. `blocked` means an open dependency Issue (auto-clears when that Issue closes); `on-hold` means work is intentionally paused (e.g. a concept needs rethinking) with no automatic unblock trigger, and is set/removed by human judgment. `init` now creates the label, `pick-issue` excludes it from candidates alongside the active/blocked states, and `triage-status` deliberately does **not** assign it (like the active-work states, it cannot be statically inferred from the Issue body).
+
 ## [0.13.0] — 2026-07-11
 
 ### Added

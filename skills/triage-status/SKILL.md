@@ -34,6 +34,11 @@ description: >
   `status: in-review` は「今まさに誰かが作業している」ことを表す active な状態で、
   `start-dev` / `ship` が work の進行に合わせて更新する。本 skill はこれらを
   **付与しない**（誰も着手していない Issue にこれらを付けると実態とずれる）。
+- **`status: on-hold`（塩漬け）も付与しない**。これは「コンセプト再検討などで
+  意図的に着手を止める」という人間の判断で付ける保留状態であり、Issue 本文から
+  静的に推論できるものではない（`blocked` と違い依存 Issue のような明示トリガも
+  無い）。初期付与で判断できるのは ready / blocked / designed の 3 つだけ。on-hold の
+  付け外しは人間が明示的に行う（`pick-issue` は on-hold を候補から除外する）。
 - **既に status が付いた Issue は触らない**。上書き・遷移は lifecycle skill の責務。
   本 skill は「status 空白の Issue」だけを対象にする。
 - 責務分離のまとめ: **本 skill = 初期 status の付与 / `start-dev`・`ship` = その後の
