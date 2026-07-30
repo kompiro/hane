@@ -22,7 +22,7 @@ description: >
 ## ホスト repo に依存する慣習
 
 - **`topic` の controlled vocabulary**: ホスト repo が ADR の語彙を持つ場合（例: `docs/adr/README.md` のセクション見出し、`adr.config.json` の `topics` 等）はそれを使い、TPL と ADR で語彙を共有する。持たない場合は free-form の小文字 kebab トピックでよい
-- **ファイル名規約**: 既定は `docs/test-perspectives/TPL-<番号>-<slug>.md`（見出し `TPL-<番号>`、ゼロ埋めなし、GitHub 番号ベース。詳細は下記「ファイルを作成する」）。ホスト repo が独自の規約（例: karasu の `TPL-YYYYMMDD-NN-<slug>.md`）を持つ場合はそちらを優先する（ADR/AT の命名と同じ「host 独自規約優先」のエスケープ）
+- **ファイル名規約**: 既定は `docs/test-perspectives/TPL-<番号>-<slug>.md`（見出し `TPL-<番号>`、ゼロ埋めなし、GitHub 番号ベース。詳細は下記「ファイルを作成する」）。ホスト repo が独自の規約（例: 日付ベースの `TPL-YYYYMMDD-NN-<slug>.md`）を持つ場合はそちらを優先する（ADR/AT の命名と同じ「host 独自規約優先」のエスケープ）
 - **検証ツール**: ホスト repo が `tpl:validate`（frontmatter と一覧表の machine check）等を提供していれば、作成・更新後にそれを実行する。無ければ手動で frontmatter を確認する
 - **関連 TPL クエリ**: ホスト repo が `tpl:related <topic>` 等を提供していればそれで関連 TPL を一覧する。無ければ `docs/test-perspectives/` 配下の frontmatter（`topic` / `scope.packages` / `applicable_to` / `known_consumers`）を grep する
 - **定期 deprecation レビュー**: cadence（週次 / 月次 / 半期）と自動化（CI で review Issue を自動生成する等）はホスト repo に委ねる。このスキルは「`active` な TPL を放置しないため定期レビューを推奨」とだけ示す
@@ -61,9 +61,16 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
 - ファイル名: `docs/test-perspectives/TPL-<番号>-<slug>.md`（見出し `TPL-<番号>`、ゼロ埋めなし、`<slug>` は観点を端的に表す小文字 kebab）。**番号は GitHub の番号ベース**、優先順位は ADR-8 / ADR-10 と同じ:
   1. 紐付く Issue 番号 — retrospective TPL は起点の `bug` / `test-infra` Issue 番号（`discovered_from.issue` と揃う）
   2. Issue が無ければ PR 番号 — proactive TPL は原則 / ADR 起源で Issue が無いことが多いので、それを起こした DesignDoc PR の番号を使う（draft PR を先に開く運用と整合）
-  3. どちらも無いときだけローカル採番（`docs/test-perspectives/` 内の既存最大 + 1）
+  3. どちらも無いときだけローカル採番（`docs/test-perspectives/` 内の既存最大 + 1）。
+     ローカル採番だけは並行ブランチ間で衝突しうる — ホストが `@kompiro/tpl-tools`
+     （>= 0.0.7）の `tpl validate` を持つ場合、重複 id は `duplicate-id` としてマージ時に
+     検出されるので、採番後に必ず実行する
 
-  1 つの Issue / PR に複数 TPL を切る場合は `<slug>` 部分で区別する。採番後はリネームしない（外部参照が番号を指すため）。ホスト repo が独自規約（例: karasu の `TPL-YYYYMMDD-NN-<slug>.md`）を持つ場合はそちらに従う。
+  番号は 1 TPL = 1 番号で一意にする。同じ Issue / PR から複数 TPL を切る場合は、番号を
+  その起点を最もよく表す 1 本に与え、残りは次の優先順位へ進める（Issue → PR → ローカル採番。
+  `start-dev` の「同じ Issue から 2 本目の ADR」と同じ運用）。同じ番号を `<slug>` 違いで
+  共有すると `duplicate-id` 検査に落ちる。採番後はリネームしない（外部参照が番号を指すため）。
+  ホスト repo が独自規約を持つ場合はそちらに従う。
 - frontmatter と本文（5 節構成）の雛形は、この skill ディレクトリの [`TEMPLATE.md`](TEMPLATE.md) を使う。`TEMPLATE.md` をコピーして冒頭の HTML コメントを削除し、frontmatter と各節を埋める。本文は 観点 / 想定される失敗モード / チェックリスト（3〜5 項目）/ 既知の対処パターン / 関連テスト の 5 節。
   - `applicable_to` — 適用される **抽象パターン**。consumer の具体名は書かない（そちらは `known_consumers`）。consumer 空間が広すぎて列挙が無意味なら `known_consumers` ごと省略してよい
   - `known_consumers` — 新たに該当 consumer が見つかったら追記する
