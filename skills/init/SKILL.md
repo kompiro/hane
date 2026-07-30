@@ -40,7 +40,7 @@ hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `test-persp
    `docs/adr/`（ADR）/ `docs/acceptance/`（受け入れテスト）/
    `docs/test-perspectives/`（TPL）のうちどれを採用するか。複数選択可。
 2. **ADR のファイル名規約** — GitHub 番号ベース（`<番号>-slug.md`、hane の既定。
-   ADR-8 参照）か、日付ベース（`YYYYMMDD-NN-slug.md`、karasu 方式）か。
+   ADR-8 参照）か、日付ベース（`YYYYMMDD-NN-slug.md`）か。
    `docs/adr/` を採用する場合のみ訊く。
 3. **`status: *` ラベル運用** — `start-dev` / `ship` が Issue の進捗を
    `status: ready / blocked / on-hold / implementing / designing / designed / in-review`

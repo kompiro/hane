@@ -4,6 +4,13 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Changed
+
+- `test-perspective`: multiple TPLs from one Issue / PR now each get a **unique number** — the number goes to the TPL that best represents the origin and the rest cascade to the next source (Issue → PR → local max+1), matching the second-ADR-from-one-Issue rule in `start-dev`. The previous guidance (share the number, distinguish by `<slug>`) produces `duplicate-id` findings under `@kompiro/tpl-tools` >= 0.0.7; the skill now points to `tpl validate` after local numbering, the only race-prone path (kompiro/karasu#2188). (#74)
+- `test-perspective` / `init`: dropped the stale "karasu" attribution from the date-based convention examples — karasu migrated to the skill's default GitHub-number TPL ids (karasu ADR-2188). (#74)
+
 ## [0.14.0] — 2026-07-11
 
 ### Added
