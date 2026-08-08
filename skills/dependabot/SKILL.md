@@ -58,7 +58,11 @@ gh pr list --author "app/dependabot" --state open \
 
 - 0 件なら「対応すべき Dependabot PR はありません」と伝えて終了する。
 - Dependabot のグループ更新 PR（複数依存をまとめた PR）も 1 件として扱う。
-- セキュリティ更新 PR（`security` ラベル付き）は優先度を高く扱う。
+- セキュリティ更新 PR（`security` ラベル付き）は優先度を高く扱う。**そのパッケージが
+  override 機構（pnpm `overrides` / npm `overrides` / yarn `resolutions`）にも載っている
+  場合は、`security-alert` skill の「advisory の脆弱範囲を自分の pin と突き合わせる」を
+  先に回す。** override の floor が脆弱範囲の内側だと、bot PR をマージしても解決が戻る
+  か、`ERR_PNPM_LOCKFILE_CONFIG_MISMATCH` で CI が通らない。
 
 ### 2. 各 PR のメタデータ抽出
 

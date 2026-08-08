@@ -95,8 +95,39 @@ alert ごとに以下を整理する。
   緩和策（該当機能の不使用・代替パッケージ・`dismiss` 理由）を検討対象にする。
 - **対応する PR の有無**: `gh pr list --author "app/dependabot" --state open` に当該 alert を
   解消する security update PR があるか。
+- **自分の宣言レンジとの突き合わせ**: 下記。
 
 各 alert に対応の緊急度（severity と scope から）と推奨修正方法（ステップ 3）を付ける。
+
+#### advisory の脆弱範囲を自分の pin と突き合わせる
+
+**alert 1 件につき、advisory の `vulnerable_version_range` と、host repo の override 機構
+および各 manifest の宣言レンジを必ず突き合わせる。** lock file の解決バージョンだけを見て
+「pin されている = 対処済み」と判断しない。
+
+```
+# 1. advisory の脆弱範囲
+gh api repos/{owner}/{repo}/dependabot/alerts/<n> \
+  --jq '.security_vulnerability | {range: .vulnerable_version_range, patched: .first_patched_version.identifier}'
+
+# 2. 宣言側を全部出す（override + 全 manifest の直接依存）
+grep -rn '"<pkg>"' package.json packages/*/package.json
+```
+
+**1 の範囲が 2 のいずれかのレンジと交差していたら、そのレンジも修正版へ引き上げる**
+（ステップ 3 の「既に override 済みだった場合」へ）。
+
+なぜ必須か: 過去の security alert 対応で override の floor を「**その時点の** patched 版」に
+固定すると、その版が後日別の advisory の脆弱範囲に含まれたとき、**override が脆弱版への
+固定装置として働く**。lock を見るだけでは「pin 済み」に見えるため、この形は静かに残る。
+override は「今の解決を矯正する道具」であって「もう安全であることの証明」ではない。
+
+実例（karasu で 2 日連続で観測。いずれも override が既にあったが floor が脆弱範囲の内側）:
+
+| package | 当時の override | advisory の脆弱範囲 |
+| --- | --- | --- |
+| `js-yaml` | `"js-yaml@4": "^4.3.0"` | `>= 4.0.0, < 4.3.1` |
+| `dompurify` | `"dompurify": "^3.4.12"` | `<= 3.4.12` |
 
 ### 3. 解決方針の決定（direct / transitive のルーティング）
 
@@ -107,6 +138,7 @@ alert ごとに以下を整理する。
 | direct 依存 + Dependabot security PR あり | その PR を `dependabot` skill でトリアージ・マージする（本 skill の対象外として委譲） |
 | direct 依存 + PR なし | 該当 `package.json` の宣言バージョンを修正版以上に bump する |
 | transitive 依存 | package manager の override 機構で修正版に pin する（下記） |
+| すでに override があり、その floor が脆弱範囲の内側 | floor を修正版へ引き上げる。**同じパッケージの直接依存の宣言も同時に引き上げる**（下記） |
 
 **transitive 依存の override**: package manager を `packageManager` フィールド / lock file
 から判定し、対応する機構を使う。
@@ -120,6 +152,12 @@ alert ごとに以下を整理する。
 breaking な境界をまたいで強制昇格してしまう。**advisory の脆弱バージョン範囲が含むメジャー
 だけにキーをスコープする**（例 pnpm/npm `"foo@5": "^5.0.6"`、yarn `"foo@^5.0.0": "^5.0.6"`）。
 脆弱なメジャーが 1 系統しか無ければ無印キーでよい。
+
+**既に override 済みだった場合**: 新しい override を足すのではなく既存キーの floor を
+引き上げる。このとき、**同じパッケージが直接依存としても宣言されていれば、その宣言レンジも
+同時に修正版へ引き上げる**。override が効いている限り実解決は同じだが、宣言を据え置くと
+**override を外した瞬間に脆弱範囲へ戻る宣言が残る**。override は宣言の正しさの代わりでは
+ない。
 
 修正版が存在しない alert は、bump / override では解決できない。緩和策（該当機能の不使用、
 代替パッケージへの移行、根拠を添えた alert の `dismiss`）をユーザーに提示し、判断を仰ぐ。
@@ -144,11 +182,15 @@ breaking な境界をまたいで強制昇格してしまう。**advisory の脆
    - direct bump — 該当 `package.json` の宣言を修正版以上に書き換える。
    - transitive override — root `package.json` に override エントリを追加する。既存の
      override 群があれば並び順（アルファベット順など）の慣習に揃える。
+   - 既存 override の floor 引き上げ — 既存キーの値を修正版へ書き換える。同じパッケージの
+     直接依存の宣言があれば、**同じコミットで**そちらも引き上げる。
 3. lock file を更新する（`pnpm install` / `npm install` / `yarn install`）。
 
 ### 6. 検証
 
-1. **lock file の解決バージョン**: 対象パッケージが修正版に解決されていることを確認する。
+1. **lock file の解決バージョン**: 対象パッケージが修正版に解決され、**脆弱版のエントリが
+   lock から 1 件も残っていない**ことを確認する（`grep -c "<pkg>@<脆弱版>" <lock file>` が 0）。
+   宣言を複数箇所直した場合、1 箇所でも取りこぼすと古い解決が残る。
 2. **巻き込みの確認**: override をスコープした場合、無関係なメジャーが据え置かれている
    ことを確認する。付随した無関係な minor / patch の更新があれば、それが脆弱性と無関係で
    あることを確認する。
