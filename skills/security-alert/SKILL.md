@@ -111,7 +111,10 @@ gh api repos/{owner}/{repo}/dependabot/alerts/<n> \
   --jq '.security_vulnerability | {range: .vulnerable_version_range, patched: .first_patched_version.identifier}'
 
 # 2. 宣言側を全部出す（override + 全 manifest の直接依存）
-grep -rn '"<pkg>"' package.json packages/*/package.json
+#    override の置き場は package manager 依存（ステップ 3 の一覧を参照）。
+#    置き場を取り違えると「見当たらない = pin 無し」と誤判定するので、
+#    lock file と同階層の設定ファイルまで含めて探す。
+grep -rn '<pkg>' package.json pnpm-workspace.yaml packages/*/package.json 2>/dev/null
 ```
 
 **1 の範囲が 2 のいずれかのレンジと交差していたら、そのレンジも修正版へ引き上げる**
@@ -143,9 +146,15 @@ override は「今の解決を矯正する道具」であって「もう安全�
 **transitive 依存の override**: package manager を `packageManager` フィールド / lock file
 から判定し、対応する機構を使う。
 
-- pnpm — root `package.json` の `pnpm.overrides`
+- pnpm 11 以降 — `pnpm-workspace.yaml` の `overrides:`
+- pnpm 10 以前 — root `package.json` の `pnpm.overrides`
 - npm — root `package.json` の `overrides`
 - yarn — root `package.json` の `resolutions`
+
+**pnpm のバージョンを先に確かめる。** pnpm 11 は `package.json` の `pnpm` フィールドを
+一切読まない（pnpm/pnpm#10086）。pnpm 11 の repo で旧位置に override を書くと**エラーに
+ならず黙って無視され、脆弱性が修正されないまま PR が green になる**。`packageManager`
+フィールドで判定し、既存 override がどちらにあるかを実際に見てから書き足す。
 
 **override キーのスコープ**: 同じパッケージの複数メジャーが依存ツリーに共存する場合、
 無印キー（例 `"foo": "^5.0.6"`）で全メジャーを巻き上げると、脆弱性と無関係なメジャーまで

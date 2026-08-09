@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Fixed
+
+- `security-alert`: the override-location list named `package.json`'s `pnpm.overrides` for pnpm without qualification, which is the **dead location under pnpm 11** — it no longer reads the `pnpm` field at all (pnpm/pnpm#10086), so an override written there is silently ignored rather than rejected, leaving the vulnerable version resolved while the PR goes green. The list is now split by pnpm version, checking `packageManager` first is required, and the step 2 declaration grep covers `pnpm-workspace.yaml` so an existing override there is not read as "no pin". (#79)
+
 ## [0.15.0] — 2026-08-09
 
 ### Changed
