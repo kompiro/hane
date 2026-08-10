@@ -202,11 +202,45 @@ breaking な境界をまたいで強制昇格してしまう。**advisory の脆
    宣言を複数箇所直した場合、1 箇所でも取りこぼすと古い解決が残る。
 2. **巻き込みの確認**: override をスコープした場合、無関係なメジャーが据え置かれている
    ことを確認する。付随した無関係な minor / patch の更新があれば、それが脆弱性と無関係で
-   あることを確認する。
-3. **ビルド・テスト**: host の `package.json` `scripts` から `build` / `test` を検出して
+   あることを確認する。**確認は解決バージョンの集合ではなく、lock の依存エッジで行う**（下記）。
+3. **ビルドされない領域の確認**: lock が動いたパッケージの利用先が、host の `build` /
+   `test` に含まれていない場合がある（docs サイト・別 workspace など）。含まれていなければ
+   その領域のビルドを手で回す。CI が触らない領域の退行は merge 後に出る。
+4. **ビルド・テスト**: host の `package.json` `scripts` から `build` / `test` を検出して
    実行し、通過することを確認する。該当 script が無ければスキップする。
-4. 公開パッケージを持つ repo では、公開物（バンドル・third-party notice 等）への影響有無を
+5. 公開パッケージを持つ repo では、公開物（バンドル・third-party notice 等）への影響有無を
    確認し、必要なら changeset 等のリリースメタを添える。
+
+#### 巻き込みは lock の依存エッジで見る（集合比較では見えない）
+
+lock から `name@version` を抜いて**集合として** before / after を比べる方法は、
+**消費側が「グラフに既にある別バージョン」へ乗り換えた場合を検出できない**。乗り換え先が
+他の依存元経由で既に存在していれば、集合は変わらないか、むしろ縮む。それでも実際の解決は
+動いており、その版がビルド出力に出るパッケージなら影響が出る。
+
+見るべきは package キーの集合ではなく、**snapshot 内の依存エッジ**（どの snapshot が、どの
+依存の、どの版を指しているか）。lock の生 diff を直接読むのは向かない — グラフが変わると
+peer suffix が一斉に書き換わり（`foo: 2.0.3` → `foo: 2.0.3(supports-color@9.4.0)`）、版が
+動いていない行が数百件出て信号が埋もれる。peer suffix を落としてから比べる:
+
+```sh
+edges() { # "<owner> <dep> <version>" を出す。peer suffix は落とす
+  tr -d "'" | awk '
+    /^  [^ ]/             { owner = $0; sub(/:$/, "", owner); gsub(/\(.*/, "", owner); sub(/^  /, "", owner) }
+    /^      [^ ]+: [0-9]/ { dep = $1; sub(/:$/, "", dep); ver = $2; gsub(/\(.*/, "", ver); print owner, dep, ver }
+  ' | sort -u
+}
+git show <base>:pnpm-lock.yaml | edges > /tmp/before.txt
+edges < pnpm-lock.yaml > /tmp/after.txt
+diff /tmp/before.txt /tmp/after.txt
+```
+
+残った差分が実際に動いた解決である。意図した bump 以外が出たら、その利用先がビルド出力に
+出るかを確認する（上のステップ 3）。npm / yarn では lock の構造に合わせて owner / dep の
+拾い方を読み替える。
+
+**「意図した 1 パッケージ以外は動いていない」と書くときは、この方法で確かめた結果を根拠に
+する。** 集合比較しかしていない状態でそう書くと、確かめていないことを確かめたと書くことになる。
 
 ### 7. PR 作成
 

@@ -4,6 +4,13 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Changed
+
+- `security-alert` / `dependabot`: the collateral check in step 6 ("巻き込みの確認") now names a method, because the obvious one is wrong. Comparing the **set** of `name@version` keys in a lock cannot see a consumer switching to a version already present elsewhere in the graph — the key set is unchanged or shrinks while the resolution moves. It reported "nothing moved version" on karasu#2416 while four transitive resolutions had moved (`shiki` 4.2.0→4.4.1, `picomatch`, `@types/estree`, `@babel/helper-validator-identifier`). Reading the raw lock diff does not work either: a graph change rewrites peer suffixes tree-wide, so hundreds of lines change where no version did. Adds a snippet that compares dependency edges with peer suffixes stripped, verified to report exactly the real moves on that PR. (#82)
+- `security-alert`: new step 6 item — when a moved package is consumed by an area the host's `build` / `test` does not cover, build that area by hand. On karasu#2416 the one moved resolution with user-visible output (`shiki`, the docs site's highlighter) sat in the only area PR CI never exercises, so a regression would have landed post-merge. (#82)
+
 ## [0.15.1] — 2026-08-10
 
 ### Fixed
