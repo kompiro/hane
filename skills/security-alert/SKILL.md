@@ -2,7 +2,7 @@
 name: security-alert
 description: >
   Dependabot の security alert（GHSA / CVE 起因の脆弱性アラート）をトリアージして
-  解決するワークフロー。open な alert を一括取得し、direct / transitive を判別して
+  解決するワークフロー。未解決の alert を一括取得し、direct / transitive を判別して
   修正方針（PR マージ / 直接 bump / package manager の override）を決め、トラッキング
   Issue を作成して修正 PR を出し、判断根拠を ADR に記録する。transitive 依存で
   Dependabot が PR を起票しないケースを主対象にする。
@@ -26,7 +26,9 @@ direct / transitive を判別して適切な修正方法で解決する。トラ
   には現れない。
 - **alert に対応する PR が存在しないことがある**。脆弱なパッケージが transitive 依存の場合、
   bump すべき直接の宣言行が `package.json` に無いため、Dependabot は security update PR を
-  合成できず、alert だけが open のまま残る。
+  合成できず、alert だけが残る。
+- **alert の `state` は安全性の証明ではない**。GitHub の auto-triage は通知量を減らすために
+  alert を `auto_dismissed` にするが、脆弱版は lock に残ったままである（ステップ 1）。
 - transitive 依存の解決には、bot PR のマージではなく package manager の **override 機構**
   （pnpm `overrides` / npm `overrides` / yarn `resolutions`）を使うことが多い。
 
@@ -58,12 +60,17 @@ direct / transitive を判別して適切な修正方法で解決する。トラ
 
 ### 1. Security alert の収集
 
-open な Dependabot security alert を一括で取得する（**バッチ処理 — 全件を対象にする**）。
+未解決の Dependabot security alert を一括で取得する（**バッチ処理 — 全件を対象にする**）。
+
+**`state == "open"` だけを取ってはいけない。** GitHub の auto-triage は低影響と判断した alert を
+`auto_dismissed` にする（既定規則は development スコープの依存が対象）。これは**通知量の判断で
+あって、パッケージが安全になったことの証明ではない**。脆弱版は lock に残り続ける。
 
 ```
 gh api repos/{owner}/{repo}/dependabot/alerts --paginate \
-  --jq '.[] | select(.state=="open") | {
+  --jq '.[] | select(.state=="open" or .state=="auto_dismissed") | {
     number,
+    state,
     pkg: .dependency.package.name,
     ecosystem: .dependency.package.ecosystem,
     manifest: .dependency.manifest_path,
@@ -78,7 +85,15 @@ gh api repos/{owner}/{repo}/dependabot/alerts --paginate \
   }'
 ```
 
-- 0 件なら「対応すべき Dependabot security alert はありません」と伝えて終了する。
+`fixed` と（人手の）`dismissed` は除く。前者は解決済み、後者は人間が明示的に下した判断で、
+本 workflow が蒸し返す対象ではない。`auto_dismissed` はそのどちらでもない。
+
+**終了条件は alert の件数ではなく lock の解決版で決める。** 「対応すべき alert はありません」と
+言ってよいのは、**収集した全 alert について解決版が脆弱範囲の外にある**ことを確認したときだけ
+（ステップ 2 の突き合わせ）。収集結果が 0 件だった場合もここに含まれる。`auto_dismissed` で
+解決版が既に patched 版なら真の no-op なのでそう報告してよいが、それは state ではなく版を見て
+言えることである。
+
 - 同一 advisory が複数 manifest で alert 化されることがある（pnpm workspace では宣言と
   解決済みバージョンが別 manifest として計上される）。後段でまとめて扱う。
 
@@ -90,7 +105,10 @@ alert ごとに以下を整理する。
 - **advisory**: GHSA / CVE と summary。詳細は `gh api` の `security_advisory.description` や
   GitHub Advisory ページ（WebFetch）で確認する。
 - **relationship**: `direct` / `transitive`。解決手段の分岐に直結する（ステップ 3）。
-- **scope**: `runtime` / `development`。runtime のほうが優先度が高い。
+- **scope**: `runtime` / `development`。runtime のほうが優先度が高い。**優先度づけにだけ使い、
+  やる / やらないの判定には使わない**。`scope` は依存グラフが動くと再計算される。
+  karasu の alert #68 は同じ日の午前に `open` / `runtime`、午後に `auto_dismissed` /
+  `development` になった（無関係な依存更新 PR がグラフを変えたため）。脆弱版は動いていない。
 - **vulnerable range / first patched version**: 修正版が存在するか。存在しない場合は
   緩和策（該当機能の不使用・代替パッケージ・`dismiss` 理由）を検討対象にする。
 - **対応する PR の有無**: `gh pr list --author "app/dependabot" --state open` に当該 alert を
@@ -125,12 +143,17 @@ grep -rn '<pkg>' package.json pnpm-workspace.yaml packages/*/package.json 2>/dev
 固定装置として働く**。lock を見るだけでは「pin 済み」に見えるため、この形は静かに残る。
 override は「今の解決を矯正する道具」であって「もう安全であることの証明」ではない。
 
-実例（karasu で 2 日連続で観測。いずれも override が既にあったが floor が脆弱範囲の内側）:
+実例（いずれも override が既にあったが floor が脆弱範囲の内側）:
 
-| package | 当時の override | advisory の脆弱範囲 |
-| --- | --- | --- |
-| `js-yaml` | `"js-yaml@4": "^4.3.0"` | `>= 4.0.0, < 4.3.1` |
-| `dompurify` | `"dompurify": "^3.4.12"` | `<= 3.4.12` |
+| package | 当時の override | advisory の脆弱範囲 | 気づくまで |
+| --- | --- | --- | --- |
+| `js-yaml` | `"js-yaml@4": "^4.3.0"` | `>= 4.0.0, < 4.3.1` | 即日（alert が open） |
+| `dompurify` | `"dompurify": "^3.4.12"` | `<= 3.4.12` | 即日（alert が open） |
+| `brace-expansion` | `brace-expansion@5: ^5.0.8` | `>= 4.0.0, < 5.0.9` | **2 週間**（alert が `auto_dismissed`） |
+
+3 例目が 2 週間残ったのは、この突き合わせが**走らなかった**からである。alert が
+`auto_dismissed` だったため `state == "open"` の収集に現れず、以降のステップに入らなかった。
+ステップ 1 が `auto_dismissed` を含めるのはこのためで、**この節の検査は収集に依存している**。
 
 ### 3. 解決方針の決定（direct / transitive のルーティング）
 
