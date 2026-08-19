@@ -4,6 +4,13 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Fixed
+
+- `security-alert`: step 1 collected only `state == "open"` alerts, so any alert GitHub's Dependabot auto-triage had dismissed was invisible to the whole workflow while the vulnerable version stayed in the lock file. The skill would then report "no alerts to handle" for a repo installing a package inside an advisory's vulnerable range, which is the one conclusion this skill must not reach incorrectly. Collection now takes `auto_dismissed` alongside `open` (`fixed` and human `dismissed` stay excluded), and the termination condition moves off alert count onto the resolved version: "nothing to handle" may only be said once every collected alert's resolved version is outside its advisory range. Observed on karasu#2565: two `high` alerts, both auto-dismissed as development-scoped, both still resolving to the vulnerable version; one of them (`brace-expansion` 5.0.8 against `>= 4.0.0, < 5.0.9`) was the stale-floor case step 2 exists to catch, and it sat unfixed for two weeks because collection never surfaced it. Its row joins the step 2 example table, which now records how long each instance took to notice. (#85)
+- `security-alert`: step 2 now says `scope` is for prioritising, not for deciding whether to act. The field is recomputed when the dependency graph moves: karasu's alert #68 was `open` / `runtime` in the morning and `auto_dismissed` / `development` the same afternoon, after unrelated dependency PRs changed the graph. The vulnerable version never moved. (#85)
+
 ## [0.16.0] — 2026-08-11
 
 ### Changed
