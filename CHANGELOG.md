@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Changed
+
+- `ship` / `start-dev`: the PR now opens as a draft (`gh pr create --draft`), the code review runs on the draft and its fixes are pushed once, and only then `gh pr ready` starts CI and automated reviewers. The review step leaves the post-checks. Automated PR reviewers such as CodeRabbit spend one review per push to a ready PR and usually skip drafts, so the old order (open ready, review after CI) spent one review on code the self-review was about to change and a second on the fixes. On kompiro/karasu this contributed to CodeRabbit's fair-use limit dropping to 1 review/hour (karasu#2898). (#88)
+
 ## [0.17.0] — 2026-08-19
 
 ### Fixed

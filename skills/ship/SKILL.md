@@ -10,7 +10,7 @@ description: >
 
 # Ship Workflow
 
-コミット済みの変更を PR 作成 → CI 確認 → クリーンアップまで進める。
+コミット済みの変更を PR 作成（draft）→ コードレビュー → ready → CI 確認 → クリーンアップまで進める。
 `/start-dev` を使わずにブランチで直接開発した場合にも対応する。
 
 ## 前提条件
@@ -76,17 +76,27 @@ description: >
    - ブランチのコミット群の主要な変更を反映する
    - 70文字以内に収める
 5. 生成した PR タイトルと本文をユーザーに提示し、確認を得る
-6. 承認後、`gh pr create` で PR を作成する:
+6. 承認後、`gh pr create --draft` で **draft の** PR を作成する:
    ```
-   gh pr create --title "<title>" --body "<body>"
+   gh pr create --draft --title "<title>" --body "<body>"
    ```
+   - 自動 PR レビュアー（CodeRabbit など）は ready の PR への push ごとにレビュー枠を 1 回使い、draft はレビューしない設定が一般的。ready で開いてからレビューの修正を push すると、直す前と直した後で 2 回使う。draft ならどちらも使わない
+   - draft を skip しない host でも失うものは無い（ready にした時点で CI とレビューが 1 回走る）
 7. PR の URL をユーザーに通知する
+
+### 1.5. draft でのコードレビュー
+
+**到達状態**: PR を ready にした時点で、コードレビューの修正がすでに push されている。
+
+1. PR 番号を取得する（`gh pr create` の出力から）
+2. **コードレビュー**: `/review <pr-number>` を実行して PR の変更内容をレビューする（host が別のレビューコマンドを定めていればそれを使う。例: `/code-review`）
+3. 指摘ごとに対応可否を決め、直すものを `/commit` でコミットして **まとめて 1 回だけ** `git push` する
+4. draft を外す: `gh pr ready <pr-number>`。CI と自動レビュアーはここで走り出す
 
 ### 2. CI 確認
 
-1. PR 番号を取得する（`gh pr create` の出力から）
-2. CI の完了を待つ: `gh pr checks <pr-number> --watch`
-3. CI の結果に応じて対応する:
+1. CI の完了を待つ: `gh pr checks <pr-number> --watch`
+2. CI の結果に応じて対応する:
    - **全て通過**: ステップ 2.5 のポストチェックへ進む
    - **失敗**: 失敗したジョブのログを確認し、修正を提案する
      - 修正が必要な場合: 修正 → `/commit` → `git push` → 再度 CI 確認
@@ -100,7 +110,6 @@ CI 通過後、以下のチェックを順に実行する。
    - `MERGEABLE` または `UNKNOWN` の場合は次へ進む
 2. **PR Description の言語確認**: `gh pr view <pr-number> --json title,body` で取得し、host repo の言語ポリシー（CLAUDE.md 等で定義されている場合）に沿っていることを確認する
    - ポリシーから外れている場合は警告し、修正を提案する
-3. **コードレビュー**: `/review` を実行して PR の変更内容をレビューし、GitHub にレビューコメントを投稿する
 
 すべてのチェック完了後、Issue がある場合はラベルを `status: in-review` に更新する（ラベル運用がある場合のみ）:
 
