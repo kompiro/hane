@@ -146,7 +146,17 @@ description: >
    - **Changes**: 主要な変更をリストで記述（コミット単位ではなく意味のある変更単位でまとめる）
    - **Manual Verification Checklist**: CI では検証できない項目。なければ `N/A — all covered by automated tests`
    - **Related Docs**: 更新した docs/ 内のファイル。なければ `N/A`
-3. `gh pr create` で PR を作成し、URL をユーザーに通知する
+3. `gh pr create --draft` で **draft の** PR を作成し、URL をユーザーに通知する
+   - 自動 PR レビュアー（CodeRabbit など）は ready の PR への push ごとにレビュー枠を 1 回使い、draft はレビューしない設定が一般的。ready で開いてからレビューの修正を push すると、直す前と直した後で 2 回使う。draft ならどちらも使わない
+   - draft を skip しない host でも失うものは無い（ready にした時点で CI とレビューが 1 回走る）
+
+### 7.5. draft でのコードレビュー
+
+**到達状態**: PR を ready にした時点で、コードレビューの修正がすでに push されている。
+
+1. **コードレビュー**: `/review <pr-number>` を実行して PR の変更内容をレビューする（host が別のレビューコマンドを定めていればそれを使う。例: `/code-review`）
+2. 指摘ごとに対応可否を決め、直すものを `/commit` でコミットして **まとめて 1 回だけ** `git push` する
+3. draft を外す: `gh pr ready <pr-number>`。CI と自動レビュアーはここで走り出す
 
 ### 8. CI 確認
 
@@ -163,7 +173,6 @@ CI 通過後、以下のチェックを順に実行する。
    - `MERGEABLE` または `UNKNOWN` の場合は次へ進む
 2. **PR Description の言語確認**: `gh pr view <pr-number> --json title,body` で取得し、host repo の言語ポリシー（CLAUDE.md 等で定義されている場合）に沿っていることを確認する
    - ポリシーから外れている場合は警告し、修正を提案する
-3. **コードレビュー**: `/review` を実行して PR の変更内容をレビューし、GitHub にレビューコメントを投稿する
 
 すべてのチェック完了後、Issue がある場合はラベルを `status: in-review` に更新する（ラベル運用がある場合のみ）:
 
