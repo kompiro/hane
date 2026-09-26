@@ -4,7 +4,7 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
-## [Unreleased]
+## [0.18.0] — 2026-09-26
 
 ### Changed
 
