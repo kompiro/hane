@@ -65,10 +65,13 @@ description: >
 2. `git log --oneline origin/main..HEAD` と `git diff origin/main...HEAD --stat` で変更内容を分析する
 3. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
 
-   - **Purpose**: `Closes #N` で Issue と紐付け。Issue がない場合は変更の目的を1行で記述
+   - **Purpose**: `Closes #N` で Issue と紐付け。**Post-merge follow-ups に項目があるときは `Refs #N`**（項目の追記先として Issue を open のまま残す）。Issue がない場合は変更の目的を1行で記述（follow-ups があるなら先に Issue を起こす）
    - **Summary**: コミット履歴と差分から1-3行で要約
    - **Changes**: 主要な変更をリストで記述（コミット単位ではなく意味のある変更単位でまとめる）
-   - **Manual Verification Checklist**: CI では検証できない項目。なければ `N/A — all covered by automated tests`
+   - **Manual Verification Checklist**: CI では検証できず、**マージ前に**この PR の preview かローカルの checkout で確認できる項目。なければ `N/A — all covered by automated tests`
+   - **Post-merge follow-ups**: マージ後にしか観察・実行できない項目（次のリリース、次の自動レビュー、マージ後のバックフィルなど）。レビュー時にはチェックしない。なければ `N/A`
+     - 振り分けの判断基準は 1 つ: **その項目をこの PR の preview かローカルの checkout で確認できるか**。できなければ follow-ups に置く
+     - テンプレートにこの節が無い host でも、項目があれば節を足して書く
    - **Related Docs**: 更新した docs/ 内のファイル。なければ `N/A`
 
 4. PR タイトルを生成する:
@@ -123,6 +126,8 @@ CI 通過後、以下のチェックを順に実行する。
    CI・ポストチェックが完了しました。
    手動検証チェックリストの項目を確認してください。
    確認完了後、GitHub 上で PR をマージしてください。
+   （Post-merge follow-ups がある場合、項目はマージ後に Issue #N に載ります。
+    確認が済んだら Issue を close してください）
 
    マージ後に「クリーンアップして」と言っていただければ、
    ローカルブランチ（と worktree）を削除します。
@@ -159,8 +164,16 @@ CI 通過後、以下のチェックを順に実行する。
    git checkout main
    git pull origin main
    ```
-5. Issue のラベルを更新する（Issue 紐付けかつラベル運用がある場合）:
+5. Issue を更新する（Issue 紐付けがある場合。ラベル操作はラベル運用がある場合のみ）:
    - PR で `Closes #N` した Issue は GitHub が自動で close するため、ラベル操作は不要
+   - **Post-merge follow-ups に項目がある PR**: 項目が `Refs #N` の Issue 本文に載っていることを確かめる。host の workflow が追記済みなら本文に `<!-- post-merge-followups #<PR番号> -->` があるので何もしない。無ければ次の形で本文末尾に追記する（`gh issue edit <N> --body-file <file>`）:
+     ```
+     ## Post-merge follow-ups from #<PR番号>
+
+     <!-- post-merge-followups #<PR番号> -->
+     - [ ] <PR の項目をそのまま>
+     ```
+     Issue は close せず、ラベルも `status: in-review` のまま残す（`pick-issue` の候補から外れる）。項目を消化して close するのはユーザー。未消化の項目を催促しない
    - 依存していた Issue（`status: blocked` のもの）があれば `status: ready` に更新する:
      ```
      gh issue edit <blocked-issue> --remove-label "status: blocked" --add-label "status: ready"

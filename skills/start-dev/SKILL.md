@@ -141,10 +141,13 @@ description: >
    - hook が失敗した場合は原因を直してから再 push する。failing hook を skip して `gh pr create` まで進めると、CI で初めて気づき手戻りが発生する
    - hook を採用していない host で事前確認したい場合は、host が提供する preflight 系コマンド（例: `pnpm preflight` / `make check`）があれば実行する
 2. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
-   - **Purpose**: `Closes #N` で Issue と紐付け。Issue がない場合は変更の目的を1行で記述
+   - **Purpose**: `Closes #N` で Issue と紐付け。**Post-merge follow-ups に項目があるときは `Refs #N`**（項目の追記先として Issue を open のまま残す）。Issue がない場合は変更の目的を1行で記述（follow-ups があるなら先に Issue を起こす）
    - **Summary**: コミット履歴と差分から1-3行で要約
    - **Changes**: 主要な変更をリストで記述（コミット単位ではなく意味のある変更単位でまとめる）
-   - **Manual Verification Checklist**: CI では検証できない項目。なければ `N/A — all covered by automated tests`
+   - **Manual Verification Checklist**: CI では検証できず、**マージ前に**この PR の preview かローカルの checkout で確認できる項目。なければ `N/A — all covered by automated tests`
+   - **Post-merge follow-ups**: マージ後にしか観察・実行できない項目（次のリリース、次の自動レビュー、マージ後のバックフィルなど）。レビュー時にはチェックしない。なければ `N/A`
+     - 振り分けの判断基準は 1 つ: **その項目をこの PR の preview かローカルの checkout で確認できるか**。できなければ follow-ups に置く
+     - テンプレートにこの節が無い host でも、項目があれば節を足して書く
    - **Related Docs**: 更新した docs/ 内のファイル。なければ `N/A`
 3. `gh pr create --draft` で **draft の** PR を作成し、URL をユーザーに通知する
    - 自動 PR レビュアー（CodeRabbit など）は ready の PR への push ごとにレビュー枠を 1 回使い、draft はレビューしない設定が一般的。ready で開いてからレビューの修正を push すると、直す前と直した後で 2 回使う。draft ならどちらも使わない
@@ -180,7 +183,7 @@ CI 通過後、以下のチェックを順に実行する。
    gh issue edit <N> --remove-label "status: implementing" --add-label "status: in-review"
    ```
 
-ユーザーに手動検証を依頼する。host repo に preview deploy 機構（Cloudflare Pages 等）があり、ブランチ名から URL を構築できる場合は、Preview URL を表示する。手順は host repo の規約に従うこと。
+ユーザーに手動検証を依頼する（Manual Verification Checklist の項目。Post-merge follow-ups はマージ後に Issue へ載り、確認が済んだらユーザーが Issue を close する）。host repo に preview deploy 機構（Cloudflare Pages 等）があり、ブランチ名から URL を構築できる場合は、Preview URL を表示する。手順は host repo の規約に従うこと。
 
 > ここで Claude の作業は一旦完了。
 > レビューと PR マージは GitHub 上でユーザーが行う。
@@ -201,8 +204,16 @@ CI 通過後、以下のチェックを順に実行する。
    git checkout main
    git pull origin main
    ```
-4. Issue のラベルを更新する（Issue 紐付けかつラベル運用がある場合）:
+4. Issue を更新する（Issue 紐付けがある場合。ラベル操作はラベル運用がある場合のみ）:
    - PR で `Closes #N` した Issue は GitHub が自動で close するため、ラベル操作は不要
+   - **Post-merge follow-ups に項目がある PR**: 項目が `Refs #N` の Issue 本文に載っていることを確かめる。host の workflow が追記済みなら本文に `<!-- post-merge-followups #<PR番号> -->` があるので何もしない。無ければ次の形で本文末尾に追記する（`gh issue edit <N> --body-file <file>`）:
+     ```
+     ## Post-merge follow-ups from #<PR番号>
+
+     <!-- post-merge-followups #<PR番号> -->
+     - [ ] <PR の項目をそのまま>
+     ```
+     Issue は close せず、ラベルも `status: in-review` のまま残す（`pick-issue` の候補から外れる）。項目を消化して close するのはユーザー。未消化の項目を催促しない
    - 依存していた Issue（`status: blocked` のもの）があれば `status: ready` に更新する:
      ```
      gh issue edit <blocked-issue> --remove-label "status: blocked" --add-label "status: ready"

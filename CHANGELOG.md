@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Changed
+
+- `ship` / `start-dev`: the PR body separates what a reviewer can verify before merge from what can only be observed or done after it. `Manual Verification Checklist` now holds only items checkable on the PR's preview or a local checkout; a new `Post-merge follow-ups` section holds the rest (the next release, the next automated review, a backfill to run once the code is on `main`). A PR with follow-ups links its Issue with `Refs #N` instead of `Closes #N` so the Issue stays open, and cleanup appends the items to the Issue body unless a host workflow already did (per-PR marker `<!-- post-merge-followups #<PR> -->`). The Issue keeps `status: in-review`, which `pick-issue` already excludes, and the user closes it once the items are done. Previously such items sat unchecked in the review checklist at merge time and were lost in the merged PR's body (kompiro/karasu#2957).
+
 ## [0.18.0] — 2026-09-26
 
 ### Changed
