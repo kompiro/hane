@@ -3,7 +3,7 @@
 - **日付**: 2026-05-12
 - **ステータス**: 決定済み
 - **Issue**: [#10](https://github.com/kompiro/hane/issues/10)（アンブレラ）— 実装: [#11](https://github.com/kompiro/hane/pull/11)（設計ドキュメント）, [#12](https://github.com/kompiro/hane/issues/12) / [#16](https://github.com/kompiro/hane/pull/16)（`acceptance-test`）, [#13](https://github.com/kompiro/hane/issues/13) / [#17](https://github.com/kompiro/hane/pull/17)（`test-perspective`）, [#14](https://github.com/kompiro/hane/issues/14) / [#18](https://github.com/kompiro/hane/pull/18)（`design-doc`）, [#15](https://github.com/kompiro/hane/issues/15) / [#19](https://github.com/kompiro/hane/pull/19)（`qa`）
-- **関連**: [ADR-8](8-issue-based-doc-numbering.md)（「host repo の独自規約を優先」「Issue 番号優先の採番」の先例。本 ADR でも踏襲）, karasu `docs/test-perspectives/README.md` および karasu `ADR-20260509-04`（汎化元となった TPL 運用の原典）。本 ADR は設計ドキュメント `docs/design/tpl-acceptance-test-integration.md`（PR #11）を昇格させたものだが、そのファイルは昇格時に圧縮のため削除した（経緯は本 ADR に集約）
+- **関連**: [ADR-92](92-tpl-issue-anchor-for-proactive.md)（proactive TPL の採番と `discovered_from.issue` についての訂正。下記「決定」の「proactive TPL は Issue が無いことが多い」の前提を改める）, [ADR-8](8-issue-based-doc-numbering.md)（「host repo の独自規約を優先」「Issue 番号優先の採番」の先例。本 ADR でも踏襲）, karasu `docs/test-perspectives/README.md` および karasu `ADR-20260509-04`（汎化元となった TPL 運用の原典）。本 ADR は設計ドキュメント `docs/design/tpl-acceptance-test-integration.md`（PR #11）を昇格させたものだが、そのファイルは昇格時に圧縮のため削除した（経緯は本 ADR に集約）
 
 ## 背景
 
