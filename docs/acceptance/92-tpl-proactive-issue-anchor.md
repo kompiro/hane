@@ -28,8 +28,8 @@ type: tool
 
 ### AC-2: `discovered_from.issue` が起源を問わない採番の起点になっている
 
-- [ ] 2-1 が、`issue:` は起源を問わず先頭に書く採番の起点で、proactive は `root_cause_file` / `root_cause_adr` の有無で判定すると書いている
-- [ ] `TEMPLATE.md` の `issue:` 行の注記が「採番の起点。proactive でも、その TPL を起こした作業の Issue を書く」趣旨で、`root_cause_*` 行は proactive の場合に「追加」する行になっている
+- [ ] 2-1 が、`issue:` は起源を問わず先頭に書く作業の Issue（同じ Issue から 2 本目以降で番号が PR 番号に進んでも書く）で、proactive は `root_cause_file` / `root_cause_adr` の有無で判定すると書いている
+- [ ] `TEMPLATE.md` の `issue:` 行の注記が「TPL を起こした作業の Issue。proactive でも書き、番号も通常ここから採る」趣旨で、`root_cause_*` 行は proactive の場合に「追加」する行になっている
 - [ ] `TEMPLATE.md` 冒頭の使い方が「該当行だけ残す」（二者択一）ではなく `issue:` を残す指示になっている
 
 ### AC-3: design-doc から起こす proactive TPL が Issue を先頭に持つ

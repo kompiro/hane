@@ -29,7 +29,7 @@ applicable_to:
 known_consumers:          # optional — この観点が適用されると判明している具体的 consumer。grep 可能な kebab-case
   - feature-name
 discovered_from:
-  - issue: "#N"                              # 採番の起点。proactive でも、その TPL を起こした作業の Issue を書く（作業に Issue が無いときだけ省く）
+  - issue: "#N"                              # TPL を起こした作業の Issue。proactive でも書き、番号も通常ここから採る（作業に Issue が無いときだけ省く）
   # - root_cause_adr: "ADR-<番号>"            # proactive（ADR 起源）の場合に追加
   # - root_cause_file: "docs/concepts.*"     # proactive（原則ファイル起源）の場合に追加
   # - root_cause_file: "path/to/file.ts:LINE"
