@@ -23,7 +23,7 @@ Test Perspective Library（TPL）レコードの作成 / 更新 / deprecate を�
 
 ### AC-2: 新規作成手順が揃っている
 
-- [ ] 起源の判定（retrospective = `bug`/`test-infra` Issue 起点で `discovered_from.issue` / proactive = 原則ファイル・ADR 起点で `discovered_from.root_cause_file` または `root_cause_adr`）が説明されている
+- [ ] 起源の判定（retrospective = `bug`/`test-infra` Issue 起点 / proactive = 原則ファイル・ADR 起点で `discovered_from.root_cause_file` または `root_cause_adr` を追加）が説明され、`discovered_from.issue` は起源を問わず採番の起点として書く、と書かれている（#92 で改訂）
 - [ ] 3-Yes ルール（横展開しうる / 構造的に再発しうる / 既存 TPL 未掲載）が説明されている
 - [ ] ファイル名規約 `docs/test-perspectives/TPL-YYYYMMDD-NN-<slug>.md`（ゼロ埋めなし）と「ホスト repo が独自規約を持つ場合はそちら優先」のエスケープが書かれている
 - [ ] frontmatter スキーマ（`id` / `title` / `status` / `date` / `applicable_to` / `known_consumers?` / `discovered_from` / `related_to` / `topic` / `scope.packages`）が示されている

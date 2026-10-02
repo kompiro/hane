@@ -43,8 +43,10 @@ description: >
 
 TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で区別できるようにする:
 
-- **Retrospective（事後）** — `bug` または `test-infra` ラベルの Issue から、実際に起きた失敗を一般化する。`discovered_from.issue: "#N"` を持つ。`test-infra` は E2E flake / fixture / harness の問題で、典型的には testing 系トピックの観点を生む
-- **Proactive（事前）** — アーキテクチャ原則 / 非目標 / north-star（`docs/concepts*` のようなファイルや ADR）から、原則が破られたときに起きるであろう失敗を予測して観点化する。`discovered_from.root_cause_file: "docs/concepts.*"` または `discovered_from.root_cause_adr: "ADR-..."` を持つ
+- **Retrospective（事後）** — `bug` または `test-infra` ラベルの Issue から、実際に起きた失敗を一般化する。`discovered_from.issue: "#N"` にその Issue を書く。`test-infra` は E2E flake / fixture / harness の問題で、典型的には testing 系トピックの観点を生む
+- **Proactive（事前）** — アーキテクチャ原則 / 非目標 / north-star（`docs/concepts*` のようなファイルや ADR）から、原則が破られたときに起きるであろう失敗を予測して観点化する。`discovered_from.root_cause_file: "docs/concepts.*"` または `discovered_from.root_cause_adr: "ADR-..."` を**加えて**持つ
+
+`discovered_from.issue` は起源の目印ではなく **TPL を起こした作業の Issue** で、起源を問わず先頭に書く。proactive でも、作業（DesignDoc・機能実装）に Issue があればそれを書く。番号は通常この Issue から採る（2-3）。同じ Issue から 2 本目以降の TPL で番号が PR 番号に進んだ場合も、`issue:` にはその Issue を書く。proactive かどうかは `root_cause_file` / `root_cause_adr` の有無で判定し、`issue:` が無いことでは判定しない（`issue:` を省くと、レビュアーが「起点 Issue の無い TPL」と読んで PR 番号への採番し直しを求める）。
 
 起源が違うだけで、frontmatter スキーマ・3-Yes ルール・更新/deprecate の運用ルールはすべて同じ。
 
@@ -59,8 +61,10 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
 #### 2-3. ファイルを作成する
 
 - ファイル名: `docs/test-perspectives/TPL-<番号>-<slug>.md`（見出し `TPL-<番号>`、ゼロ埋めなし、`<slug>` は観点を端的に表す小文字 kebab）。**番号は GitHub の番号ベース**、優先順位は ADR-8 / ADR-10 と同じ:
-  1. 紐付く Issue 番号 — retrospective TPL は起点の `bug` / `test-infra` Issue 番号（`discovered_from.issue` と揃う）
-  2. Issue が無ければ PR 番号 — proactive TPL は原則 / ADR 起源で Issue が無いことが多いので、それを起こした DesignDoc PR の番号を使う（draft PR を先に開く運用と整合）
+  判定基準は 1 つ: **その TPL を起こした作業に Issue があるか**。起源（retrospective / proactive）では分けない。
+
+  1. 作業の Issue 番号: retrospective TPL は起点の `bug` / `test-infra` Issue、proactive TPL はそれを起こした DesignDoc・機能の Issue（いずれも `discovered_from.issue` に書く Issue）
+  2. 作業に Issue が無い、またはその Issue 番号を別の TPL がすでに使っているときだけ PR 番号: TPL を起こした PR（proactive なら DesignDoc PR）の番号を使う（draft PR を先に開く運用と整合）
   3. どちらも無いときだけローカル採番（`docs/test-perspectives/` 内の既存最大 + 1）。
      ローカル採番だけは並行ブランチ間で衝突しうる — ホストが `@kompiro/tpl-tools`
      （>= 0.0.7）の `tpl validate` を持つ場合、重複 id は `duplicate-id` としてマージ時に

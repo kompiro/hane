@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - `ship` / `start-dev`: the PR body separates what a reviewer can verify before merge from what can only be observed or done after it. `Manual Verification Checklist` now holds only items checkable on the PR's preview or a local checkout; a new `Post-merge follow-ups` section holds the rest (the next release, the next automated review, a backfill to run once the code is on `main`). A PR with follow-ups links its Issue with `Refs #N` instead of `Closes #N` so the Issue stays open, and cleanup appends the items to the Issue body unless a host workflow already did (per-PR marker `<!-- post-merge-followups #<PR> -->`). The Issue keeps `status: in-review`, which `pick-issue` already excludes, and the user closes it once the items are done. Previously such items sat unchecked in the review checklist at merge time and were lost in the merged PR's body (kompiro/karasu#2957).
 
+### Fixed
+
+- `test-perspective` / `design-doc`: a proactive TPL raised under an Issue now takes that Issue's number and names it in `discovered_from.issue`. The skill and `TEMPLATE.md` described `issue:` as the retrospective marker and the PR number as the usual source for proactive TPLs ("proactive TPL は Issue が無いことが多い"), though `design-doc` opens design docs from Issues and raises proactive TPLs in the same PR. Numbering now has one test: does the work that raises the TPL have an Issue? `issue:` is the numbering anchor for both origins, and a proactive TPL is recognised by its `root_cause_file` / `root_cause_adr` entry. On kompiro/karasu#3025 a proactive `TPL-3022` was numbered correctly but left out `issue:` per the template, and review read it as having no originating Issue (ADR-92). (#92)
+
 ## [0.18.0] — 2026-09-26
 
 ### Changed

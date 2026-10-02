@@ -4,7 +4,7 @@ test-perspective skill が生成する TPL（Test Perspective Library）記録�
 使い方:
 1. このファイルを `docs/test-perspectives/TPL-<番号>-<slug>.md` にコピーする。
 2. コピー先で本 HTML コメントブロック（先頭）を削除し、frontmatter と各節を埋める。
-3. proactive / retrospective の起源に応じて `discovered_from` の該当行だけ残す。
+3. `discovered_from` の `issue:` は起源を問わず残し、proactive なら `root_cause_*` の該当行も残す。
 
 規約メモ:
 - ファイル名: `docs/test-perspectives/TPL-<番号>-<slug>.md`。番号は GitHub
@@ -29,9 +29,9 @@ applicable_to:
 known_consumers:          # optional — この観点が適用されると判明している具体的 consumer。grep 可能な kebab-case
   - feature-name
 discovered_from:
-  - issue: "#N"                              # retrospective の場合（この番号がファイル名の番号になる）
-  # - root_cause_adr: "ADR-<番号>"            # proactive（ADR 起源）の場合
-  # - root_cause_file: "docs/concepts.*"     # proactive（原則ファイル起源）の場合
+  - issue: "#N"                              # TPL を起こした作業の Issue。proactive でも書き、番号も通常ここから採る（作業に Issue が無いときだけ省く）
+  # - root_cause_adr: "ADR-<番号>"            # proactive（ADR 起源）の場合に追加
+  # - root_cause_file: "docs/concepts.*"     # proactive（原則ファイル起源）の場合に追加
   # - root_cause_file: "path/to/file.ts:LINE"
 related_to:
   - TPL-<番号>            # optional — 同ディレクトリの実在 TPL のみ
