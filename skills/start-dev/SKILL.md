@@ -132,9 +132,18 @@ description: >
 ### 6. コミット
 
 `/commit` スキルを使用して、関心事ごとに Conventional Commits 形式でコミットする。
-**コミット完了後はユーザーの返答を待たず、即座にステップ7（PR作成）へ進む。**
+**コミット完了後はユーザーの返答を待たず、即座にステップ7（PR を作る前のコードレビュー）へ進む。**
 
-### 7. PR 作成
+### 7. PR を作る前のコードレビュー
+
+**到達状態**: コードレビューの修正が PR の最初の push に含まれている。レビュー前のコードは remote に push されない。
+
+1. **コードレビュー**: base ブランチとの差分（`git diff origin/main...HEAD`）にレビューを当てる。PR 番号ではなく差分を対象にする
+   - host がレビューコマンドを定めていればそれを使う（例: `/engineering:code-review` に差分を渡す）。定めが無ければ、diff やブランチを対象に取れるレビューコマンドを使う。PR 番号を前提にするコマンド（例: `/review <pr-number>`）は、この時点では PR が無いので使えない
+2. 指摘ごとに対応可否を決め、直すものを `/commit` でコミットする
+3. 修正をコミットしたら、host の lint / test を再実行して通ることを確かめる
+
+### 7.5. PR 作成（draft → ready）
 
 1. `git push -u origin <branch-name>` でリモートにプッシュする
    - host が lefthook / husky / pre-commit など pre-push hook を採用していれば push 時に自動実行される。**`--no-verify` / `LEFTHOOK=0` 等で hook を回避しない**
@@ -150,16 +159,9 @@ description: >
      - テンプレートにこの節が無い host でも、項目があれば節を足して書く
    - **Related Docs**: 更新した docs/ 内のファイル。なければ `N/A`
 3. `gh pr create --draft` で **draft の** PR を作成し、URL をユーザーに通知する
-   - 自動 PR レビュアー（CodeRabbit など）は ready の PR への push ごとにレビュー枠を 1 回使い、draft はレビューしない設定が一般的。ready で開いてからレビューの修正を push すると、直す前と直した後で 2 回使う。draft ならどちらも使わない
+   - 自動 PR レビュアー（CodeRabbit など）は ready の PR への push ごとにレビュー枠を 1 回使い、draft はレビューしない設定が一般的。draft で作って ready にするのを 1 回だけにすれば、自動レビューは修正後のコードに 1 回だけ走る
    - draft を skip しない host でも失うものは無い（ready にした時点で CI とレビューが 1 回走る）
-
-### 7.5. draft でのコードレビュー
-
-**到達状態**: PR を ready にした時点で、コードレビューの修正がすでに push されている。
-
-1. **コードレビュー**: `/review <pr-number>` を実行して PR の変更内容をレビューする（host が別のレビューコマンドを定めていればそれを使う。例: `/code-review`）
-2. 指摘ごとに対応可否を決め、直すものを `/commit` でコミットして **まとめて 1 回だけ** `git push` する
-3. draft を外す: `gh pr ready <pr-number>`。CI と自動レビュアーはここで走り出す
+4. draft を外す: `gh pr ready <pr-number>`。CI と自動レビュアーはここで走り出す
 
 ### 8. CI 確認
 
