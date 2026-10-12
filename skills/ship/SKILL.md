@@ -10,7 +10,7 @@ description: >
 
 # Ship Workflow
 
-コミット済みの変更を PR 作成（draft）→ コードレビュー → ready → CI 確認 → クリーンアップまで進める。
+コミット済みの変更をコードレビュー → PR 作成（draft）→ ready → CI 確認 → クリーンアップまで進める。
 `/start-dev` を使わずにブランチで直接開発した場合にも対応する。
 
 ## 前提条件
@@ -53,7 +53,17 @@ description: >
    - 追記する場合は push より前に `/commit` でコミットに含める（push 後に気づくと PR に追従コミットが増える）
    - リリース手順自体（Unreleased の版上げ → tag 等）はこのスキルの責務外。host の手順（例: README の「Releasing」節）に従う
 
-### 1. PR 作成
+### 1. PR を作る前のコードレビュー
+
+**到達状態**: PR を ready にした時点で、コードレビューの修正がすでに push されている。PR がまだ無いブランチなら、修正は PR の最初の push に含まれる。
+
+1. **コードレビュー**: base ブランチとの差分（`git diff origin/main...HEAD`）にレビューを当てる。PR 番号ではなく差分を対象にする
+   - host がレビューコマンドを定めていればそれを使う（例: `/engineering:code-review` に差分を渡す）。定めが無ければ、diff やブランチを対象に取れるレビューコマンドを使う。PR 番号を前提にするコマンド（例: `/review <pr-number>`）は、この時点では PR が無いので使えない
+2. 指摘ごとに対応可否を決め、直すものを `/commit` でコミットする
+3. 修正をコミットしたら、host の lint / test を再実行して通ることを確かめる
+4. ブランチがすでに push 済み、または PR がすでにある場合も、この手順は飛ばさない。修正はステップ 1.5 で ready にする前に push する
+
+### 1.5. PR 作成（draft → ready）
 
 1. リモートにプッシュする:
    ```
@@ -62,8 +72,10 @@ description: >
    - host が pre-push hook を採用していれば push 時に自動実行される。**`--no-verify` / `LEFTHOOK=0` 等で hook を回避しない**
    - hook が失敗した場合は原因を直してから再 push する。failing hook を skip して `gh pr create` まで進めると、CI で初めて気づき手戻りが発生する
    - hook を採用していない host で push 前に手元確認したい場合は、host が提供する preflight 系コマンド（例: `pnpm preflight` / `make check`）があればそれを実行する。コマンド名は host の `package.json` scripts や `Makefile` から検出する
-2. `git log --oneline origin/main..HEAD` と `git diff origin/main...HEAD --stat` で変更内容を分析する
-3. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
+2. ブランチの PR がすでにあるか確認する: `gh pr view --json number,isDraft,url`
+   - PR があれば、本文の生成と PR の作成（下の 3〜7）を飛ばして 8（draft を外す）へ進む。PR が draft でなければ 8 も飛ばして「2. CI 確認」へ進む
+3. `git log --oneline origin/main..HEAD` と `git diff origin/main...HEAD --stat` で変更内容を分析する
+4. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
 
    - **Purpose**: `Closes #N` で Issue と紐付け。**Post-merge follow-ups に項目があるときは `Refs #N`**（項目の追記先として Issue を open のまま残す）。Issue がない場合は変更の目的を1行で記述（follow-ups があるなら先に Issue を起こす）
    - **Summary**: コミット履歴と差分から1-3行で要約
@@ -74,27 +86,18 @@ description: >
      - テンプレートにこの節が無い host でも、項目があれば節を足して書く
    - **Related Docs**: 更新した docs/ 内のファイル。なければ `N/A`
 
-4. PR タイトルを生成する:
+5. PR タイトルを生成する:
    - Conventional Commits 形式に準拠する（例: `feat(core): add team property parsing`）
    - ブランチのコミット群の主要な変更を反映する
    - 70文字以内に収める
-5. 生成した PR タイトルと本文をユーザーに提示し、確認を得る
-6. 承認後、`gh pr create --draft` で **draft の** PR を作成する:
+6. 生成した PR タイトルと本文をユーザーに提示し、確認を得る
+7. 承認後、`gh pr create --draft` で **draft の** PR を作成し、URL をユーザーに通知する:
    ```
    gh pr create --draft --title "<title>" --body "<body>"
    ```
-   - 自動 PR レビュアー（CodeRabbit など）は ready の PR への push ごとにレビュー枠を 1 回使い、draft はレビューしない設定が一般的。ready で開いてからレビューの修正を push すると、直す前と直した後で 2 回使う。draft ならどちらも使わない
+   - 自動 PR レビュアー（CodeRabbit など）は ready の PR への push ごとにレビュー枠を 1 回使い、draft はレビューしない設定が一般的。draft で作って ready にするのを 1 回だけにすれば、自動レビューは修正後のコードに 1 回だけ走る
    - draft を skip しない host でも失うものは無い（ready にした時点で CI とレビューが 1 回走る）
-7. PR の URL をユーザーに通知する
-
-### 1.5. draft でのコードレビュー
-
-**到達状態**: PR を ready にした時点で、コードレビューの修正がすでに push されている。
-
-1. PR 番号を取得する（`gh pr create` の出力から）
-2. **コードレビュー**: `/review <pr-number>` を実行して PR の変更内容をレビューする（host が別のレビューコマンドを定めていればそれを使う。例: `/code-review`）
-3. 指摘ごとに対応可否を決め、直すものを `/commit` でコミットして **まとめて 1 回だけ** `git push` する
-4. draft を外す: `gh pr ready <pr-number>`。CI と自動レビュアーはここで走り出す
+8. draft を外す: `gh pr ready <pr-number>`（PR 番号は `gh pr create` の出力から取る）。CI と自動レビュアーはここで走り出す
 
 ### 2. CI 確認
 
