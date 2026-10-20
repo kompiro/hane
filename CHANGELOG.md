@@ -4,6 +4,12 @@ All notable changes to `hane` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this plugin adheres to [Semantic Versioning](https://semver.org/) at the plugin level (see "Versioning policy" in README).
 
+## [Unreleased]
+
+### Changed
+
+- `ship` / `start-dev`: the PR body no longer has a `Post-merge follow-ups` section, and an implementation PR always links its Issue with `Closes #N`, so the Issue closes when the PR merges. An item that can only be checked or done after the merge (the next release, a production-only setting, a backfill on `main`) gets its own Issue, opened before the PR and linked from the PR's Purpose in one line. Steps the host's process already defines after a merge (ADR promotion, cleanup) are not written down. The cleanup step that appended follow-ups to the Issue body is gone. In 0.19.0 most implementation PRs listed such a step as a follow-up, switched to `Refs #N`, and left their Issue open after the merge. (#97)
+
 ## [0.19.0] — 2026-10-12
 
 ### Changed
