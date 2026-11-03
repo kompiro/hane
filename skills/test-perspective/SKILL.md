@@ -23,7 +23,7 @@ description: >
 
 - **`topic` の controlled vocabulary**: ホスト repo が ADR の語彙を持つ場合（例: `docs/adr/README.md` のセクション見出し、`adr.config.json` の `topics` 等）はそれを使い、TPL と ADR で語彙を共有する。持たない場合は free-form の小文字 kebab トピックでよい
 - **ファイル名規約**: 既定は `docs/test-perspectives/TPL-<番号>-<slug>.md`（見出し `TPL-<番号>`、ゼロ埋めなし、GitHub 番号ベース。詳細は下記「ファイルを作成する」）。ホスト repo が独自の規約（例: 日付ベースの `TPL-YYYYMMDD-NN-<slug>.md`）を持つ場合はそちらを優先する（ADR/AT の命名と同じ「host 独自規約優先」のエスケープ）
-- **検証ツール**: ホスト repo が `tpl:validate`（frontmatter と一覧表の machine check）等を提供していれば、作成・更新後にそれを実行する。無ければ手動で frontmatter を確認する
+- **検証ツール**: ホスト repo が `tpl:validate`（frontmatter の machine check。手で保守する一覧表を持つホストでは表との整合も見る）等を提供していれば、作成・更新後にそれを実行する。無ければ手動で frontmatter を確認する
 - **関連 TPL クエリ**: ホスト repo が `tpl:related <topic>` 等を提供していればそれで関連 TPL を一覧する。無ければ `docs/test-perspectives/` 配下の frontmatter（`topic` / `scope.packages` / `applicable_to` / `known_consumers`）を grep する
 - **定期 deprecation レビュー**: cadence（週次 / 月次 / 半期）と自動化（CI で review Issue を自動生成する等）はホスト repo に委ねる。このスキルは「`active` な TPL を放置しないため定期レビューを推奨」とだけ示す
 
@@ -78,7 +78,10 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
 - frontmatter と本文（5 節構成）の雛形は、この skill ディレクトリの [`TEMPLATE.md`](TEMPLATE.md) を使う。`TEMPLATE.md` をコピーして冒頭の HTML コメントを削除し、frontmatter と各節を埋める。本文は 観点 / 想定される失敗モード / チェックリスト（3〜5 項目）/ 既知の対処パターン / 関連テスト の 5 節。
   - `applicable_to` — 適用される **抽象パターン**。consumer の具体名は書かない（そちらは `known_consumers`）。consumer 空間が広すぎて列挙が無意味なら `known_consumers` ごと省略してよい
   - `known_consumers` — 新たに該当 consumer が見つかったら追記する
-- ホスト repo が TPL の一覧表（`docs/test-perspectives/README.md` 等）を持つ場合はそこに行を追加する。`tpl:validate` 等があれば実行して frontmatter と一覧表の整合を確認する
+- TPL の一覧の扱いは、ホスト repo の一覧が手で保守する表か生成ファイルかで分かれる。生成ファイルかどうかはそのファイルのヘッダで判定する（例: 「`tpl regenerate` で生成。手で編集しない」旨のコメント）:
+  - 手で保守する一覧表（`docs/test-perspectives/README.md` の表等）: そこに行を追加する
+  - 生成された索引（例: `docs/test-perspectives/index.md`）: **PR では索引を編集も再生成もせず、TPL のファイルだけを変える。** 索引がいつ・どう更新されるかはホスト repo の `docs/test-perspectives/README.md` に従う。手元で再生成して索引に差分が出たら、その差分は PR に含めない
+- `tpl:validate` 等があれば実行して frontmatter（手で保守する一覧表があれば表との整合も）を確認する
 
 > proactive を引用した DesignDoc は、その実装 PR で該当チェックリスト項目の contract test と AT AC を着地させる（"forward 運用"）。`acceptance-test` スキルがこの転記を行う。
 
@@ -101,7 +104,7 @@ TPL は 2 つの起源から生まれる。frontmatter の `discovered_from` で
 
 ### 5. レビュー依頼
 
-作成・更新・deprecate した TPL ファイル（と一覧表の差分）をユーザーに提示し、レビューを依頼する。
+作成・更新・deprecate した TPL ファイル（手で保守する一覧表を持つホストでは表の差分も）をユーザーに提示し、レビューを依頼する。
 
 ## TPL のライフサイクル
 
