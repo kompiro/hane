@@ -22,6 +22,8 @@ tpl-tools は skill を自分の plugin として持つことにした（tpl-too
 
 hane の `test-perspective` skill を **Retire** レベルで引退させ、後継を tpl-tools plugin の
 `tpl-tools:test-perspective` とする。hane の marketplace（`kompiro-hane`）に tpl-tools を載せて配る。
+ADR-55 の Retire に加えて frontmatter に `disable-model-invocation: true` を付ける。トリガー語を外しても
+`description` が残る限り、モデルが自動で選ぶ余地があるため。`/hane:test-perspective` と明示すれば呼べる。
 
 ADR-10 のうち、次の点を改める。
 

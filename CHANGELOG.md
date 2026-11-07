@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Deprecated
 
-- `test-perspective` skill: **retired**. Superseded by `/tpl-tools:test-perspective`, because the rules for writing a TPL now live in tpl-tools. Trigger phrases were removed from `description`, so a repo that uses TPLs needs the tpl-tools plugin for the skill to be suggested. The body is kept for provenance. See [ADR-101](docs/adr/101-move-test-perspective-to-tpl-tools.md). (#101)
+- `test-perspective` skill: **retired**. Superseded by `/tpl-tools:test-perspective`, because the rules for writing a TPL now live in tpl-tools. Trigger phrases were removed from `description` and `disable-model-invocation: true` was added, so a repo that uses TPLs needs the tpl-tools plugin for the skill to be suggested. The body is kept for provenance. See [ADR-101](docs/adr/101-move-test-perspective-to-tpl-tools.md). (#101)
 
 ### Fixed
 

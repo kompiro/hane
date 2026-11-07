@@ -35,6 +35,7 @@ grep -q '^deprecated_reason:' $f && echo "OK: reason"
 grep -q '^superseded_by: tpl-tools:test-perspective' $f && echo "OK: superseded_by"
 grep -q '⚠️ Deprecated' $f && echo "OK: banner"
 ! grep -qi 'Trigger when the user says' $f && echo "OK: trigger phrases removed"
+grep -q '^disable-model-invocation: true' $f && echo "OK: model invocation disabled"
 grep -q '\[Deprecated\]' $f && echo "OK: description prefixed [Deprecated]"
 grep -q '## 手順' $f && echo "OK: body kept for provenance"
 ```
