@@ -1,13 +1,22 @@
 ---
 name: test-perspective
 description: >
-  Create, update, or deprecate Test Perspective Library (TPL) records in docs/test-perspectives/.
-  Trigger when the user says: "テスト観点", "観点ライブラリ", "TPL", "観点を追加", "TPLを起こす",
-  "TPLをdeprecate", "test perspective", "add TPL", "deprecate TPL", or similar phrases requesting
-  test-perspective record maintenance.
+  [Deprecated] Retired: superseded by the `test-perspective` skill of the tpl-tools plugin
+  (`/plugin install tpl-tools@kompiro-hane`, then `/tpl-tools:test-perspective`). No longer
+  triggered; the body is kept for provenance. See docs/adr/101-move-test-perspective-to-tpl-tools.md.
+disable-model-invocation: true
+deprecated: true
+deprecated_reason: The rules for writing a TPL now live in tpl-tools, so the skill moved there to change in the same PR as the validator it describes.
+superseded_by: tpl-tools:test-perspective
 ---
 
 # Test Perspective (TPL) Skill
+
+> **⚠️ Deprecated (Retire level, see [ADR-55](../../docs/adr/55-skill-deprecation-convention.md) and [ADR-101](../../docs/adr/101-move-test-perspective-to-tpl-tools.md)).**
+> Superseded by **`/tpl-tools:test-perspective`** from the
+> [tpl-tools](https://github.com/kompiro/tpl-tools) plugin (`/plugin install tpl-tools@kompiro-hane`).
+> The trigger phrases were removed from `description` and model invocation is disabled, so
+> this no longer competes with the successor. The rules below no longer follow tpl-tools. The body is kept for provenance only.
 
 再発しうる失敗パターンを、構造化された「観点」として `docs/test-perspectives/` に蓄積・更新・deprecate する。
 1 観点 = 1 ファイル。DesignDoc 作成時・新機能実装時・bug 修正時に該当 `topic` / `scope.packages` の観点が参照される状態を作るのが目的。

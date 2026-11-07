@@ -32,8 +32,8 @@ hane の各 skill が前提とする host-repo の慣習（ドキュメントデ
 
 ### AC-3: 選択に応じてディレクトリとテンプレートを生成する
 
-- [ ] 採用した各 doc ディレクトリに `TEMPLATE.md` が作られる
-- [ ] 各 `TEMPLATE.md` は owning skill のアセットをコピーしたもの（`docs/design/TEMPLATE.md` ← `design-doc/TEMPLATE.md`、`docs/adr/TEMPLATE.md` ← `design-doc/ADR-TEMPLATE.md`、`docs/acceptance/TEMPLATE.md` ← `acceptance-test/TEMPLATE.md`、`docs/test-perspectives/TEMPLATE.md` ← `test-perspective/TEMPLATE.md`）。コピー元との内容一致を確認できる
+- [ ] 採用した各 doc ディレクトリに `TEMPLATE.md` が作られる。`docs/test-perspectives/` だけは `.gitkeep` を作り、tpl-tools の plugin と CLI を案内する（#101 で改訂）
+- [ ] 各 `TEMPLATE.md` は owning skill のアセットをコピーしたもの（`docs/design/TEMPLATE.md` ← `design-doc/TEMPLATE.md`、`docs/adr/TEMPLATE.md` ← `design-doc/ADR-TEMPLATE.md`、`docs/acceptance/TEMPLATE.md` ← `acceptance-test/TEMPLATE.md`）。コピー元との内容一致を確認できる
 - [ ] テンプレートを複製・再生成していない（コピー元は plugin 内 skill アセット）
 
 ### AC-4: process.md スケルトンを生成する

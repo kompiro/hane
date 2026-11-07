@@ -10,8 +10,8 @@ description: >
 
 # Host Repo Init Skill
 
-hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `test-perspective` /
-`qa` など）は、host repo が一定のディレクトリ・ドキュメント慣習を採用していることを
+hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `qa` など）は、
+host repo が一定のディレクトリ・ドキュメント慣習を採用していることを
 前提に動く。このスキルは、その初期セットアップを対話で行う。
 
 このスキルの価値は「固定のファイルを置くこと」ではなく、**repo ごとに異なる選択を
@@ -57,7 +57,7 @@ hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `test-persp
 | `docs/design/` を採用 | `docs/design/TEMPLATE.md` |
 | `docs/adr/` を採用 | `docs/adr/TEMPLATE.md` |
 | `docs/acceptance/` を採用 | `docs/acceptance/TEMPLATE.md` |
-| `docs/test-perspectives/` を採用 | `docs/test-perspectives/TEMPLATE.md` |
+| `docs/test-perspectives/` を採用 | `docs/test-perspectives/.gitkeep`（雛形は tpl-tools plugin の `test-perspective` skill が持つのでコピーしない） |
 | いずれかの doc ディレクトリを採用 | `docs/process.md`（スケルトン。下記参照） |
 | `.claude/rules/` を採用 | `.claude/rules/.gitkeep` |
 | ラベル運用を採用 | `status: *` ラベル 6 種を `gh label create` で作成 |
@@ -72,7 +72,6 @@ hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `test-persp
 | `docs/design/TEMPLATE.md` | `../design-doc/TEMPLATE.md` |
 | `docs/adr/TEMPLATE.md` | `../design-doc/ADR-TEMPLATE.md` |
 | `docs/acceptance/TEMPLATE.md` | `../acceptance-test/TEMPLATE.md` |
-| `docs/test-perspectives/TEMPLATE.md` | `../test-perspective/TEMPLATE.md` |
 
 コピー後、内容は変更しない。各テンプレート冒頭の HTML コメントに規約（ファイル名・
 言語・番号規約）が書かれているので、host repo 側で追加の説明は不要。
@@ -103,10 +102,10 @@ hane の各 skill（`start-dev` / `design-doc` / `acceptance-test` / `test-persp
 - **ブランチ・worktree ルール** — `main` への直 push 禁止、worktree は
   `.claude/worktrees/<branch-name>`、ブランチ命名（`feat/` `fix/` `docs/` `chore/`
   `refactor/` + kebab-case）。
-- **採番規約** — 選んだ ADR ファイル名規約。AT / TPL も同じ番号ベース。
+- **採番規約** — 選んだ ADR ファイル名規約。AT も同じ番号ベース。TPL の id は tpl-tools の config（`idFormat`）に従う。
 - **ラベル運用** — 採用した場合のみ、`status: *` の遷移を記す。
-- 各ドキュメント種別を採用した場合は、対応する `/hane:` skill（`design-doc` /
-  `acceptance-test` / `test-perspective`）で記録を作る旨を 1 行ずつ書く。
+- 各ドキュメント種別を採用した場合は、対応する skill（`/hane:design-doc` /
+  `/hane:acceptance-test` / `/tpl-tools:test-perspective`）で記録を作る旨を 1 行ずつ書く。
 
 process.md は host repo がその後育てる前提のスケルトン。冒頭にその旨を明記する。
 
@@ -121,6 +120,9 @@ process.md は host repo がその後育てる前提のスケルトン。冒頭�
 - host repo の `CLAUDE.md` に hane の利用を 1 節追記する（このスキルは
   `CLAUDE.md` の内容には踏み込まない — repo 固有のため）。
 - `/hane:start-dev` で最初の開発を始められる。
+- `docs/test-perspectives/` を採用した場合は、TPL を書く skill と検証の CLI を入れる:
+  `/plugin install tpl-tools@kompiro-hane` と
+  [`@kompiro/tpl-tools`](https://github.com/kompiro/tpl-tools)。
 
 ## 冪等性
 

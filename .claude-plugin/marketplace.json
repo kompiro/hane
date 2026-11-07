@@ -12,6 +12,14 @@
         "source": "url",
         "url": "https://github.com/kompiro/hane.git"
       }
+    },
+    {
+      "name": "tpl-tools",
+      "description": "Claude Code skill for writing Test Perspective Library (TPL) records under the rules the tpl CLI checks.",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/kompiro/tpl-tools.git"
+      }
     }
   ]
 }
