@@ -21,7 +21,6 @@ body:
         - sync-worktrees
         - design-doc
         - acceptance-test
-        - test-perspective
         - dependabot
         - security-alert
         - review-docs

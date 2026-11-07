@@ -7,7 +7,7 @@ type: tool
 - **日付**: 2026-05-12
 - **Issue**: #13
 - **PR**: なし
-- **関連ADR**: なし（design doc `docs/design/tpl-acceptance-test-integration.md`、将来 ADR-10 へ昇格予定）
+- **関連ADR**: なし（design doc `docs/design/tpl-acceptance-test-integration.md`、将来 ADR-10 へ昇格予定）。ADR-101 で本 skill を引退させたので、トリガー語を含むこの AT は再実行しない（現在の状態は AT-101）
 - **Related TPLs**: なし（hane は `docs/test-perspectives/` を採用しないため）
 - **対象**: `skills/test-perspective/SKILL.md`, `README.md`, `CHANGELOG.md`
 

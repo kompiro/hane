@@ -33,7 +33,7 @@ No prior knowledge of [karasu](https://github.com/kompiro/karasu) — the projec
 | `design-doc` | Create `docs/design/` brainstorm/exploration documents. |
 | `acceptance-test` | Create `docs/acceptance/NNNN-*.md` records. |
 | ~~`qa`~~ | _Deprecated (retired) — superseded by the `qa` subagent + `acceptance-test`. See [ADR-55](docs/adr/55-skill-deprecation-convention.md)._ |
-| `test-perspective` | Create / update / deprecate Test Perspective Library (TPL) records under `docs/test-perspectives/`. |
+| ~~`test-perspective`~~ | _Deprecated (retired): superseded by `/tpl-tools:test-perspective` from the [tpl-tools](https://github.com/kompiro/tpl-tools) plugin. See [ADR-101](docs/adr/101-move-test-perspective-to-tpl-tools.md)._ |
 | `dependabot` | Batch-triage open Dependabot update PRs with a mandatory upstream risk analysis, route the go/no-go decision through a Design Doc, and record the outcome in an ADR. |
 | `security-alert` | Triage open Dependabot security alerts: collect them from the alerts API, route by direct/transitive, fix (merge PR / bump / package-manager override), and record the decision in an ADR. |
 | `review-docs` | Find broken links and cross-document inconsistencies in `docs/`. |
@@ -48,6 +48,12 @@ No prior knowledge of [karasu](https://github.com/kompiro/karasu) — the projec
 
 Skills are then invoked as `/hane:commit`, `/hane:ship`, etc.
 
+The marketplace also lists [tpl-tools](https://github.com/kompiro/tpl-tools), whose `/tpl-tools:test-perspective` skill writes Test Perspective Library (TPL) records. Install it if your repo uses `docs/test-perspectives/`:
+
+```
+/plugin install tpl-tools@kompiro-hane
+```
+
 ## Host repo prerequisites
 
 Run `/hane:init` to scaffold the items below interactively — it asks which doc directories to adopt, the ADR filename scheme, and whether to use status labels, then creates the directories, copies the document templates, and writes a `process.md` skeleton. It is idempotent, so it is also safe to run later to fill gaps.
@@ -55,7 +61,7 @@ Run `/hane:init` to scaffold the items below interactively — it asks which doc
 - **Add `.claude/worktrees/` to `.gitignore`.** `start-dev`, `ship`, and `design-doc` create persistent worktrees there. Without the ignore entry, hooks that detect untracked files may misfire.
 - **Optional**: `status: ready / blocked / on-hold / implementing / designing / designed / in-review` label set if you want the skills to update Issue status as work progresses. Skipped silently if labels are absent.
 - **Optional**: `docs/design/` and `docs/adr/` directories if you want Design Doc and ADR-promotion workflows. Each skill checks for the relevant directory at runtime.
-- **Optional**: `docs/test-perspectives/` directory if you want the Test Perspective Library workflow. The `test-perspective` skill creates/updates records there; `acceptance-test` and `design-doc` cite matching records when the directory exists. Skipped silently if absent.
+- **Optional**: `docs/test-perspectives/` directory if you want the Test Perspective Library workflow. The `/tpl-tools:test-perspective` skill creates/updates records there; `acceptance-test` and `design-doc` cite matching records when the directory exists. Skipped silently if absent.
 
 ## Conventions adopted by these skills
 
@@ -63,8 +69,8 @@ Run `/hane:init` to scaffold the items below interactively — it asks which doc
 - Branches: `feat/`, `fix/`, `docs/`, `chore/`, `refactor/` + kebab-case.
 - Commits: Conventional Commits with English subjects.
 - PR template: falls back to a built-in minimal template if `.github/PULL_REQUEST_TEMPLATE.md` is absent.
-- Doc files (`docs/{acceptance,adr,test-perspectives}/`) are numbered from the linked GitHub Issue, then PR, then a local sequence — no zero-padding (see [ADR-8](docs/adr/8-issue-based-doc-numbering.md), [ADR-10](docs/adr/10-tpl-integration-into-skills.md)); a host repo's own naming convention takes precedence. ADRs are written in the language of the repo's existing ADRs / project rules — in this repo, Japanese (like the design docs and skill bodies). Promoting a design doc to an ADR condenses it into the ADR and removes the original `docs/design/` file in the same PR.
-- Document skeletons are shipped as standalone `TEMPLATE.md` assets next to the skill that owns them — `design-doc/TEMPLATE.md` (design doc), `acceptance-test/TEMPLATE.md` (AT record), `test-perspective/TEMPLATE.md` (TPL record), and `design-doc/ADR-TEMPLATE.md` (ADR). Each skill copies its template rather than re-deriving the shape.
+- Doc files (`docs/{acceptance,adr}/`) are numbered from the linked GitHub Issue, then PR, then a local sequence — no zero-padding (see [ADR-8](docs/adr/8-issue-based-doc-numbering.md)); a host repo's own naming convention takes precedence. TPL ids follow the `idFormat` in the host's tpl-tools config. ADRs are written in the language of the repo's existing ADRs / project rules — in this repo, Japanese (like the design docs and skill bodies). Promoting a design doc to an ADR condenses it into the ADR and removes the original `docs/design/` file in the same PR.
+- Document skeletons are shipped as standalone `TEMPLATE.md` assets next to the skill that owns them — `design-doc/TEMPLATE.md` (design doc), `acceptance-test/TEMPLATE.md` (AT record) and `design-doc/ADR-TEMPLATE.md` (ADR). Each skill copies its template rather than re-deriving the shape.
 - Deprecating a skill: mark its `SKILL.md` frontmatter with `deprecated: true` + `deprecated_reason:` (and `superseded_by:` when there is a successor), and add a `> **⚠️ Deprecated.**` banner to the body. The marker alone does **not** stop the harness from triggering the skill — triggering is driven by `description`. So there are two levels: **Soft-deprecate** keeps the trigger phrases (skill still fires, but is recorded as deprecated); **Retire** also strips the "Trigger when the user says …" phrases from `description` (prefixed with `[Deprecated]`) so it is no longer suggested. The body is kept either way for provenance. Deprecated skills are struck through in the Skills table above. See [ADR-55](docs/adr/55-skill-deprecation-convention.md).
 
 ## Per-skill customization points
@@ -82,7 +88,7 @@ Each skill reads from host-repo conventions when present and skips related steps
 | `start-dev`, `ship` | PR body template read from `.github/PULL_REQUEST_TEMPLATE.md` if present, otherwise a built-in minimal template is used |
 | `start-dev`, `ship` | An implementation PR closes its Issue with `Closes #N`. An item only checkable after merge gets its own Issue, opened before the PR and linked from the PR body; steps the host's process already defines after a merge (ADR promotion, cleanup) are not written down |
 | `acceptance-test`, `qa` | `type: product / tool` frontmatter is honored if existing AT files use it; otherwise all AT files are treated as in-scope |
-| `test-perspective`, `acceptance-test`, `design-doc` | TPL workflow runs only when `docs/test-perspectives/` exists; the `topic` controlled vocabulary, TPL filename convention, `tpl:validate` / `tpl:related` tooling, and deprecation-review cadence are all host-defined |
+| `acceptance-test`, `design-doc` | TPL steps run only when `docs/test-perspectives/` exists; the `topic` controlled vocabulary, TPL filename convention, `tpl:validate` / `tpl:related` tooling, and deprecation-review cadence are all host-defined |
 | `sync-worktrees` | Operates on the live `git worktree list`, so it is independent of the `.claude/worktrees/` convention; the default branch is auto-detected from `origin/HEAD` (fallback `main` → `master`). Worktrees with uncommitted changes or a merge/rebase already in progress are skipped, which doubles as the guard for worktrees another session is actively working in |
 | `review-docs` | Each consistency check runs only when its target directory exists (`docs/adr/`, `docs/design/`, `docs/acceptance/`) |
 | `sync-docs` | Subagent A inspects the source roots reported by host `package.json`; subagent B reads the document table in host `CLAUDE.md` to learn what to keep in sync |
