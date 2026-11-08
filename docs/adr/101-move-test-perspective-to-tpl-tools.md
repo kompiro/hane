@@ -3,7 +3,7 @@
 - **日付**: 2026-11-07
 - **ステータス**: 決定済み
 - **Issue**: [#101](https://github.com/kompiro/hane/issues/101)
-- **関連**: [ADR-10](10-tpl-integration-into-skills.md)（本 ADR がその一部を改める）, [ADR-55](55-skill-deprecation-convention.md)（deprecate 運用。本 ADR はその適用）, [ADR-92](92-tpl-issue-anchor-for-proactive.md)（TPL の採番。tpl-tools の skill に引き継がれた）, tpl-tools [ADR-39](https://github.com/kompiro/tpl-tools/blob/main/docs/adr/39-test-perspective-skill-plugin.md)（skill の移設先と選択肢の比較）, [#99](https://github.com/kompiro/hane/issues/99)（ずれが表に出た bug）
+- **関連**: [ADR-103](103-retire-disables-model-invocation-and-init-writes-tpl-config.md)（本 ADR の後、Retire の定義に `disable-model-invocation: true` を加え、`init` が TPL の id 形式を config に書くようにした）, [ADR-10](10-tpl-integration-into-skills.md)（本 ADR がその一部を改める）, [ADR-55](55-skill-deprecation-convention.md)（deprecate 運用。本 ADR はその適用）, [ADR-92](92-tpl-issue-anchor-for-proactive.md)（TPL の採番。tpl-tools の skill に引き継がれた）, tpl-tools [ADR-39](https://github.com/kompiro/tpl-tools/blob/main/docs/adr/39-test-perspective-skill-plugin.md)（skill の移設先と選択肢の比較）, [#99](https://github.com/kompiro/hane/issues/99)（ずれが表に出た bug）
 
 ## 背景
 

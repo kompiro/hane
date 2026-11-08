@@ -58,7 +58,7 @@ These are enforced by the skills above and expected in every contribution:
 Follow the deprecation convention in [ADR-55](docs/adr/55-skill-deprecation-convention.md):
 
 - Mark the skill's `SKILL.md` frontmatter with `deprecated: true` + `deprecated_reason:` (and `superseded_by:` when there is a successor) and add a `> **⚠️ Deprecated.**` banner to the body.
-- Choose a level: **Soft-deprecate** keeps the trigger phrases (still fires, recorded as deprecated); **Retire** also strips the trigger phrases from `description` so the harness no longer suggests it. Keep the body for provenance either way.
+- Choose a level: **Soft-deprecate** keeps the trigger phrases (still fires, recorded as deprecated); **Retire** also strips the trigger phrases from `description` and adds `disable-model-invocation: true`, so the model no longer picks it; a user can still call it by name ([ADR-103](docs/adr/103-retire-disables-model-invocation-and-init-writes-tpl-config.md)). Keep the body for provenance either way.
 - Strike the skill through in the README Skills table and record it under `### Deprecated` in `CHANGELOG.md` `[Unreleased]`.
 
 ## Releasing

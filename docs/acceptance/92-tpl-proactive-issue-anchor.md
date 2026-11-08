@@ -7,7 +7,7 @@ type: tool
 - **日付**: 2026-10-02
 - **Issue**: #92
 - **PR**: なし
-- **関連ADR**: ADR-92（本変更）, ADR-10（TPL 採番規約の元）
+- **関連ADR**: ADR-92（本変更）, ADR-10（TPL 採番規約の元）, ADR-101（`test-perspective` を引退させた。AC-1 / AC-2 は引退した skill の本文を対象にし、TPL の番号の形式は host の `idFormat` に従う。#103 で AC-3 / AC-4 を改訂）
 - **Related TPLs**: なし（hane は `docs/test-perspectives/` を採用しないため）
 - **対象**: `skills/test-perspective/SKILL.md`, `skills/test-perspective/TEMPLATE.md`, `skills/design-doc/SKILL.md`, `CHANGELOG.md`
 
@@ -34,11 +34,11 @@ type: tool
 
 ### AC-3: design-doc から起こす proactive TPL が Issue を先頭に持つ
 
-- [ ] `skills/design-doc/SKILL.md` step 3 が、proactive TPL の `discovered_from` の先頭に DesignDoc の Issue を書き、番号もそこから採ると書いている
+- [ ] `skills/design-doc/SKILL.md` step 3 が、proactive TPL を `/tpl-tools:test-perspective` で起こし、`discovered_from` の先頭に DesignDoc の Issue を書くと書いている（番号の採り方は ADR-101 で tpl-tools に移った）
 
 ### AC-4: karasu#3025 の事例で正しい記録が得られる（手動・dry-run）
 
-- [ ] Issue #3022 の DesignDoc から proactive TPL を起こす想定で skill を読み通すと、ファイル名 `TPL-3022-<slug>.md`、`discovered_from` が `issue: "#3022"` に続けて `root_cause_file` / `root_cause_adr` の形になる
+- [ ] Issue #3022 の DesignDoc から proactive TPL を起こす想定で `design-doc` と `/tpl-tools:test-perspective` を読み通すと、`idFormat: issue-number` の host ではファイル名 `TPL-3022-<slug>.md`、`discovered_from` が `issue: "#3022"` に続けて `root_cause_file` / `root_cause_adr` の形になる
 
 ### AC-5: 記録の整合
 

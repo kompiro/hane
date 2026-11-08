@@ -13,6 +13,9 @@ superseded_by: tpl-tools:test-perspective
 # Test Perspective (TPL) Skill
 
 > **⚠️ Deprecated (Retire level, see [ADR-55](../../docs/adr/55-skill-deprecation-convention.md) and [ADR-101](../../docs/adr/101-move-test-perspective-to-tpl-tools.md)).**
+> **Do not follow the steps below.** If this skill was called, tell the user it is retired and
+> write the TPL with `/tpl-tools:test-perspective` instead. If the install below cannot find the
+> plugin, run `/plugin marketplace update kompiro-hane` first.
 > Superseded by **`/tpl-tools:test-perspective`** from the
 > [tpl-tools](https://github.com/kompiro/tpl-tools) plugin (`/plugin install tpl-tools@kompiro-hane`).
 > The trigger phrases were removed from `description` and model invocation is disabled, so

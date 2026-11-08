@@ -29,10 +29,10 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
 ### 2. 既存状態のスキャン
 
 `docs/{design,adr,acceptance,test-perspectives}/`、`docs/process.md`、`.claude/rules/`、
-`status: *` ラベルの有無を調べる。**このスキルは冪等**で、既に存在するものは
+`tpl.config.json`、`status: *` ラベルの有無を調べる。**このスキルは冪等**で、既に存在するものは
 上書きせず skip する。スキャン結果を踏まえて次の質問を出す。
 
-### 3. 4 つの選択をユーザーに確認
+### 3. 選択をユーザーに確認
 
 以下を対話で確認する（既に存在するものは「採用済み」として扱い、質問から除いてよい）。
 
@@ -42,10 +42,14 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
 2. **ADR のファイル名規約** — GitHub 番号ベース（`<番号>-slug.md`、hane の既定。
    ADR-8 参照）か、日付ベース（`YYYYMMDD-NN-slug.md`）か。
    `docs/adr/` を採用する場合のみ訊く。
-3. **`status: *` ラベル運用** — `start-dev` / `ship` が Issue の進捗を
+3. **TPL の id 形式**: `issue-number`（`TPL-<番号>`。ADR・AT と同じ GitHub 番号ベースで、
+   hane の既定）か、`date-sequence`（`TPL-YYYYMMDD-NN`。tpl-tools の既定）か。
+   `docs/test-perspectives/` を新しく採用する場合のみ訊く。ディレクトリに TPL があるか、
+   `tpl.config.json` がある repo では訊かない（既存の運用を作り変えない）。
+4. **`status: *` ラベル運用** — `start-dev` / `ship` が Issue の進捗を
    `status: ready / blocked / on-hold / implementing / designing / designed / in-review`
    ラベルで追跡する運用を採用するか。
-4. **`.claude/rules/` ディレクトリ** — repo 固有の authoring ルール（ADR の言語など）
+5. **`.claude/rules/` ディレクトリ** — repo 固有の authoring ルール（ADR の言語など）
    を置くディレクトリを作るか。
 
 ### 4. scaffold する
@@ -57,7 +61,7 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
 | `docs/design/` を採用 | `docs/design/TEMPLATE.md` |
 | `docs/adr/` を採用 | `docs/adr/TEMPLATE.md` |
 | `docs/acceptance/` を採用 | `docs/acceptance/TEMPLATE.md` |
-| `docs/test-perspectives/` を採用 | `docs/test-perspectives/.gitkeep`（雛形は tpl-tools plugin の `test-perspective` skill が持つのでコピーしない） |
+| `docs/test-perspectives/` を採用 | `docs/test-perspectives/.gitkeep` と repo 直下の `tpl.config.json`。ディレクトリが無いか空のときだけ作る（下記参照）。TPL の雛形は `/tpl-tools:test-perspective` が持つのでコピーしない |
 | いずれかの doc ディレクトリを採用 | `docs/process.md`（スケルトン。下記参照） |
 | `.claude/rules/` を採用 | `.claude/rules/.gitkeep` |
 | ラベル運用を採用 | `status: *` ラベル 6 種を `gh label create` で作成 |
@@ -75,6 +79,26 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
 
 コピー後、内容は変更しない。各テンプレート冒頭の HTML コメントに規約（ファイル名・
 言語・番号規約）が書かれているので、host repo 側で追加の説明は不要。
+
+#### `tpl.config.json` の生成
+
+`docs/test-perspectives/` が無いか空のときだけ、repo 直下に選んだ id 形式を書いた config を作る。
+TPL を書く `/tpl-tools:test-perspective` と検証の `tpl` CLI はこの `idFormat` に従い、config が
+無ければ `date-sequence` になる。
+
+```json
+{
+  "idFormat": "issue-number",
+  "topics": []
+}
+```
+
+`topics`（TPL の `topic` の統制語彙）は host が育てる。空のあいだ `tpl validate` は topic を検査しない。
+`tpl init` は使わない（`idFormat` を選べず、常に `date-sequence` を書くため）。
+
+ディレクトリに TPL が既にある repo では `.gitkeep` も config も作らない。config が無いまま
+`TPL-<番号>` のファイルがあれば、`tpl.config.json` に `"idFormat": "issue-number"` を足すよう
+レポートで案内する（足さないと後継の skill と `tpl validate` は `date-sequence` を前提にする）。
 
 #### `status: *` ラベルの作成
 
@@ -102,7 +126,7 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
 - **ブランチ・worktree ルール** — `main` への直 push 禁止、worktree は
   `.claude/worktrees/<branch-name>`、ブランチ命名（`feat/` `fix/` `docs/` `chore/`
   `refactor/` + kebab-case）。
-- **採番規約** — 選んだ ADR ファイル名規約。AT も同じ番号ベース。TPL の id は tpl-tools の config（`idFormat`）に従う。
+- **採番規約** — 選んだ ADR ファイル名規約。AT も同じ番号ベース。TPL の id は `tpl.config.json` の `idFormat` に従う（選んだ形式を書く）。
 - **ラベル運用** — 採用した場合のみ、`status: *` の遷移を記す。
 - 各ドキュメント種別を採用した場合は、対応する skill（`/hane:design-doc` /
   `/hane:acceptance-test` / `/tpl-tools:test-perspective`）で記録を作る旨を 1 行ずつ書く。
@@ -122,7 +146,9 @@ process.md は host repo がその後育てる前提のスケルトン。冒頭�
 - `/hane:start-dev` で最初の開発を始められる。
 - `docs/test-perspectives/` を採用した場合は、TPL を書く skill と検証の CLI を入れる:
   `/plugin install tpl-tools@kompiro-hane` と
-  [`@kompiro/tpl-tools`](https://github.com/kompiro/tpl-tools)。
+  [`@kompiro/tpl-tools`](https://github.com/kompiro/tpl-tools)。tpl-tools が marketplace に
+  載る前に `kompiro-hane` を追加していた場合、install は見つからずに失敗するので、先に
+  `/plugin marketplace update kompiro-hane` を実行する。
 
 ## 冪等性
 

@@ -7,7 +7,7 @@ type: tool
 - **日付**: 2026-11-07
 - **Issue**: #101
 - **PR**: なし
-- **関連ADR**: ADR-101（本決定）, ADR-55（deprecate 運用）, ADR-10（一部を改める）
+- **関連ADR**: ADR-101（本決定）, ADR-55（deprecate 運用）, ADR-10（一部を改める）, ADR-103（#103 で AC-3 の検査を広げた）
 - **Related TPLs**: なし（hane は `docs/test-perspectives/` を採用しないため）
 - **対象**: `.claude-plugin/marketplace.json`, `skills/test-perspective/SKILL.md`, `skills/design-doc/SKILL.md`, `skills/init/SKILL.md`, `README.md`, `.github/ISSUE_TEMPLATE/bug_report.yml`, `CHANGELOG.md`, `docs/adr/10-tpl-integration-into-skills.md`, `docs/adr/101-move-test-perspective-to-tpl-tools.md`, `docs/acceptance/13-test-perspective-skill.md`, `docs/acceptance/14-design-doc-tpl-aware.md`, `docs/acceptance/28-init-skill.md`
 
@@ -45,7 +45,7 @@ grep -q '## 手順' $f && echo "OK: body kept for provenance"
 ### AC-3: 他の skill が hane の `test-perspective` を呼ばない
 
 ```bash
-! grep -rnE '/hane:test-perspective|`test-perspective` スキル|\.\./test-perspective/' skills --exclude-dir=test-perspective --exclude-dir=qa && echo "OK: no reference to hane's skill"
+! grep -rnE '/hane:test-perspective|`test-perspective` (スキル|skill)|\.\./test-perspective/' skills --exclude-dir=test-perspective && echo "OK: no reference to hane's skill"
 grep -q '/tpl-tools:test-perspective' skills/design-doc/SKILL.md && echo "OK: design-doc points to the successor"
 grep -q '/tpl-tools:test-perspective' skills/init/SKILL.md && echo "OK: init points to the successor"
 ```
