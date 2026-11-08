@@ -54,9 +54,15 @@ The marketplace also lists [tpl-tools](https://github.com/kompiro/tpl-tools), wh
 /plugin install tpl-tools@kompiro-hane
 ```
 
+If you added the marketplace before tpl-tools was listed, the install cannot find it until you refresh the marketplace:
+
+```
+/plugin marketplace update kompiro-hane
+```
+
 ## Host repo prerequisites
 
-Run `/hane:init` to scaffold the items below interactively — it asks which doc directories to adopt, the ADR filename scheme, and whether to use status labels, then creates the directories, copies the document templates, and writes a `process.md` skeleton. It is idempotent, so it is also safe to run later to fill gaps.
+Run `/hane:init` to scaffold the items below interactively — it asks which doc directories to adopt, the ADR filename scheme, the TPL id format, and whether to use status labels, then creates the directories, copies the document templates, writes a `process.md` skeleton, and, when it adopts `docs/test-perspectives/`, writes `tpl.config.json` with the TPL id format you pick. It is idempotent, so it is also safe to run later to fill gaps.
 
 - **Add `.claude/worktrees/` to `.gitignore`.** `start-dev`, `ship`, and `design-doc` create persistent worktrees there. Without the ignore entry, hooks that detect untracked files may misfire.
 - **Optional**: `status: ready / blocked / on-hold / implementing / designing / designed / in-review` label set if you want the skills to update Issue status as work progresses. Skipped silently if labels are absent.
@@ -69,9 +75,9 @@ Run `/hane:init` to scaffold the items below interactively — it asks which doc
 - Branches: `feat/`, `fix/`, `docs/`, `chore/`, `refactor/` + kebab-case.
 - Commits: Conventional Commits with English subjects.
 - PR template: falls back to a built-in minimal template if `.github/PULL_REQUEST_TEMPLATE.md` is absent.
-- Doc files (`docs/{acceptance,adr}/`) are numbered from the linked GitHub Issue, then PR, then a local sequence — no zero-padding (see [ADR-8](docs/adr/8-issue-based-doc-numbering.md)); a host repo's own naming convention takes precedence. TPL ids follow the `idFormat` in the host's tpl-tools config. ADRs are written in the language of the repo's existing ADRs / project rules — in this repo, Japanese (like the design docs and skill bodies). Promoting a design doc to an ADR condenses it into the ADR and removes the original `docs/design/` file in the same PR.
+- Doc files (`docs/{acceptance,adr}/`) are numbered from the linked GitHub Issue, then PR, then a local sequence — no zero-padding (see [ADR-8](docs/adr/8-issue-based-doc-numbering.md)); a host repo's own naming convention takes precedence. TPL ids follow the `idFormat` in the host's `tpl.config.json`; `/hane:init` writes `issue-number` (`TPL-<number>`, like ADRs) unless you pick `date-sequence`, which is also what tpl-tools uses when there is no config. ADRs are written in the language of the repo's existing ADRs / project rules — in this repo, Japanese (like the design docs and skill bodies). Promoting a design doc to an ADR condenses it into the ADR and removes the original `docs/design/` file in the same PR.
 - Document skeletons are shipped as standalone `TEMPLATE.md` assets next to the skill that owns them — `design-doc/TEMPLATE.md` (design doc), `acceptance-test/TEMPLATE.md` (AT record) and `design-doc/ADR-TEMPLATE.md` (ADR). Each skill copies its template rather than re-deriving the shape.
-- Deprecating a skill: mark its `SKILL.md` frontmatter with `deprecated: true` + `deprecated_reason:` (and `superseded_by:` when there is a successor), and add a `> **⚠️ Deprecated.**` banner to the body. The marker alone does **not** stop the harness from triggering the skill — triggering is driven by `description`. So there are two levels: **Soft-deprecate** keeps the trigger phrases (skill still fires, but is recorded as deprecated); **Retire** also strips the "Trigger when the user says …" phrases from `description` (prefixed with `[Deprecated]`) so it is no longer suggested. The body is kept either way for provenance. Deprecated skills are struck through in the Skills table above. See [ADR-55](docs/adr/55-skill-deprecation-convention.md).
+- Deprecating a skill: mark its `SKILL.md` frontmatter with `deprecated: true` + `deprecated_reason:` (and `superseded_by:` when there is a successor), and add a `> **⚠️ Deprecated.**` banner to the body. The marker alone does **not** stop the harness from triggering the skill — triggering is driven by `description`. So there are two levels: **Soft-deprecate** keeps the trigger phrases (skill still fires, but is recorded as deprecated); **Retire** also strips the "Trigger when the user says …" phrases from `description` (prefixed with `[Deprecated]`) and adds `disable-model-invocation: true`, because a `description` alone still lets the model pick the skill; a user can still call it by name. The body is kept either way for provenance. Deprecated skills are struck through in the Skills table above. See [ADR-55](docs/adr/55-skill-deprecation-convention.md) and [ADR-103](docs/adr/103-retire-disables-model-invocation-and-init-writes-tpl-config.md).
 
 ## Per-skill customization points
 

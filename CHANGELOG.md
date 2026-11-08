@@ -8,17 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- The `kompiro-hane` marketplace now lists the [tpl-tools](https://github.com/kompiro/tpl-tools) plugin (`/plugin install tpl-tools@kompiro-hane`), which carries the `test-perspective` skill. (#101)
+- The `kompiro-hane` marketplace now lists the [tpl-tools](https://github.com/kompiro/tpl-tools) plugin (`/plugin install tpl-tools@kompiro-hane`), which carries the `test-perspective` skill. If you added `kompiro-hane` before this release, run `/plugin marketplace update kompiro-hane` first, or the install cannot find the plugin. (#101, #103)
 
 ### Changed
 
-- `design-doc`: a proactive TPL is now written with `/tpl-tools:test-perspective`, and the skill no longer says to take the TPL's number from the Issue, because the id follows the host's `idFormat`. (#101)
-- `init`: adopting `docs/test-perspectives/` now creates `.gitkeep` instead of copying a TPL template, whose copy now lives in the tpl-tools skill, and points to the tpl-tools plugin and CLI. The `process.md` skeleton names `/tpl-tools:test-perspective`, and TPL ids follow `idFormat`. (#101)
+- `design-doc`: a proactive TPL is now written with `/tpl-tools:test-perspective`, and the skill no longer says to take the TPL's number from the Issue, because the id follows the host's `idFormat`. When the plugin is missing, the skill asks the user to install it; if they decline, the perspective is written into the design doc's `## Related TPLs` section as not yet a TPL. (#101, #103)
+- `init`: adopting `docs/test-perspectives/` no longer copies a TPL template, whose copy now lives in the tpl-tools skill. It asks for the TPL id format and writes `tpl.config.json`: `issue-number` (`TPL-<number>`, as hane numbered TPLs before) by default, or `date-sequence`. It creates `.gitkeep` and the config only when the directory has no TPLs yet and the host has no tpl-tools config, and points to the tpl-tools plugin and CLI. The `process.md` skeleton names `/tpl-tools:test-perspective`, and TPL ids follow `idFormat`. (#101, #103)
+- Deprecation convention: the **Retire** level now also adds `disable-model-invocation: true`, because a `description` without trigger phrases still let the model pick the skill. The retired `qa` skill now has it. See [ADR-103](docs/adr/103-retire-disables-model-invocation-and-init-writes-tpl-config.md). (#103)
 - `ship` / `start-dev`: the PR body no longer has a `Post-merge follow-ups` section, and an implementation PR always links its Issue with `Closes #N`, so the Issue closes when the PR merges. An item that can only be checked or done after the merge (the next release, a production-only setting, a backfill on `main`) gets its own Issue, opened before the PR and linked from the PR's Purpose in one line. Steps the host's process already defines after a merge (ADR promotion, cleanup) are not written down. The cleanup step that appended follow-ups to the Issue body is gone. In 0.19.0 most implementation PRs listed such a step as a follow-up, switched to `Refs #N`, and left their Issue open after the merge. (#97)
 
 ### Deprecated
 
-- `test-perspective` skill: **retired**. Superseded by `/tpl-tools:test-perspective`, because the rules for writing a TPL now live in tpl-tools. Trigger phrases were removed from `description` and `disable-model-invocation: true` was added, so a repo that uses TPLs needs the tpl-tools plugin for the skill to be suggested. The body is kept for provenance. See [ADR-101](docs/adr/101-move-test-perspective-to-tpl-tools.md). (#101)
+- `test-perspective` skill: **retired**. Superseded by `/tpl-tools:test-perspective`, because the rules for writing a TPL now live in tpl-tools. Trigger phrases were removed from `description` and `disable-model-invocation: true` was added, so a repo that uses TPLs needs the tpl-tools plugin for the skill to be suggested. The banner tells a reader who calls it by name not to follow the old steps. The body is kept for provenance. **A repo that already has `TPL-<number>` files and no `tpl.config.json` must add `{"idFormat": "issue-number"}` to `tpl.config.json`**; without it the tpl-tools skill and `tpl validate` use `date-sequence` (`TPL-YYYYMMDD-NN`). See [ADR-101](docs/adr/101-move-test-perspective-to-tpl-tools.md). (#101, #103)
 
 ### Fixed
 

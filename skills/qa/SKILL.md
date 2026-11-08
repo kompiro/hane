@@ -4,6 +4,7 @@ description: >
   [Deprecated] Retired — superseded by the `qa` subagent (fills test gaps from a PR
   diff) and the `acceptance-test` skill (owns AT records). No longer triggered; the body
   is kept for provenance. See docs/adr/55-skill-deprecation-convention.md.
+disable-model-invocation: true
 deprecated: true
 deprecated_reason: Superseded by the qa subagent (proactive test-gap filling from a PR diff) and the acceptance-test skill (owns the AT records).
 superseded_by: qa subagent + acceptance-test skill
@@ -14,8 +15,8 @@ superseded_by: qa subagent + acceptance-test skill
 > **⚠️ Deprecated (Retire level — see [ADR-55](../../docs/adr/55-skill-deprecation-convention.md)).**
 > Superseded by the **`qa` subagent** (fills test gaps from a PR diff) and the
 > **`acceptance-test`** skill (owns AT records). The trigger phrases were removed from
-> `description` so this no longer competes with the subagent; the body below is kept for
-> provenance only.
+> `description` and model invocation is disabled ([ADR-103](../../docs/adr/103-retire-disables-model-invocation-and-init-writes-tpl-config.md)),
+> so this no longer competes with the subagent; the body below is kept for provenance only.
 
 `docs/acceptance/` 内の受け入れテスト記録を読み込み、自動検証を実行しつつ手動確認項目をまとめたチェックリストを生成する。
 

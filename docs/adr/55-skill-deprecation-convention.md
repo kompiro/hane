@@ -3,7 +3,7 @@
 - **日付**: 2026-06-30
 - **ステータス**: 決定済み
 - **Issue**: [#55](https://github.com/kompiro/hane/issues/55)
-- **関連**: [ADR-8](8-issue-based-doc-numbering.md)（採番ルール）, `test-perspective` skill（`active` / `deprecated` の status を持つ TPL 運用の先例）
+- **関連**: [ADR-103](103-retire-disables-model-invocation-and-init-writes-tpl-config.md)（Retire に `disable-model-invocation: true` を加える。下記「2 段階の引退レベル」の Retire を改める）, [ADR-101](101-move-test-perspective-to-tpl-tools.md)（`test-perspective` への適用）, [ADR-8](8-issue-based-doc-numbering.md)（採番ルール）, `test-perspective` skill（`active` / `deprecated` の status を持つ TPL 運用の先例）
 
 ## 背景
 

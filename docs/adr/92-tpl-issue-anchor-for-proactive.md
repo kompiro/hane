@@ -3,7 +3,7 @@
 - **日付**: 2026-10-02
 - **ステータス**: 決定済み
 - **Issue**: [#92](https://github.com/kompiro/hane/issues/92)
-- **関連**: [ADR-10](10-tpl-integration-into-skills.md)（TPL の採番規約。本 ADR はその「proactive TPL は Issue が無いことが多いので DesignDoc PR の番号」という前提を訂正する）, [ADR-8](8-issue-based-doc-numbering.md)（Issue → PR → ローカル採番の優先順位）, `test-perspective` skill, `design-doc` skill, kompiro/karasu#3025 / #3028 / #3029（発見の経緯と karasu 側の同じ規則）
+- **関連**: [ADR-101](101-move-test-perspective-to-tpl-tools.md)（TPL を書く skill を tpl-tools に移した。本 ADR の規則は tpl-tools の skill に引き継がれ、番号の形式は host の `idFormat` に従う）, [ADR-10](10-tpl-integration-into-skills.md)（TPL の採番規約。本 ADR はその「proactive TPL は Issue が無いことが多いので DesignDoc PR の番号」という前提を訂正する）, [ADR-8](8-issue-based-doc-numbering.md)（Issue → PR → ローカル採番の優先順位）, `test-perspective` skill, `design-doc` skill, kompiro/karasu#3025 / #3028 / #3029（発見の経緯と karasu 側の同じ規則）
 
 ## 背景
 
