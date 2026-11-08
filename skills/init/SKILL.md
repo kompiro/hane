@@ -44,8 +44,9 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
    `docs/adr/` を採用する場合のみ訊く。
 3. **TPL の id 形式**: `issue-number`（`TPL-<番号>`。ADR・AT と同じ GitHub 番号ベースで、
    hane の既定）か、`date-sequence`（`TPL-YYYYMMDD-NN`。tpl-tools の既定）か。
-   `docs/test-perspectives/` を新しく採用する場合のみ訊く。ディレクトリに TPL があるか、
-   `tpl.config.json` がある repo では訊かない（既存の運用を作り変えない）。
+   `docs/test-perspectives/` に TPL がまだ無い場合のみ訊く。TPL がある repo、`tpl.config.json` が
+   ある repo、`tpl` を `--config` 付きで呼んでいる repo（`package.json` の scripts 等）では訊かない
+   （既存の運用を作り変えない）。
 4. **`status: *` ラベル運用** — `start-dev` / `ship` が Issue の進捗を
    `status: ready / blocked / on-hold / implementing / designing / designed / in-review`
    ラベルで追跡する運用を採用するか。
@@ -61,7 +62,7 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
 | `docs/design/` を採用 | `docs/design/TEMPLATE.md` |
 | `docs/adr/` を採用 | `docs/adr/TEMPLATE.md` |
 | `docs/acceptance/` を採用 | `docs/acceptance/TEMPLATE.md` |
-| `docs/test-perspectives/` を採用 | `docs/test-perspectives/.gitkeep` と repo 直下の `tpl.config.json`。ディレクトリが無いか空のときだけ作る（下記参照）。TPL の雛形は `/tpl-tools:test-perspective` が持つのでコピーしない |
+| `docs/test-perspectives/` を採用 | `docs/test-perspectives/.gitkeep` と repo 直下の `tpl.config.json`。ディレクトリに TPL がまだ無いときだけ作る（下記参照）。TPL の雛形は `/tpl-tools:test-perspective` が持つのでコピーしない |
 | いずれかの doc ディレクトリを採用 | `docs/process.md`（スケルトン。下記参照） |
 | `.claude/rules/` を採用 | `.claude/rules/.gitkeep` |
 | ラベル運用を採用 | `status: *` ラベル 6 種を `gh label create` で作成 |
@@ -82,7 +83,9 @@ host repo が一定のディレクトリ・ドキュメント慣習を採用し�
 
 #### `tpl.config.json` の生成
 
-`docs/test-perspectives/` が無いか空のときだけ、repo 直下に選んだ id 形式を書いた config を作る。
+`docs/test-perspectives/` が無いか、TPL がまだ無い（空か `.gitkeep` だけ）ときだけ、repo 直下に選んだ id 形式を
+書いた config を作る。`tpl.config.json` が既にあるか、`tpl` を `--config` 付きで呼んでいる repo では作らない
+（`--config` で渡したファイルが優先され、作った config は読まれない）。`.gitkeep` は無ければ作る。
 TPL を書く `/tpl-tools:test-perspective` と検証の `tpl` CLI はこの `idFormat` に従い、config が
 無ければ `date-sequence` になる。
 

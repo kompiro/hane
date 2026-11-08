@@ -26,14 +26,14 @@ hane の各 skill が前提とする host-repo の慣習（ドキュメントデ
 
 - [ ] 採用するドキュメントディレクトリ（`docs/design,adr,acceptance,test-perspectives`）をユーザーに確認する
 - [ ] `docs/adr/` 採用時、ADR ファイル名規約（GitHub 番号ベース / 日付ベース）を確認する
-- [ ] `docs/test-perspectives/` を新しく採用するとき、TPL の id 形式（`issue-number` / `date-sequence`）を確認する（#103 で追加）
+- [ ] `docs/test-perspectives/` に TPL がまだ無いとき、TPL の id 形式（`issue-number` / `date-sequence`）を確認する（#103 で追加）
 - [ ] `status: *` ラベル運用の採用可否を確認する
 - [ ] `.claude/rules/` ディレクトリの作成可否を確認する
 - [ ] 既に存在するものは「採用済み」として質問から除く
 
 ### AC-3: 選択に応じてディレクトリとテンプレートを生成する
 
-- [ ] 採用した各 doc ディレクトリに `TEMPLATE.md` が作られる。`docs/test-perspectives/` だけは、ディレクトリが無いか空のときに `.gitkeep` と選んだ `idFormat` の `tpl.config.json` を作り、tpl-tools の plugin と CLI を案内する（#101・#103 で改訂）
+- [ ] 採用した各 doc ディレクトリに `TEMPLATE.md` が作られる。`docs/test-perspectives/` だけは、TPL がまだ無く tpl-tools の config も無いときに `.gitkeep` と選んだ `idFormat` の `tpl.config.json` を作り、tpl-tools の plugin と CLI を案内する（#101・#103 で改訂）
 - [ ] 各 `TEMPLATE.md` は owning skill のアセットをコピーしたもの（`docs/design/TEMPLATE.md` ← `design-doc/TEMPLATE.md`、`docs/adr/TEMPLATE.md` ← `design-doc/ADR-TEMPLATE.md`、`docs/acceptance/TEMPLATE.md` ← `acceptance-test/TEMPLATE.md`）。コピー元との内容一致を確認できる
 - [ ] テンプレートを複製・再生成していない（コピー元は plugin 内 skill アセット）
 

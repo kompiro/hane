@@ -24,7 +24,8 @@ type: tool
 f=skills/init/SKILL.md
 grep -q '\*\*TPL の id 形式\*\*' $f && echo "OK: asks for the id format"
 grep -q '"idFormat": "issue-number"' $f && echo "OK: writes issue-number by default"
-grep -q 'ディレクトリが無いか空のときだけ' $f && echo "OK: .gitkeep and config only for a new or empty directory"
+grep -q 'TPL がまだ無い（空か `.gitkeep` だけ）' $f && echo "OK: .gitkeep and config only when there are no TPLs yet"
+grep -q '`--config` 付きで呼んでいる' $f && echo "OK: respects a host that passes --config"
 grep -q '`tpl init` は使わない' $f && echo "OK: does not use tpl init"
 grep -q '/plugin marketplace update kompiro-hane' $f && echo "OK: init mentions the marketplace refresh"
 ```
@@ -34,7 +35,8 @@ grep -q '/plugin marketplace update kompiro-hane' $f && echo "OK: init mentions 
 ### AC-2: Retire がモデルからの呼び出しも止める
 
 ```bash
-for f in $(grep -l '^deprecated: true' skills/*/SKILL.md); do
+# Retire = deprecated and no trigger phrases; Soft-deprecate keeps them and may stay model-invocable
+for f in $(grep -l '^deprecated: true' skills/*/SKILL.md | xargs grep -L 'Trigger when the user says'); do
   grep -q '^disable-model-invocation: true' $f && echo "OK: $f disables model invocation" || echo "NG: $f"
 done
 grep -q 'disable-model-invocation: true' README.md && echo "OK: README states the Retire level"
@@ -48,6 +50,8 @@ grep -q 'Do not follow the steps below' skills/test-perspective/SKILL.md && echo
 
 ```bash
 grep -q '未 TPL 化' skills/design-doc/SKILL.md && echo "OK: design-doc records the perspective when the plugin is not installed"
+grep -q '手順 5 で worktree を作ってから' skills/design-doc/SKILL.md && echo "OK: design-doc writes the TPL inside the worktree"
+grep -q '/plugin marketplace update kompiro-hane' skills/design-doc/SKILL.md && echo "OK: design-doc mentions the marketplace refresh"
 grep -q '/plugin marketplace update kompiro-hane' README.md && echo "OK: README mentions the marketplace refresh"
 ```
 

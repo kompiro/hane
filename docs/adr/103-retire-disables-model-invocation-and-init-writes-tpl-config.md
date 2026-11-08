@@ -27,10 +27,10 @@
   呼べば本文は読める。引退済みの `qa` にも付ける。Soft-deprecate は変えない
 - **引退した skill のバナーは「下の手順に従わない」と書く。** 名前で呼ばれたときに、古い手順を
   実行せず後継を案内させるため
-- **`init` は `docs/test-perspectives/` を新しく採用するとき、TPL の id 形式を訊いて
+- **`init` は `docs/test-perspectives/` に TPL がまだ無いとき、TPL の id 形式を訊いて
   `tpl.config.json` に書く。** 既定は `issue-number`（`TPL-<番号>`）で、ADR・AT の採番と揃う。
   `date-sequence` も選べる。`tpl init` は使わない
-- **`init` が `.gitkeep` と config を作るのは、ディレクトリが無いか空のときだけ。** TPL がすでにある
+- **`init` が `.gitkeep` と config を作るのは、ディレクトリに TPL がまだ無く、host に tpl-tools の config（`tpl.config.json` か `--config` で渡すファイル）が無いときだけ。** TPL がすでにある
   repo の運用は作り変えない。config が無いまま `TPL-<番号>` のファイルがあれば、`"idFormat": "issue-number"`
   を足すよう案内だけする
 
