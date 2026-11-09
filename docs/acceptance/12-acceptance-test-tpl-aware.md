@@ -21,10 +21,10 @@ type: tool
 
 - [ ] `skills/acceptance-test/SKILL.md` の「手順」に、AC を記述する前に TPL を確認するステップが追加されている
 - [ ] そのステップは「ホスト repo が `docs/test-perspectives/` を採用している場合のみ」と明記され、ディレクトリが無ければスキップすると書かれている（skip パス）
-- [ ] 関連 TPL の探索はホスト repo の `tpl:related` 等のスクリプトを使い、無ければ frontmatter（`topic` / `scope.packages` 等）を grep する、という二段構えになっている（tooling を hane に移植していない）
+- [ ] 関連 TPL の探索は、topic と変更ファイルをホストの `tpl` CLI（`@kompiro/tpl-tools`。host の script が包んでいればそれ）の `tpl related` で引き、CLI が無ければ frontmatter の `topic` と TPL の本文を grep する。モジュールの欄（`scope.packages` 等）は CLI の有無を問わず grep する（tooling を hane に移植していない。#104 で改訂）
 - [ ] マッチした TPL の ID を AT 本文の `**Related TPLs**:` メタ欄に列挙すると書かれている
-- [ ] proactive な TPL（`discovered_from` が原則ファイル / ADR を指すもの）のチェックリスト項目を AC として転記する、と書かれている（forward 運用）
-- [ ] retrospective（`discovered_from.issue`）と proactive の区別が説明されている
+- [ ] proactive な TPL のチェックリスト項目を AC として転記する、と書かれている（forward 運用）
+- [ ] proactive は起源（起こした時点で失敗が既に起きていたか）で見分け、`issue:` の有無や個々のフィールドでは決めないと説明されている（#104 で改訂。ADR-104）
 
 ### AC-2: ファイル形式・ガイドラインが更新されている
 
