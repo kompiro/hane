@@ -25,9 +25,9 @@ type: tool
 
 ### AC-2: 2 段階の取り込みが記述されている
 
-- [ ] 段階1: 既存 TPL の一覧（ホストの `tpl` CLI があれば `tpl related`、無ければ frontmatter と TPL の本文を grep）→ `## Related TPLs` 節に列挙する、と書かれている（#104 で改訂）
+- [ ] 段階1: 既存 TPL の一覧（topic と触るファイルはホストの `tpl` CLI があれば `tpl related`、無ければ frontmatter と TPL の本文を grep。モジュールの欄は CLI の有無を問わず grep）→ `## Related TPLs` 節に列挙する、と書かれている（#104 で改訂）
 - [ ] 段階2: 同じ topic の `concepts*` 等の原則ファイルと関連 ADR を読み、まだ TPL になっていない原則で設計が違反しうるものを確認する、と書かれている
-- [ ] 違反を予見した場合は 3-Yes ルールに照らし、満たすなら**同じ PR で** proactive TPL を起こす（`/tpl-tools:test-perspective` を呼び、`discovered_from` の先頭に DesignDoc の Issue、続けて `root_cause_file` / `root_cause_adr` を設定）、と書かれている（#92、#101 で改訂）
+- [ ] 違反を予見した場合は 3-Yes ルールに照らし、満たすなら**同じ PR で** proactive TPL を起こす（`/tpl-tools:test-perspective` を呼び、`discovered_from` の先頭に DesignDoc の Issue、続けて原則を書いた文書を指す `root_cause_file` か `root_cause_adr` を設定）、と書かれている（#92、#101、#104 で改訂）
 - [ ] 起こした proactive TPL は `## Related TPLs` 節に記載し DesignDoc と相互リンクする、と書かれている
 
 ### AC-3: ファイル形式・ガイドラインが更新されている
