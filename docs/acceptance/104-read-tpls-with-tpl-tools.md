@@ -7,52 +7,65 @@ type: tool
 - **日付**: 2026-11-09
 - **Issue**: #104
 - **PR**: なし
-- **関連ADR**: ADR-92（proactive の判定は `root_cause_file` / `root_cause_adr`）, ADR-101（TPL を書く skill と CLI は tpl-tools）, ADR-10（tooling は host にあれば使う）
+- **関連ADR**: ADR-92（proactive も `issue:` を持つ）, ADR-101（TPL を書く skill と CLI は tpl-tools）, ADR-10（tooling は host にあれば使う）
 - **Related TPLs**: なし（hane は `docs/test-perspectives/` を採用しないため）
-- **対象**: `skills/acceptance-test/SKILL.md`, `skills/design-doc/SKILL.md`, `CHANGELOG.md`
+- **対象**: `skills/acceptance-test/SKILL.md`, `skills/design-doc/SKILL.md`, `README.md`, `CHANGELOG.md`, `docs/acceptance/12-acceptance-test-tpl-aware.md`, `docs/acceptance/14-design-doc-tpl-aware.md`
 
 ## 概要
 
 `acceptance-test` は `issue:` を持つ TPL を retrospective と読んでいたので、Issue の下で起こした proactive TPL
 （`design-doc` から起こす通常の形）のチェックリストを AT に転記しなかった。また両 skill は関連 TPL を
 `tpl:related` のような host の script と frontmatter の grep で探しており、本文だけがファイルを名指す TPL を
-取りこぼした。proactive の判定を ADR-92 に合わせ、関連 TPL は `tpl related` で引き、CLI が無いときは本文も grep する。
+取りこぼした。proactive の判定を tpl-tools の定義（`root_cause_adr`、または原則ファイルを指す `root_cause_file`）に
+合わせ、関連 TPL は topic・変更対象モジュール・変更ファイルの 3 つの手がかりで引く。
 
 ## 受け入れ条件
 
-### AC-1: proactive を `root_cause_file` / `root_cause_adr` で判定する
+### AC-1: proactive を `root_cause_adr` と原則ファイルを指す `root_cause_file` で判定する
 
 ```bash
 f=skills/acceptance-test/SKILL.md
-grep -q '`root_cause_file`（`concepts\*` 等の原則ファイル）か `root_cause_adr` があるかで決める' $f && echo "OK: proactive is decided by root_cause_*"
-grep -q '`issue:` の有無では決めない' $f && echo "OK: issue: does not decide the origin"
+grep -q '`root_cause_adr` があるか、`root_cause_file` が原則ファイル' $f && echo "OK: proactive is decided by root_cause_adr or a principle-file root_cause_file"
+grep -q '`root_cause_file` があるだけでは proactive としない' $f && echo "OK: a source root_cause_file alone is not proactive"
+grep -q '`issue:` の有無でも決めない' $f && echo "OK: issue: does not decide the origin"
 ! grep -q 'を指すものは retrospective' $f && echo "OK: the old issue-means-retrospective rule is gone"
 ```
 
-- [ ] 上記コマンドがすべて `OK:` を出力する
+- [ ] 上記コマンドがすべて `OK:` を出力する（4 行）
 
-### AC-2: 関連 TPL を `tpl related` で引き、CLI が無ければ本文も grep する
+### AC-2: 関連 TPL を 3 つの手がかりで引く
 
 ```bash
 for f in skills/acceptance-test/SKILL.md skills/design-doc/SKILL.md; do
   grep -q '`@kompiro/tpl-tools` が devDependency にあれば `pnpm exec tpl` / `npx tpl`' $f && echo "OK: $f finds the tpl CLI"
+  grep -q 'script は用途ごとに選' $f && echo "OK: $f picks a host script per lookup"
   grep -q 'tpl related <topic>' $f && echo "OK: $f looks up by topic"
-  grep -q 'TPL の本文' $f && echo "OK: $f greps TPL bodies without the CLI"
-  ! grep -q 'tpl:related <topic>` 等のスクリプト' $f && echo "OK: $f no longer points to tpl:related scripts"
+  grep -q 'CLI があってもこの grep は行う' $f && echo "OK: $f keeps the frontmatter grep alongside the CLI"
+  grep -q '拡張子を除いた名前で TPL の本文を grep\|拡張子を除いた名前（`foo.ts` なら `foo`。`foo.test.ts` を名指す TPL も拾える）で TPL の本文を grep' $f && echo "OK: $f greps TPL bodies without the CLI"
+  grep -q '`scope.paths` の glob と照らす' $f && echo "OK: $f matches scope.paths without the CLI"
+  grep -q 'v0.0.13 以前なら' $f && echo "OK: $f falls back on an old CLI"
+  ! grep -q 'tpl:related' $f && echo "OK: $f no longer points to tpl:related scripts"
 done
-grep -q 'tpl related --base <base ブランチ> --limit 0' skills/acceptance-test/SKILL.md && echo "OK: acceptance-test looks up by changed files"
+f=skills/acceptance-test/SKILL.md
+grep -q 'tpl related --base origin/<base ブランチ> --limit 0' $f && echo "OK: acceptance-test looks up by the committed diff"
+grep -q 'まだ実装していないときは' $f && echo "OK: acceptance-test passes planned files before implementation"
+grep -q '`--base` と `--changed-files` は同時に渡せない' $f && echo "OK: acceptance-test does not combine --base and --changed-files"
 grep -q 'tpl related --changed-files --limit 0' skills/design-doc/SKILL.md && echo "OK: design-doc looks up by the files the design touches"
 ```
 
-- [ ] 上記コマンドがすべて `OK:` を出力する（10 行）
+- [ ] 上記コマンドがすべて `OK:` を出力する（20 行）
 
 ### AC-3: 記録
 
 ```bash
 sed -n '/## \[Unreleased\]/,/## \[0\./p' CHANGELOG.md | grep -q '(#104)' && echo "OK: CHANGELOG has the fix"
+! grep -q 'tpl:related' README.md && echo "OK: README no longer names tpl:related tooling"
+grep -q 'tpl related' README.md && echo "OK: README names tpl related"
+! grep -q 'tpl:related' docs/acceptance/12-acceptance-test-tpl-aware.md docs/acceptance/14-design-doc-tpl-aware.md && echo "OK: AT-12 and AT-14 match the skills"
+grep -q '`issue:` の有無を使わない' docs/acceptance/12-acceptance-test-tpl-aware.md && echo "OK: AT-12 no longer reads issue: as retrospective"
 ```
 
-- [ ] 上記コマンドが `OK:` を出力する
+- [ ] 上記コマンドがすべて `OK:` を出力する（5 行）
 
 ## 手動確認
 
