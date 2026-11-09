@@ -23,8 +23,8 @@ type: tool
 - [ ] そのステップは「ホスト repo が `docs/test-perspectives/` を採用している場合のみ」と明記され、ディレクトリが無ければスキップすると書かれている（skip パス）
 - [ ] 関連 TPL の探索は、topic と変更ファイルをホストの `tpl` CLI（`@kompiro/tpl-tools`。host の script が包んでいればそれ）の `tpl related` で引き、CLI が無ければ frontmatter の `topic` と TPL の本文を grep する。モジュールの欄（`scope.packages` 等）は CLI の有無を問わず grep する（tooling を hane に移植していない。#104 で改訂）
 - [ ] マッチした TPL の ID を AT 本文の `**Related TPLs**:` メタ欄に列挙すると書かれている
-- [ ] proactive な TPL（`discovered_from` の `root_cause_adr`、または原則ファイルを指す `root_cause_file` を持つもの。ADR-104）のチェックリスト項目を AC として転記する、と書かれている（forward 運用）
-- [ ] proactive の判定に `issue:` の有無を使わないと説明されている（#104 で改訂。ADR-92 以降は proactive も `issue:` を持つ）
+- [ ] proactive な TPL のチェックリスト項目を AC として転記する、と書かれている（forward 運用）
+- [ ] proactive は起源（起こした時点で失敗が既に起きていたか）で見分け、`issue:` の有無や個々のフィールドでは決めないと説明されている（#104 で改訂。ADR-104）
 
 ### AC-2: ファイル形式・ガイドラインが更新されている
 

@@ -29,17 +29,17 @@ description: >
 5. テスト観点ライブラリ（TPL）を確認する（ホスト repo が `docs/test-perspectives/` を採用している場合のみ。ディレクトリが無ければ本ステップをスキップする）:
    - **`tpl` CLI の呼び方**: `tpl` CLI（`@kompiro/tpl-tools`）を次の順で探し、最初に見つかった呼び方を使う: ホスト repo が script で `tpl` を包んでいればその script ／ `@kompiro/tpl-tools` が devDependency にあれば `pnpm exec tpl` / `npx tpl` ／ `PATH` 上の `tpl`。どれも repo のルートで実行する
      - script は用途ごとに選ぶ（topic を取る script と、`--base` を固定して変更ファイルから引く script が別にあることがある）。script が固定しているフラグ（`--config` 等）は足さず、呼び出しごとの引数だけを後ろに付ける
-     - 用途に合う script が無ければ CLI を直接呼ぶ。そのときは host の script が渡している `--config` を同じく渡す（渡さないと config の `sourcePrefixes` が読まれない）
-     - `--base` / `--changed-files` / `--limit` は tpl-tools v0.0.14 以降にある（`tpl related --help` に出るかで確かめる）。config に `sourcePrefixes` が無ければ `--source-prefix <dir>` が要る（無いと終了コード `2`。dir はホスト repo のソースのルートで、複数あれば繰り返す。決められなければユーザーに尋ねる）。v0.0.13 以前なら、下の手がかり 3 は CLI が無いときの手順で代える
-   - **関連 TPL を次の 3 つの手がかりで引き、結果を合わせる**:
+     - 用途に合う script が無ければ CLI を直接呼ぶ。そのときは host の script が渡している `--config` を同じく渡す（script が既定と別の config を渡していると、渡さない限りその `sourcePrefixes` が読まれない）
+     - `--base` / `--changed-files` / `--limit` は tpl-tools v0.0.14 以降にある（`tpl related --help` に出るかで確かめる）。`--base` / `--changed-files` で引くときは、config に `sourcePrefixes` が無ければ `--source-prefix <dir>` が要る（無いと終了コード `2`。dir はホスト repo のソースのルートで、複数あれば繰り返す。決められなければユーザーに尋ねる）。v0.0.13 以前なら、下の手がかり 3 は CLI が無いときの手順で代える
+   - **関連 TPL を次の 3 つの手がかりで引き、結果を合わせる**（CLI は `status: active` の TPL だけを出すので、grep で拾ったものも `active` に絞る）:
      1. **topic**: CLI があれば `tpl related <topic>`、無ければ frontmatter の `topic` を grep する
      2. **変更対象モジュール**: frontmatter の `scope.packages` / `applicable_to` / `known_consumers` を grep し、今回の変更対象モジュールにマッチするものを拾う。CLI はこれらの欄では引かないので（`--package` は topic の一覧を絞るだけ）、CLI があってもこの grep は行う
      3. **変更ファイル**: 本文がそのファイルを名指す TPL や、`scope.paths` の glob に当たる TPL を引く
         - 変更をすべてコミット済みなら `tpl related --base origin/<base ブランチ> --limit 0`（既定は 10 件までなので `--limit 0` で全件）
-        - コミットしていない変更があるときや、まだ実装していないときは、`--base` の代わりに、コミット済み・未コミット・予定のファイルをすべて `tpl related --changed-files --limit 0 <path>...` に渡す（`--base` と `--changed-files` は同時に渡せない）。コミット済みの分は `git diff --name-only --no-renames origin/<base ブランチ>...HEAD`、未コミットの分は `git diff --name-only HEAD` と `git ls-files --others --exclude-standard` で集められる
+        - コミットしていない変更があるときや、まだ実装していないときは、`--base` の代わりに、コミット済み・未コミット・予定のファイルをすべて `tpl related --changed-files --limit 0 <path>...` に渡す（`--base` と `--changed-files` は同時に渡せない）。コミット済みの分は `git diff --name-only --no-renames origin/<base ブランチ>...HEAD`、未コミットの分は `git diff --name-only --no-renames HEAD` と `git ls-files --others --exclude-standard` で集められる
         - CLI が無ければ、変更する（予定の）ファイルの拡張子を除いたパス（`src/foo.ts` なら `src/foo`。`src/foo.test.ts` を名指す TPL も拾える）で TPL の本文（frontmatter とコードフェンスの中を除く）を grep し、frontmatter の `scope.paths` の glob と照らす
    - マッチした TPL の ID を AT 本文の `**Related TPLs**:` メタ欄に列挙する（`docs/test-perspectives/` へのリンク付き）
-   - うち **proactive** な TPL については、関連するチェックリスト項目を AC として転記する。proactive なのは、`discovered_from` に `root_cause_adr` があるか、`root_cause_file` が原則を書いた文書（`docs/concepts*` のような原則ファイルや spec）を指す TPL。retrospective の TPL もバグの起きたソースや AT を `root_cause_file` に持つので、`root_cause_file` があるだけでは proactive としない。`root_cause_file` が spec のように原則ともバグの現場とも読める文書を指すときは、`issue:` の Issue のラベルで決める（`bug` / `test-infra` なら retrospective）。proactive TPL も起こした作業の Issue を `issue:` に持つので、`issue:` があること自体では決めない（[hane ADR-104](https://github.com/kompiro/hane/blob/main/docs/adr/104-proactive-tpl-by-principle-root-cause.md)）。自動化予定でも手動確認でも構わないが、AC として明示する（"forward 運用": proactive TPL を引用した DesignDoc は、その実装 PR で該当チェックリスト項目の contract test と AT AC を着地させる）。転記した AC には出所の TPL ID を併記する
+   - うち **proactive** な TPL については、関連するチェックリスト項目を AC として転記する。proactive かどうかは、その TPL を起こした時点で、観点が防ぐ失敗が既に起きていたかで決める（起きていなければ proactive）。`discovered_from` の個々のフィールドや Issue のラベルだけでは決めない: retrospective もバグの起きたソースや修正で生まれた ADR を `root_cause_*` に持ち、proactive も `bug` の Issue の設計作業から生まれることがあり、どちらも起こした作業の Issue を `issue:` に持つ。手がかりは、根拠エントリが原則側（`docs/concepts*` や spec を指す `root_cause_file`、`root_cause_adr`）を指すか失敗した箇所を指すか、`## 想定される失敗モード` が実際に起きた失敗を書いているか、`issue:` の Issue が観点の防ぐ失敗そのものの報告か。決められなければユーザーに尋ねる（[hane ADR-104](https://github.com/kompiro/hane/blob/main/docs/adr/104-proactive-tpl-by-origin.md)）。自動化予定でも手動確認でも構わないが、AC として明示する（"forward 運用": proactive TPL を引用した DesignDoc は、その実装 PR で該当チェックリスト項目の contract test と AT AC を着地させる）。転記した AC には出所の TPL ID を併記する
 6. 受け入れ条件（AC）を具体的かつ検証可能な形で記述する
 7. ファイルを作成し、ユーザーにレビューを依頼する
 
