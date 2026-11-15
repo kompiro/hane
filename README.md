@@ -54,7 +54,13 @@ The marketplace also lists [tpl-tools](https://github.com/kompiro/tpl-tools), wh
 /plugin install tpl-tools@kompiro-hane
 ```
 
-If you added the marketplace before tpl-tools was listed, the install cannot find it until you refresh the marketplace:
+It also lists [adr-tools](https://github.com/kompiro/adr-tools), whose `/adr-tools:adr-search` skill finds the ADRs that apply to a task and says which of them are still in force, using `adr search` / `adr refs` (adr-tools v0.0.14 or later) instead of reading the generated indexes. Install it if your repo keeps ADRs with `@kompiro/adr-tools`:
+
+```
+/plugin install adr-tools@kompiro-hane
+```
+
+If you added the marketplace before tpl-tools or adr-tools was listed, the install cannot find it until you refresh the marketplace:
 
 ```
 /plugin marketplace update kompiro-hane
