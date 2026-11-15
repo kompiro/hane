@@ -77,12 +77,15 @@ description: >
 3. `git log --oneline origin/main..HEAD` と `git diff origin/main...HEAD --stat` で変更内容を分析する
 4. PR 本文を生成する。`.github/PULL_REQUEST_TEMPLATE.md` のセクション構成に従い、コメントを実際の内容で埋める。テンプレートが無い場合は以下の最小構成にフォールバックする:
 
-   - **Purpose**: `Closes #N` で Issue と紐付け、PR のマージで Issue も close させる。Issue がない場合は変更の目的を1行で記述
+   - **Purpose**: Issue と紐付ける。`Closes #N` か `Refs #N` かの判断基準は 1 つ: **この PR のマージのあと、Issue 本文に書いた Plan に実装の段が残るか**。Issue がない場合は変更の目的を1行で記述
+     - 残らない（Issue 本文に Plan の段が無い場合を含む）: `Closes #N`。PR のマージで Issue も close される
+     - 残る（試験導入など、途中の段だけを終える PR）: `Refs #N`。Issue は open のまま残る。この PR が終える段と残る段を Purpose に 1 行で書く
+     - 段に数えるのは Issue 本文に書いた Plan だけ。セッションの Plan モードの計画はほかのセッションから見えないので数えない。host の process がマージ後の手順として定めているもの（ADR への昇格、worktree の後片付けなど）も、Plan に並んでいても数えない
    - **Summary**: コミット履歴と差分から1-3行で要約
    - **Changes**: 主要な変更をリストで記述（コミット単位ではなく意味のある変更単位でまとめる）
    - **Manual Verification Checklist**: CI では検証できず、**マージ前に**この PR の preview かローカルの checkout で確認できる項目。なければ `N/A — all covered by automated tests`
      - 振り分けの判断基準は 1 つ: **その項目をこの PR の preview かローカルの checkout で確認できるか**
-     - 確認できない項目（次のリリース、本番にしか現れない設定、`main` に入ってから流すバックフィルなど）は PR 本文に節を作って書かない。PR を作る前に**別の Issue** を起こし、Purpose に 1 行で番号を添える（例: `Post-merge check: #M`）。元の Issue は `Closes #N` のまま PR と一緒に close する
+     - 確認できない項目（次のリリース、本番にしか現れない設定、`main` に入ってから流すバックフィルなど）は PR 本文に節を作って書かない。PR を作る前に**別の Issue** を起こし、Purpose に 1 行で番号を添える（例: `Post-merge check: #M`）。元の Issue への紐付け（`Closes #N` / `Refs #N`）は Purpose の基準のまま変えない
      - host の process がマージ後の手順として定めているもの（ADR への昇格、worktree の後片付けなど）は、PR 本文にも別 Issue にも書かない
    - **Related Docs**: 更新した docs/ 内のファイル。なければ `N/A`
 
@@ -167,6 +170,10 @@ CI 通過後、以下のチェックを順に実行する。
    ```
 5. Issue を更新する（Issue 紐付けがある場合。ラベル操作はラベル運用がある場合のみ）:
    - PR で `Closes #N` した Issue は GitHub が自動で close するため、ラベル操作は不要
+   - PR で `Refs #N` した Issue（Plan に実装の段が残る）は open のまま残る。`status: in-review` を `status: ready` に戻し、残りの段を `pick-issue` の候補に戻す（`pick-issue` は `in-review` を候補から外すため）:
+     ```
+     gh issue edit <N> --remove-label "status: in-review" --add-label "status: ready"
+     ```
    - マージ後にしか確認できない項目のために起こした別 Issue は、ここでは触らない。確認が済んだら close するのはユーザー。未消化の項目を催促しない
    - 依存していた Issue（`status: blocked` のもの）があれば `status: ready` に更新する:
      ```
