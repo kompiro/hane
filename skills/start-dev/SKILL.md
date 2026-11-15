@@ -211,7 +211,7 @@ CI 通過後、以下のチェックを順に実行する。
    ```
 4. Issue を更新する（Issue 紐付けがある場合。ラベル操作はラベル運用がある場合のみ）:
    - PR で `Closes #N` した Issue は GitHub が自動で close するため、ラベル操作は不要
-   - 実装 PR で `Refs #N` した Issue（Plan に実装の段が残る）は open のまま残る。`status: in-review` を `status: ready` に戻し、残りの段を `pick-issue` の候補に戻す（`pick-issue` は `in-review` を候補から外すため）。Design Doc だけの PR の `Refs #N` ではこの操作をしない（status は `design-doc` skill の手順 9 が `status: designed` にする）:
+   - 実装 PR で `Refs #N` した Issue（Plan に実装の段が残る）は open のまま残る。`status: in-review` を `status: ready` に戻し、残りの段を `pick-issue` の候補に戻す（`pick-issue` は `in-review` を候補から外すため）。Design Doc だけの PR はステップ 4 の 2 で扱い、status もそこで `status: designed` にするので、このクリーンアップの対象ではない:
      ```
      gh issue edit <N> --remove-label "status: in-review" --add-label "status: ready"
      ```

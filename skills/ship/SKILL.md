@@ -170,9 +170,13 @@ CI 通過後、以下のチェックを順に実行する。
    ```
 5. Issue を更新する（Issue 紐付けがある場合。ラベル操作はラベル運用がある場合のみ）:
    - PR で `Closes #N` した Issue は GitHub が自動で close するため、ラベル操作は不要
-   - 実装 PR で `Refs #N` した Issue（Plan に実装の段が残る）は open のまま残る。`status: in-review` を `status: ready` に戻し、残りの段を `pick-issue` の候補に戻す（`pick-issue` は `in-review` を候補から外すため）。Design Doc だけの PR の `Refs #N` ではこの操作をしない（status は `design-doc` skill の手順 9 が `status: designed` にする）:
+   - 実装 PR で `Refs #N` した Issue（Plan に実装の段が残る）は open のまま残る。`status: in-review` を `status: ready` に戻し、残りの段を `pick-issue` の候補に戻す（`pick-issue` は `in-review` を候補から外すため）:
      ```
      gh issue edit <N> --remove-label "status: in-review" --add-label "status: ready"
+     ```
+   - Design Doc だけの PR（`design-doc` skill から呼ばれた場合など）で `Refs #N` した Issue は、`status: ready` にせず `status: in-review` だけを外す。`status: designed` は `design-doc` skill の手順 9 が付ける:
+     ```
+     gh issue edit <N> --remove-label "status: in-review"
      ```
    - マージ後にしか確認できない項目のために起こした別 Issue は、ここでは触らない。確認が済んだら close するのはユーザー。未消化の項目を催促しない
    - PR で `Closes #N` した Issue に依存していた Issue（`status: blocked` のもの）があれば `status: ready` に更新する。`Refs #N` のときは、この PR が終えた段を待っていた Issue に限る:
