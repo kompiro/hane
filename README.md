@@ -54,7 +54,7 @@ The marketplace also lists [tpl-tools](https://github.com/kompiro/tpl-tools), wh
 /plugin install tpl-tools@kompiro-hane
 ```
 
-It also lists [adr-tools](https://github.com/kompiro/adr-tools), whose `/adr-tools:adr-search` skill finds the ADRs that apply to a task and says which of them are still in force, using `adr search` / `adr refs` (adr-tools v0.0.14 or later) instead of reading the generated indexes. Install it if your repo keeps ADRs with `@kompiro/adr-tools`:
+It also lists [adr-tools](https://github.com/kompiro/adr-tools), whose `/adr-tools:adr-search` skill finds the ADRs that apply to a task and says which of them are still in force, using `adr search` / `adr refs` (adr-tools v0.0.14 or later) instead of reading the generated indexes. Install it if your repo keeps ADRs with `@kompiro/adr-tools`; `start-dev` and `design-doc` then run their past-decision check with it instead of grepping `docs/adr/`:
 
 ```
 /plugin install adr-tools@kompiro-hane
