@@ -114,7 +114,7 @@ description: >
    - **repo ルートに `adr.config.json` がある（ADR を [`@kompiro/adr-tools`](https://github.com/kompiro/adr-tools) で管理している）とき**は、adr-tools plugin の `/adr-tools:adr-search` に依頼のテーマを渡して確認する。この skill は、見つけた ADR がいまも有効か（superseded か、後の ADR が一部を改めたか）まで分けて報告する。報告の 2 つのリストを次のように使う（[hane ADR-110](https://github.com/kompiro/hane/blob/main/docs/adr/110-past-decision-check-with-adr-search.md)）
      - 「Decisions to keep」: 計画が守る制約として計画に書く
      - 「Decisions that need a discussion before overriding」: 下の衝突として扱う。却下された案（`not_adopted` の ADR、ADR の却下した案の節）もここに入る
-     - plugin が入っていなければ、下の grep で確認し、ユーザーに `/plugin install adr-tools@kompiro-hane` での導入を勧める（install が plugin を見つけられなければ、先に `/plugin marketplace update kompiro-hane`）。導入を待たずに進めてよい。grep する場所は `docs/adr/` でなく `adr.config.json` の `paths.adrDir` とする。却下は frontmatter の `status: not_adopted` でも探し、`status: superseded` の ADR は `superseded_by` の先の ADR を現行の決定として読む
+     - plugin が入っていなければ、下の grep で確認し、ユーザーに `/plugin install adr-tools@kompiro-hane` での導入を勧める（install が plugin を見つけられなければ、先に `/plugin marketplace update kompiro-hane`）。導入を待たずに進めてよい。grep する場所は `docs/adr/` でなく `adr.config.json` の `paths.adrDir` とする。却下は frontmatter の `status: not_adopted` でも探し、`status: superseded` の ADR は `superseded_by` を末端までたどり、末端の ADR の status を確かめてから現行の決定として読む。後の ADR による一部改訂はこの grep では判別できないので、その旨を計画に書く
    - それ以外のときは、依頼のテーマに関わる語彙で `docs/adr/` のファイル名・本文を grep する
      - とりわけ **却下された決定**（`ステータス: 却下` の ADR、または採用 ADR の「## 却下した案」節）を狙って探す。今回やろうとしていることが過去に却下されていないか確認する
    - 衝突が見つかったら計画に反映する（却下理由を踏まえて方針を変える／覆すなら根拠を新 ADR に残す前提で進める）。判断に迷う衝突はユーザーに提示する
