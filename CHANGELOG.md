@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - The `kompiro-hane` marketplace now lists the [tpl-tools](https://github.com/kompiro/tpl-tools) plugin (`/plugin install tpl-tools@kompiro-hane`), which carries the `test-perspective` skill. If you added `kompiro-hane` before this release, run `/plugin marketplace update kompiro-hane` first, or the install cannot find the plugin. (#101, #103)
+- The `kompiro-hane` marketplace now lists the [adr-tools](https://github.com/kompiro/adr-tools) plugin (`/plugin install adr-tools@kompiro-hane`), which carries the `adr-search` skill: it finds the ADRs that apply to a task and says which are still in force, with `adr search` / `adr refs` from adr-tools v0.0.14. Refresh the marketplace first if you added it before this release. (kompiro/adr-tools#39)
 
 ### Changed
 

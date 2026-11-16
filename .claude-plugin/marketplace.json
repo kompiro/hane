@@ -20,6 +20,14 @@
         "source": "url",
         "url": "https://github.com/kompiro/tpl-tools.git"
       }
+    },
+    {
+      "name": "adr-tools",
+      "description": "Claude Code skill for finding the ADRs that apply to a task and which of them are still in force, with the adr CLI.",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/kompiro/adr-tools.git"
+      }
     }
   ]
 }
