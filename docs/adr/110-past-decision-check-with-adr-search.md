@@ -32,7 +32,8 @@ ADR と ADR の却下した案の節を含み、ADR-63 が狙う却下決定に�
 - 「Decisions that need a discussion before overriding」: ADR-63 の衝突として扱う
 
 plugin が入っていなければ grep で確認し、`/plugin install adr-tools@kompiro-hane` を勧める。導入は
-待たない。`adr.config.json` が無い host（hane 自身を含む）は従来どおり grep する。
+待たない。この grep は `adr.config.json` の `paths.adrDir` を対象にし、却下を frontmatter の
+`status: not_adopted` でも探し、superseded の ADR は `superseded_by` の先を現行として読む。`adr.config.json` が無い host（hane 自身を含む）は従来どおり grep する。
 
 確認の対象とする repo は「`docs/adr/` がある」から「`docs/adr/` か `adr.config.json` がある」に広げる。
 adr-tools では `paths.adrDir` で ADR の置き場所を変えられるため。
