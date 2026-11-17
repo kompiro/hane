@@ -3,7 +3,7 @@
 - **日付**: 2026-07-09
 - **ステータス**: 決定済み
 - **Issue**: [#63](https://github.com/kompiro/hane/issues/63)
-- **関連**: [ADR-8](8-issue-based-doc-numbering.md)（説明的なファイル名 = 検索の入口）, [ADR-55](55-skill-deprecation-convention.md)（frontmatter を唯一の真実にする発想）, `design-doc` skill, `start-dev` skill, `design-doc/ADR-TEMPLATE.md`, 典拠記事「仕様蓄積効果」 <https://fukurou.kompiro.dev/ja/spec-accumulation-effect/>
+- **関連**: [ADR-110](110-past-decision-check-with-adr-search.md)（adr-tools を使う host では、下記「決定」の確認を grep でなく `/adr-tools:adr-search` で行う）, [ADR-8](8-issue-based-doc-numbering.md)（説明的なファイル名 = 検索の入口）, [ADR-55](55-skill-deprecation-convention.md)（frontmatter を唯一の真実にする発想）, `design-doc` skill, `start-dev` skill, `design-doc/ADR-TEMPLATE.md`, 典拠記事「仕様蓄積効果」 <https://fukurou.kompiro.dev/ja/spec-accumulation-effect/>
 
 ## 背景
 
