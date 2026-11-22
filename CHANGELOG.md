@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
-- `start-dev`: merging an ADR-only PR after a design doc's promotion now follows the host's rules. The skill runs `gh pr merge --auto --squash` only when the host's rules say to; when they hand the merge to another mechanism (a workflow pinned to `main`, for example), it does not run `gh pr merge` and waits the way the rules say; with no rule, it waits for the user to merge, as with any PR. Before, it ran `--auto` in every host that used ADR PR auto-merge. (#113)
+- `start-dev`: merging an ADR-only PR after a design doc's promotion now follows the host's rules. The skill enables auto-merge only when the host's rules say to, with the command and merge method they give (for example `gh pr merge --auto --squash`); when they hand the merge to another mechanism (a workflow pinned to `main`, for example), it does not run `gh pr merge` and waits the way the rules say; with no rule, it waits for the user to merge, as with any PR. Before, it ran `--auto` in every host that used ADR PR auto-merge. (#113)
 
 ## [0.20.0] — 2026-11-17
 
