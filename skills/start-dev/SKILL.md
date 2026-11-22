@@ -231,6 +231,6 @@ CI 通過後、以下のチェックを順に実行する。
    - ADR のファイル名は **GitHub の番号ベース**を推奨（`docs/adr/<番号>-kebab-title.md`、見出しは `ADR-<番号>`、ゼロ埋めなし）。優先順位は Issue 番号 → PR 番号 → ローカル採番（既存最大+1）。host repo が独自規約（例: `YYYYMMDD-NN-description.md`）を持つ場合はそちらを優先する
    - ADR は **日本語**で書く（`docs/design/` の Design Doc・skill body と揃える。`docs/adr/` 配下に既存 ADR の言語が定まっている repo ではそれに合わせる）。`.claude/rules/` 等にプロジェクトルールがある repo はそれに従う
    - **同じ PR で `docs/design/` の元 Design Doc ファイルを削除する**（記録を ADR に一本化し、圧縮するため。ステータスを「決定済み」に更新してリンクだけ残す運用はしない）。元 Design Doc を参照していた他ドキュメント（README・他 ADR 等）のリンクを ADR に張り替える
-   - ADR PR の auto-merge を運用する repo では、`gh pr merge <pr-number> --auto --squash` を実行する（`gh` の auto-merge が許可されている repo のみ）
+   - ADR だけの PR のマージは host repo の規約（`.claude/rules/` 等）に従う。規約が auto-merge を定めていれば、規約のコマンド（マージ方式も規約に合わせる。例: `gh pr merge <pr-number> --auto --squash`）を実行する。規約がマージを別の仕組み（`main` に固定した workflow など）に任せていれば、`gh pr merge` は打たずに規約の待ち方に従う。規約が無ければ、ほかの PR と同じくユーザーのマージを待つ
 
 リモートブランチは GitHub 上で PR マージ時に自動削除される設定を推奨。
